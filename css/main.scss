@@ -1,0 +1,248 @@
+// nav
+
+.nav.container {
+  position: fixed;
+  left: 50%;
+  width: 100%;
+  padding-top: 0;
+  z-index: 100;
+  @each $break,$max-width in $container-max-widths {
+    @include media-breakpoint-up($break) {
+      margin-left: -$max-width/2;
+    }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .nav.container {
+    left: 0;
+    top: 0;
+  }
+}
+
+.ctrl,
+.menu .contents { padding-top: 3rem; }
+
+.ctrl {
+  padding-left: $grid-gutter-width;
+
+  ul.nav {
+    margin-top: 2rem;
+    overflow: hidden;
+  }
+
+  ul.nav:hover {
+    overflow:visible;
+  }
+
+  a.nav-link:hover { text-decoration:underline; }
+  a.nav-link { letter-spacing: 1px; }
+  .selected a.nav-link { 
+    font-weight: 500; 
+    letter-spacing: 0;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  ul.nav { line-height: 1.3rem; }
+  a.nav-link { font-size: .8rem; }
+}
+
+@include media-breakpoint-down(sm) {
+  .ctrl {
+    position: relative;
+    max-height: 3rem;
+    padding-top: 1rem;
+    background-color: #fff;
+    overflow: hidden;
+    border-bottom: 1px solid #000;
+    @include transition(max-height,.6s,ease-in-out)
+  }
+
+  ul.nav {
+    line-height: 2rem;
+    margin-bottom: 2rem;  
+  }
+
+  a.nav-link { font-size: 1rem; }
+
+  .ctrl.open {
+    max-height: 25rem;
+
+    ul.nav {
+      max-height: 9rem;
+      overflow-y: scroll;
+    }
+  }
+
+  ul.nav {
+    margin-top: 1rem;
+  }
+}
+
+.navbar-toggler {
+  transition: opacity .2s, transform .3s;
+  -webkit-transition: opacity .2s, transform .3s;
+}
+
+.navbar-toggler.open {
+  transform: rotate(.25turn);
+  opacity: .2;
+}
+
+@include media-breakpoint-up(md) {
+  .ctrl .navbar-toggler { display: none; }
+  .ctrl .navbar-toggler.show { 
+    display: inherit; 
+    padding: 0;
+    margin-left: 2px;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .navbar-toggler {
+    font-size: 1rem;
+    margin-left: 0;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .navbar-toggler {
+    padding: 0;
+  }
+}
+
+.icon {
+  div {
+    display: inline-block;
+    margin-right: .6rem;
+  }
+
+  .home { 
+    margin: 6px 9px 12px 0;
+    @include circle(24px,transparent); 
+    border: 6px solid $gray-light;
+  }
+
+  .dpad {
+    display: block;
+  }
+
+  .up { @include arrow(top,18px,#000); }
+  .prev { @include arrow(left,18px,#000); margin-right: .6rem }
+  .next { @include arrow(right,18px,#000); }
+}
+
+@include media-breakpoint-down(md) {
+  .icon {
+    > div {
+      display: inline-block;
+      margin-right: .6rem;
+      vertical-align: middle;
+    }
+
+    .dpad {
+      display: inline;
+    }
+
+    .home { @include circle(18px,transparent); border-width: 4px;}
+    .up { @include arrow(top,12px,#000); margin-left: 1px; }
+    .prev { @include arrow(left,12px,#000); margin-right: .6rem }
+    .next { @include arrow(right,12px,#000); }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .icon { 
+    margin-left: 0;
+    .home { margin-top: 0; margin-bottom: 0; }
+  }
+}
+
+// submenu
+
+.menu {
+  padding-left: 0;
+  padding-right: 0;
+  overflow:hidden;
+
+  .contents {
+    padding-left: $grid-gutter-width/2;
+    padding-right: $grid-gutter-width/2;
+    padding-bottom: 6rem;
+    position: relative;
+    left: -100%;
+    @include transition(left,.3s,ease-in-out)
+  }
+
+  .close {
+    margin-top: -2rem;
+  }
+
+  h2 { 
+    font-size: 1rem; 
+    padding-top: 3rem;
+  }
+  h2:first-of-type { padding-top: 0; }
+  
+  label.sum { 
+    font-family: 'scp'; 
+    margin-left: $grid-gutter-width/2;
+    font-size: 1.2rem;
+  }
+
+  .name,
+  .planet {
+    display: inline-block;
+  }
+
+  .name,
+  .planet,
+  .room {
+    font-size: .8rem;
+  }
+
+  .name { 
+    min-width: 33.333%; 
+    font-size: .9rem;
+  }
+  .planet { 
+    min-width: 66.667%; 
+  }
+}
+
+.menu.depth-1 .contents {
+  background-color: $gray-lightest;
+  border-left: 2px solid $gray-light;
+}
+
+.menu.depth-2 .contents {
+  background-color: $gray-lighter;
+  border-left: 2px solid $gray-light;
+}
+
+.menu.open .contents {
+  left: 0;
+}
+
+@include media-breakpoint-down(sm) {
+  .menu {
+    height: 100%;
+    padding-left: $grid-gutter-width/2;
+
+    .contents {
+      left: inherit;
+      top: -100%;
+      padding-top: $grid-gutter-width/2;
+      @include transition(top,.3s,ease-in-out)
+    }
+
+    .close {
+      margin-top: 0;
+    }
+  }
+
+  .menu.open .contents {
+    top: 0;
+  }
+}
