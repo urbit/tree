@@ -1,0 +1,4 @@
+[submodule "bootstrap"]
+	path = bootstrap
+	url = https://github.com/galenwp/bootstrap
+  branch = urbit
