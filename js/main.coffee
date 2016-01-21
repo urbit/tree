@@ -92,6 +92,7 @@ $ ->
       so.$n.removeClass 'm-up m-down m-fixed'
 
   $(window).on 'scroll', (e) -> 
+    return true
     so.cs = $(window).scrollTop()
 
     if so.w > 1170

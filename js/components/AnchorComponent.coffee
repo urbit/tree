@@ -8,7 +8,7 @@ TreeStore   = require '../stores/TreeStore.coffee'
 TreeActions = require '../actions/TreeActions.coffee'
 
 recl = React.createClass
-{div,a,ul,li} = React.DOM
+{div,a,ul,li,button} = React.DOM
 
 Links = React.createFactory query {
     path:'t'
@@ -18,15 +18,20 @@ Links = React.createFactory query {
       meta:'j'
   }, (recl
     displayName: "Links"
+    toggleNav: -> $('#nav').toggleClass 'open'
     render: -> 
       div {className:'links'}, 
         div {className:'icon'}, 
-          (div {className:'home'}, ""),
+          (div {className:'home'}, "")
           (div {className:'app'}, "")
           (div {className:'dpad'}, 
             @renderUp(),
             @renderArrows() 
-          ),
+          )
+          (button {
+            className:'navbar-toggler'
+            type:'button'
+            onClick:@toggleNav}, "☰")
           @renderSibs()
 
     renderUp: ->

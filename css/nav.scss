@@ -13,18 +13,17 @@
   }
 }
 
-@include media-breakpoint-down(sm) {
-  .nav.container {
-    left: 0;
-    top: 0;
-  }
-}
+@include media-breakpoint-down(sm) { .nav.container { top: 0; } }
+@include media-breakpoint-down(xs) { .nav.container { left: 0; } }
 
 .ctrl,
 .menu .contents { padding-top: 3rem; }
 
 .ctrl {
   padding-left: $grid-gutter-width/2;  // no outside gutters.
+  background-color: #fff;
+  max-width: 2/$grid-columns*100%;
+  transition: max-width .2s ease-in-out;
 
   ul.nav {
     margin-top: 2rem;
@@ -49,6 +48,12 @@
   }
 }
 
+.ctrl.open,
+.ctrl:hover {
+  max-width: 4/$grid-columns*100%;
+  width: auto;
+}
+
 @include media-breakpoint-down(md) {
   ul.nav { line-height: 1.3rem; }
   a.nav-link { font-size: .8rem; }
@@ -58,11 +63,18 @@
   .ctrl {
     position: relative;
     max-height: 3rem;
+    max-width: 100%;
     padding-top: 1rem;
     background-color: #fff;
     overflow: hidden;
     border-bottom: 1px solid #000;
-    @include transition(max-height,.6s,ease-in-out)
+    @include transition(max-height,.2s,ease-in-out)
+  }
+
+  .ctrl.open,
+  .ctrl:hover {
+    width: inherit;
+    max-width: inherit;
   }
 
   ul.nav {
@@ -73,7 +85,7 @@
   a.nav-link { font-size: 1rem; }
 
   .ctrl.open {
-    max-height: 25rem;
+    max-height: 36rem;
 
     ul.nav {
       max-height: 9rem;
@@ -86,35 +98,31 @@
   }
 }
 
+@include media-breakpoint-down(xs) {
+  .ctrl {
+    padding-left: $grid-gutter-width;
+  }
+}
+
 .navbar-toggler {
+  font-size: 24px;
   transition: opacity .2s, transform .3s;
   -webkit-transition: opacity .2s, transform .3s;
 }
 
-.navbar-toggler.open {
+.open .navbar-toggler {
   transform: rotate(.25turn);
   opacity: .2;
 }
 
 @include media-breakpoint-up(md) {
   .ctrl .navbar-toggler { display: none; }
-  .ctrl .navbar-toggler.show { 
-    display: inherit; 
-    padding: 0;
-    margin-left: 2px;
-  }
-}
-
-@include media-breakpoint-down(md) {
-  .navbar-toggler {
-    font-size: 1rem;
-    margin-left: 0;
-  }
 }
 
 @include media-breakpoint-down(sm) {
   .navbar-toggler {
     padding: 0;
+    margin-left: 2rem;
   }
 }
 
@@ -147,6 +155,7 @@
 @include media-breakpoint-down(sm) {
   .icon { 
     margin-left: 0;
+    .dpad { display: inline; }
     .home { margin-top: 0; margin-bottom: 0; }
   }
 }

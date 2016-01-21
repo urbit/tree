@@ -13,13 +13,18 @@ img.logo.first {
   width: 9 / $grid-columns * 100%;
 }
 
-.loading { 
+.loading:before { 
+  font-family: 'scp';
   background-color: #000;
   color: #fff;
-  padding: .6rem;
-  font-size: 1rem;
+  padding: 0;
+  margin: 0;
+  width: 1.6rem;
+  height: 1.6rem;
+  text-align: center;
+  font-size: .8rem;
+  display: block;
   font-weight: 600;
-  letter-spacing: 0.1rem;
   z-index: 3;
 }
 .loading.state-0:before { content: "\25D3"; }
