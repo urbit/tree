@@ -13,7 +13,15 @@
   }
 }
 
-@include media-breakpoint-down(sm) { .nav.container { top: 0; } }
+@include media-breakpoint-down(sm) { 
+  .nav.container { top: 0; } 
+  .nav.container.m-down,
+  .nav.container.m-up { position: absolute; }
+  
+  .nav.container.m-down.m-fixed {
+    position: fixed;
+  }
+}
 @include media-breakpoint-down(xs) { .nav.container { left: 0; } }
 
 .ctrl,

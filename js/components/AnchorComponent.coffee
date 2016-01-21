@@ -40,8 +40,7 @@ Links = React.createFactory query {
 
     renderSibs: ->
       keys = window.tree.util.getKeys @props.kids
-      # if keys.indexOf(@props.curr) isnt -1
-      #   style = {marginTop: -24 * (keys.indexOf @props.curr) + "px"}
+
       ul {className:"nav"}, keys.map (key) =>
         href = window.tree.basepath @props.path+"/"+key
         data = @props.kids[key]
@@ -91,7 +90,6 @@ Links = React.createFactory query {
         li {className:"nav-item selected"}, 
           a {className:"nav-link"}, @props.curr
 
-CLICK = 'a'
 module.exports = query {
   sein:'t'
   path:'t'
@@ -109,29 +107,21 @@ module.exports = query {
 
   toggleFocus: (state) -> $(@getDOMNode()).toggleClass 'focus',state
 
-  componentWillUnmount: -> clearInterval @interval; $('body').off 'click', CLICK
+  componentWillUnmount: -> clearInterval @interval; $('body').off 'click', 'a'
   componentDidUpdate: -> @setTitle()
   componentDidMount: -> 
     @setTitle()
     @interval = setInterval @checkURL,100
-
-    # $('body').on 'keyup', (e) =>
-    #   switch e.keyCode
-    #     when 37 then @goTo @props.prev # left
-    #     when 39 then @goTo @props.next # right
         
     _this = @
-    $('body').on 'click', CLICK, (e) ->
+    $('body').on 'click', 'a', (e) ->
       href = $(@).attr('href')
-      id   = $(@).attr('id')
       if href and not /^https?:\/\//i.test(href)
         e.preventDefault()
         e.stopPropagation()
         if href?[0] isnt "/"
           href = (document.location.pathname.replace /[^\/]*\/?$/, '') + href
         _this.goTo window.tree.fragpath href
-      if id
-        window.location.hash = id
 
   setTitle: ->
     title = $('#cont h1').first().text() || @props.name
@@ -152,7 +142,6 @@ module.exports = query {
 
   reset: ->
     $("html,body").animate {scrollTop:0}
-    #  $("#cont").attr 'class',''
     $('#nav').attr 'style',''
     $('#nav').removeClass 'scrolling m-up'
     $('#nav').addClass 'm-down m-fixed'

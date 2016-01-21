@@ -8,7 +8,10 @@ $ ->
   head = React.createFactory require './components/AnchorComponent.coffee'
   body = React.createFactory require './components/BodyComponent.coffee'
   window.tree.components = require './components/Components.coffee' # sigh
-  
+
+  TreeActions       = require './actions/TreeActions.coffee'
+  TreePersistence   = require './persistence/TreePersistence.coffee'
+
   window.tree._basepath = window.urb.util.basepath("/")
   window.tree._basepath +=
     (window.location.pathname.replace window.tree._basepath, "").split("/")[0]
@@ -23,19 +26,17 @@ $ ->
     path.replace(/\/$/,'')
         .replace(window.tree._basepath,"")
 
-  TreeActions       = require './actions/TreeActions.coffee'
-  TreePersistence   = require './persistence/TreePersistence.coffee'
-
-  frag = window.tree.fragpath window.location.pathname
-
-  TreeActions.setCurr frag
-  TreeActions.loadPath frag,window.tree.body,window.tree.kids
-
-  rend (head {}, ""),$('#nav')[0]
-  rend (body {}, ""),$('#cont')[0]
-
   window.tree.util = 
-    getKeys: (kids) ->
+    getKeys: (kids) -> # child node keys, respecting metadata
+      # kids = _.filter(kids,({meta})-> !(meta?.hide))
+      # unless _.all(kids, ({meta})-> meta?.sort?)
+      #   _.keys(kids).sort()
+      # else
+      #   order = []
+      #   for k,{meta} of kids
+      #     order[meta.sort] = k
+      #   _.values order
+      # # XX test!
       sorted = true
       keys = []
       for k,v of kids
@@ -47,56 +48,40 @@ $ ->
       else
         keys = _.values keys
 
-  checkScroll = ->
-    if $(window).scrollTop() > 20
-      $('#nav').addClass 'scrolling'
-    else
-      $('#nav').removeClass 'scrolling'
-  setInterval checkScroll, 500
-
-  po = {}
-  po.cm = null
-  po.lm = null
-  po.cs = $(window).scrollTop()
-  po.ls = $(window).scrollTop()
-  $(document).mousemove (e) -> po.cm = {x:e.pageX, y:e.pageY}
-  checkMove = ->
-    if po.lm isnt null and po.cm isnt null
-      po.cs = $(window).scrollTop()
-
-      db = $(window).height()-(po.cs+window.innerHeight)
-
-      ds = Math.abs po.cs-po.ls
-      dx = Math.abs po.cm.x-po.lm.x
-      dy = Math.abs po.cm.y-po.lm.y
-      
-      $('#nav').toggleClass 'moving',(dx > 20 or dy > 20 or db < 180)
-    po.lm = po.cm
-    po.ls = po.cs
-  setInterval checkMove,200
+  #
+  # initialize
+  #
+  frag = window.tree.fragpath window.location.pathname
+  # set current path
+  TreeActions.setCurr frag 
+  # load it
+  TreeActions.loadPath frag,window.tree.body,window.tree.kids 
+  # render components
+  rend (head {}, ""),$('#nav')[0]
+  rend (body {}, ""),$('#cont')[0]
 
   so = {}
   so.ls = $(window).scrollTop()
   so.cs = $(window).scrollTop()
-  so.w = null
-  so.$n = $('#nav')
-  so.$d = $('#nav > div')
-  so.nh = $('#nav').outerHeight(true)
+  so.$d = $('.nav.container .ctrl')
   setSo = ->
     so.w = $(window).width()
-    so.$n = $('#nav')
+    so.$n = $('.nav.container')
+    so.nh = $('.nav.container .ctrl').outerHeight(true)
   setInterval setSo,200
 
-  $(window).on 'resize', (e) ->
-    if so.w > 1170
-      so.$n.removeClass 'm-up m-down m-fixed'
+  clearNav = -> so.$n.removeClass 'm-up m-down m-fixed'
 
+  $(window).on 'resize', (e) ->
+    if so.w > 1170 then clearNav()
+      
+  #
+  # menu control for mobile
+  # 
   $(window).on 'scroll', (e) -> 
-    return true
     so.cs = $(window).scrollTop()
 
-    if so.w > 1170
-      so.$n.removeClass 'm-up m-down m-fixed'
+    if so.w > 1170 then clearNav()
     if so.w < 1170
       dy = so.ls-so.cs
 
@@ -107,23 +92,24 @@ $ ->
         so.$n.addClass 'm-down m-fixed'
         return
 
-      if so.$n.hasClass 'm-fixed' and
-      so.w < 1024
-        so.$n.css left:-1*$(window).scrollLeft()
-
+      # scrolling up
       if dy > 0
+        # attach just above current scroll
         if not so.$n.hasClass 'm-down'
           so.$n.removeClass('m-up').addClass 'm-down'
           top = so.cs-so.nh
           if top < 0 then top = 0
           so.$n.offset top:top
+        # set fixed when at top
         if so.$n.hasClass('m-down') and 
         not so.$n.hasClass('m-fixed') and 
         so.$n.offset().top >= so.cs
           so.$n.addClass 'm-fixed'
           so.$n.attr {style:''}
 
+      # scrolling down
       if dy < 0
+        # set to fixed if not
         if not so.$n.hasClass 'm-up'
           so.$n.removeClass('m-down m-fixed').addClass 'm-up'
           so.$n.attr {style:''}
@@ -132,5 +118,10 @@ $ ->
           if top < 0 then top = 0
           if top > sto and top < sto+so.nh then top = sto
           so.$n.offset top:top
+        # close when gone if open
+        if so.$n.hasClass('m-up') and
+        so.$d.hasClass('open')
+          if so.cs > so.$n.offset().top + so.$n.height()
+            so.$d.removeClass 'open'
 
     so.ls = so.cs
