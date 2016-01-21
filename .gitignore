@@ -5,4 +5,5 @@ node_modules/
 .DS_Store
 # compiled files
 main.css
+main.css.map
 main.js

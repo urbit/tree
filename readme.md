@@ -1,12 +1,16 @@
-# installing
+# Submodules
 
+`git submodule init`
+`git submodule update --remote`
+
+# JS
+
+in `js/`:
 `npm install`
-
-# building
-
-in `src/js/`:
 `watchify -v -t coffeeify -o main.js main.coffee`
 
-in `src/css/`:
-`stylus -w main.styl`
+# CSS
+
+in `./`:
+`sass --watch css/main.scss:main.css`
 
