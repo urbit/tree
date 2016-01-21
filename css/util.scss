@@ -14,15 +14,15 @@ img.logo.first {
 }
 
 .loading { 
-  background-color: #555;
+  background-color: #000;
   color: #fff;
-  padding: 0.6rem;
-  font-size: 0.7rem;
+  padding: .6rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.1rem;
   z-index: 3;
 }
-.loading.state-0:before { content: "\2599"; }
-.loading.state-1:before { content: "\259B"; }
-.loading.state-2:before { content: "\259C"; }
-.loading.state-3:before { content: "\259F"; }
+.loading.state-0:before { content: "\25D3"; }
+.loading.state-1:before { content: "\25D1"; }
+.loading.state-2:before { content: "\25D2"; }
+.loading.state-3:before { content: "\25D0"; }

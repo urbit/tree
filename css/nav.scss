@@ -24,11 +24,17 @@
 .menu .contents { padding-top: 3rem; }
 
 .ctrl {
-  padding-left: $grid-gutter-width;
+  padding-left: $grid-gutter-width/2;  // no outside gutters.
 
   ul.nav {
     margin-top: 2rem;
     overflow: hidden;
+
+    li {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+    }
   }
 
   ul.nav:hover {
@@ -113,11 +119,7 @@
 }
 
 .icon {
-  div,
-  a {
-    display: inline-block;
-  }
-
+  div, a { display: inline-block; }
   a { margin-right: .6rem; }
 
   .home { 
@@ -126,27 +128,15 @@
     border: 6px solid $gray-light;
   }
 
-  .dpad {
-    display: block;
-  }
+  .dpad { display: block; }
 
   .up { @include arrow(top,18px,#000); }
-  .prev { @include arrow(left,18px,#000); margin-right: .6rem }
-  .next { @include arrow(right,18px,#000); }
+  .prev { @include arrow(left,18px,#000); }
+  .next { @include arrow(right,18px,#000); margin-right: 0; }
 }
 
 @include media-breakpoint-down(md) {
   .icon {
-    > div {
-      display: inline-block;
-      margin-right: .6rem;
-      vertical-align: middle;
-    }
-
-    .dpad {
-      display: inline;
-    }
-
     .home { @include circle(18px,transparent); border-width: 4px;}
     .up { @include arrow(top,12px,#000); margin-left: 1px; }
     .prev { @include arrow(left,12px,#000); margin-right: .6rem }
