@@ -8,7 +8,7 @@ TreeStore   = require '../stores/TreeStore.coffee'
 TreeActions = require '../actions/TreeActions.coffee'
 
 recl = React.createClass
-{div,a} = React.DOM
+{div,a,ul,li} = React.DOM
 
 Links = React.createFactory query {
     path:'t'
@@ -18,29 +18,41 @@ Links = React.createFactory query {
       meta:'j'
   }, (recl
     displayName: "Links"
-    render: -> div {className:'links'}, 
-      @props.children, 
-      @renderUp(),
-      @renderSibs(),
-      @renderArrows() 
+    render: -> 
+      div {className:'links'}, 
+        div {className:'icon'}, 
+          (div {className:'home'}, ""),
+          (div {className:'app'}, "")
+          (div {className:'dpad'}, 
+            @renderUp(),
+            @renderArrows() 
+          ),
+          @renderSibs()
+
     renderUp: ->
       if @props.sein 
-        div {id:"up",key:"up"}, @renderArrow "up", @props.sein
+        @renderArrow "up", @props.sein
+
     renderSibs: ->
       keys = window.tree.util.getKeys @props.kids
-      if keys.indexOf(@props.curr) isnt -1
-        style = {marginTop: -24 * (keys.indexOf @props.curr) + "px"}
-      div {id:"sibs",style}, keys.map (key) =>
+      # if keys.indexOf(@props.curr) isnt -1
+      #   style = {marginTop: -24 * (keys.indexOf @props.curr) + "px"}
+      ul {className:"nav"}, keys.map (key) =>
         href = window.tree.basepath @props.path+"/"+key
         data = @props.kids[key]
         head = data.meta.title if data.meta
         head ?= @toText data.head
         head ||= key
-        className = clas active: key is @props.curr
-        (div {className,key}, (a {href,onClick:@props.onClick}, head))
+        className = 
+          "nav-item": true
+          selected: key is @props.curr
+        (li {className,key}, 
+          (a {className:"nav-link",href,onClick:@props.onClick}, head))
+
     renderArrow: (name, path) ->
       href = window.tree.basepath path
-      (a {href,key:"arow-#{name}",className:"arow-#{name}"},"")
+      (a {href,key:"#{name}",className:"#{name}"},"")
+
     renderArrows: ->
       keys = window.tree.util.getKeys @props.kids
       if keys.length > 1
@@ -54,11 +66,10 @@ Links = React.createFactory query {
       if @props.sein
         sein = @props.sein
         if sein is "/" then sein = "" 
-        if prev or next then _.filter [
-          div {id:"sides",key:"sides"},
-            if prev then @renderArrow "prev", "#{sein}/#{prev}"
-            if next then @renderArrow "next", "#{sein}/#{next}"
-          ]
+        div {},
+          if prev then @renderArrow "prev", "#{sein}/#{prev}"
+          if next then @renderArrow "next", "#{sein}/#{next}"
+
 
     toText: (elem)-> reactify.walk elem,
                                  ()->''
@@ -66,8 +77,14 @@ Links = React.createFactory query {
                                  ({c})->(c ? []).join ''
   ),  recl
     displayName: "Links_loading"
-    render: -> div {className:'links'}, @props.children, @_render()
-    _render: -> div {id:"sibs"}, div {className:"active"}, a {}, @props.curr
+    render: -> 
+      div {className:'links'}, 
+        @props.children, @_render()
+
+    _render: -> 
+      ul {className:"nav"}, 
+        li {className:"nav-item selected"}, 
+          a {className:"nav-link"}, @props.curr
 
 CLICK = 'a'
 module.exports = query {

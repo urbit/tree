@@ -1,0 +1,87 @@
+// submenu
+
+.menu {
+  padding-left: 0;
+  padding-right: 0;
+  overflow:hidden;
+
+  .contents {
+    padding-left: $grid-gutter-width/2;
+    padding-right: $grid-gutter-width/2;
+    padding-bottom: 6rem;
+    position: relative;
+    left: -100%;
+    @include transition(left,.3s,ease-in-out)
+  }
+
+  .close {
+    margin-top: -2rem;
+  }
+
+  h2 { 
+    font-size: 1rem; 
+    padding-top: 3rem;
+  }
+  h2:first-of-type { padding-top: 0; }
+  
+  label.sum { 
+    font-family: 'scp'; 
+    margin-left: $grid-gutter-width/2;
+    font-size: 1.2rem;
+  }
+
+  .name,
+  .planet {
+    display: inline-block;
+  }
+
+  .name,
+  .planet,
+  .room {
+    font-size: .8rem;
+  }
+
+  .name { 
+    min-width: 33.333%; 
+    font-size: .9rem;
+  }
+  .planet { 
+    min-width: 66.667%; 
+  }
+}
+
+.menu.depth-1 .contents {
+  background-color: $gray-lightest;
+  border-left: 2px solid $gray-light;
+}
+
+.menu.depth-2 .contents {
+  background-color: $gray-lighter;
+  border-left: 2px solid $gray-light;
+}
+
+.menu.open .contents {
+  left: 0;
+}
+
+@include media-breakpoint-down(sm) {
+  .menu {
+    height: 100%;
+    padding-left: $grid-gutter-width/2;
+
+    .contents {
+      left: inherit;
+      top: -100%;
+      padding-top: $grid-gutter-width/2;
+      @include transition(top,.3s,ease-in-out)
+    }
+
+    .close {
+      margin-top: 0;
+    }
+  }
+
+  .menu.open .contents {
+    top: 0;
+  }
+}

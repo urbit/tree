@@ -21,6 +21,8 @@ module.exports = query {
       @props.dataType
       posts: @props.dataType is 'post' # needs css update
       default: @props['data-source'] is 'default'
+      @props.className
+    console.log @props.className
     kids = @renderList()
     unless kids.length is 0 and @props.is404?
       return (ul {className:k}, kids)

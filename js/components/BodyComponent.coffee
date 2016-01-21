@@ -25,7 +25,7 @@ extras =
       if color is "white" or color is "black"  # else?
         src = "//storage.googleapis.com/urbit-extra/logo/logo-#{color}-100x100.png"
       (a {href:"http://urbit.org",style:{border:"none"}}, 
-       (img {src,className:"logo"})
+       (img {src,className:"logo first"})
       )
 
 

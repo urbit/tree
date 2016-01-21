@@ -1,0 +1,13 @@
+.list {
+  h1 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+}
+
+.list.children {
+  h1 {
+    font-weight: 500; 
+    font-size: 1.4rem;
+  }
+}

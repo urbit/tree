@@ -1,0 +1,28 @@
+@import "../bootstrap/scss/mixins/grid.scss";
+
+img.logo {
+  height: 2rem;
+  width: 2rem;
+}
+
+img.logo.first {
+  margin-bottom: 2rem;
+}
+
+.short {
+  width: 9 / $grid-columns * 100%;
+}
+
+.loading { 
+  background-color: #555;
+  color: #fff;
+  padding: 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1rem;
+  z-index: 3;
+}
+.loading.state-0:before { content: "\2599"; }
+.loading.state-1:before { content: "\259B"; }
+.loading.state-2:before { content: "\259C"; }
+.loading.state-3:before { content: "\259F"; }
