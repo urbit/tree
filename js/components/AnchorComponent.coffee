@@ -51,7 +51,7 @@ Links = React.createFactory query {
           "nav-item": true
           selected: key is @props.curr
         (li {className,key}, 
-          (a {className:"nav-link",href,onClick:@props.onClick}, head))
+          (a {className:"nav-link",href,onClick:@toggleNav}, head))
 
     renderArrow: (name, path) ->
       href = window.tree.basepath path
@@ -118,7 +118,6 @@ module.exports = query {
       href = $(@).attr('href')
       if href and not /^https?:\/\//i.test(href)
         e.preventDefault()
-        e.stopPropagation()
         if href?[0] isnt "/"
           href = (document.location.pathname.replace /[^\/]*\/?$/, '') + href
         _this.goTo window.tree.fragpath href
