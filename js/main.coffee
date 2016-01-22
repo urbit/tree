@@ -97,9 +97,11 @@ $ ->
         # attach just above current scroll
         if not so.$n.hasClass 'm-down'
           so.$n.removeClass('m-up').addClass 'm-down'
+          ct = so.$n.offset().top
           top = so.cs-so.nh
-          if top < 0 then top = 0
-          so.$n.offset top:top
+          if so.cs > ct and so.cs < ct+so.nh then top = ct
+          # if top < 0 then top = 0
+          so.$n.offset top:so.$n.top
         # set fixed when at top
         if so.$n.hasClass('m-down') and 
         not so.$n.hasClass('m-fixed') and 
@@ -112,11 +114,9 @@ $ ->
         # set to fixed if not
         if not so.$n.hasClass 'm-up'
           so.$n.removeClass('m-down m-fixed').addClass 'm-up'
-          so.$n.attr {style:''}
-          top = so.cs
-          sto = so.$n.offset().top
-          if top < 0 then top = 0
-          if top > sto and top < sto+so.nh then top = sto
+          top = if so.cs < 0 then 0 else so.cs
+          ct = so.$n.offset().top
+          if top > ct and top < ct+so.nh then top = ct
           so.$n.offset top:top
         # close when gone if open
         if so.$n.hasClass('m-up') and
