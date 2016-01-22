@@ -94,7 +94,6 @@ $ ->
 
       # scrolling up
       if dy > 0
-        # attach just above current scroll
         if not so.$n.hasClass 'm-down'
           so.$n.removeClass('m-up').addClass 'm-down'
           ct = so.$n.offset().top
@@ -111,7 +110,6 @@ $ ->
 
       # scrolling down
       if dy < 0
-        # set to fixed if not
         if not so.$n.hasClass 'm-up'
           so.$n.removeClass('m-down m-fixed').addClass 'm-up'
           top = if so.cs < 0 then 0 else so.cs
