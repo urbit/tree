@@ -12,6 +12,6 @@ module.exports = recl
   setAnim: ->
     anim = @state.anim+1
     if anim > 3 then anim = 0
-    @setState {anim:anim}
+    @setState {anim}
 
   render: -> (span {className:"loading state-#{@state.anim}"}, '')

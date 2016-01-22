@@ -3,6 +3,8 @@ clas        = require 'classnames'
 reactify    = require './Reactify.coffee'
 query       = require './Async.coffee'
 
+util        = require '../utils/util.coffee'
+
 recl = React.createClass
 {div,pre,span,a,ul,li,h1} = React.DOM
 
@@ -53,7 +55,7 @@ module.exports = query {
       path = @props.path+"/"+item
       elem = @props.kids[item]
       if elem.meta.hide? then continue
-      href = window.tree.basepath path
+      href = util.basepath path
       if elem.meta.link then href = elem.meta.link
       parts = []
       title = null

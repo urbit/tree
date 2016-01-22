@@ -3,6 +3,8 @@ clas    = require 'classnames'
 query      = require './Async.coffee'
 reactify   = require './Reactify.coffee'
 
+util        = require '../utils/util.coffee'
+
 recl   = React.createClass
 rele   = React.createElement
 {div,p,img,a}  = React.DOM
@@ -40,7 +42,7 @@ extras =
     render: ->
       curr = @props.kids[@props.curr]
       if curr?.meta?.next
-        keys = window.tree.util.getKeys @props.kids
+        keys = util.getKeys @props.kids
         if keys.length > 1
           index = keys.indexOf(@props.curr)
           next = index+1

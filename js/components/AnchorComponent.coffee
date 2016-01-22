@@ -7,6 +7,8 @@ reactify    = require './Reactify.coffee'
 TreeStore   = require '../stores/TreeStore.coffee'
 TreeActions = require '../actions/TreeActions.coffee'
 
+util        = require '../utils/util.coffee'
+
 recl = React.createClass
 {div,a,ul,li,button} = React.DOM
 
@@ -39,10 +41,10 @@ Links = React.createFactory query {
         @renderArrow "up", @props.sein
 
     renderSibs: ->
-      keys = window.tree.util.getKeys @props.kids
+      keys = util.getKeys @props.kids
 
       ul {className:"nav"}, keys.map (key) =>
-        href = window.tree.basepath @props.path+"/"+key
+        href = util.basepath @props.path+"/"+key
         data = @props.kids[key]
         head = data.meta.title if data.meta
         head ?= @toText data.head
@@ -54,11 +56,11 @@ Links = React.createFactory query {
           (a {className:"nav-link",href,onClick:@toggleNav}, head))
 
     renderArrow: (name, path) ->
-      href = window.tree.basepath path
+      href = util.basepath path
       (a {href,key:"#{name}",className:"#{name}"},"")
 
     renderArrows: ->
-      keys = window.tree.util.getKeys @props.kids
+      keys = util.getKeys @props.kids
       if keys.length > 1
         index = keys.indexOf(@props.curr)
         prev = index-1
@@ -120,7 +122,7 @@ module.exports = query {
         e.preventDefault()
         if href?[0] isnt "/"
           href = (document.location.pathname.replace /[^\/]*\/?$/, '') + href
-        _this.goTo window.tree.fragpath href
+        _this.goTo util.fragpath href
 
   setTitle: ->
     title = $('#cont h1').first().text() || @props.name
@@ -133,7 +135,7 @@ module.exports = query {
     if next.substr(-1) is "/" then next = next.slice(0,-1)
     href_parts[0] = next
     if hist isnt false
-      history.pushState {}, "", window.tree.basepath href_parts.join ""
+      history.pushState {}, "", util.basepath href_parts.join ""
     if next isnt @props.path
       React.unmountComponentAtNode $('#cont')[0]
       TreeActions.setCurr next
@@ -153,7 +155,7 @@ module.exports = query {
   checkURL: ->
     if @state.url isnt window.location.pathname
       @reset()
-      @setPath (window.tree.fragpath window.location.pathname),false
+      @setPath (util.fragpath window.location.pathname),false
       @setState url: window.location.pathname
   
   render: ->
