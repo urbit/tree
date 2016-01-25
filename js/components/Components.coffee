@@ -8,4 +8,5 @@ module.exports =
   kids:       require './KidsComponent.coffee'
   toc:        require './TocComponent.coffee'
   email:      require './EmailComponent.coffee'
+  module:     require './ModuleComponent.coffee'
   lost:       recl render: -> (div {}, "<lost(", @props.children, ")>")
