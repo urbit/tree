@@ -5,7 +5,6 @@
   left: 50%;
   width: 100%;
   padding-top: 0;
-  z-index: 100;
   @each $break,$max-width in $container-max-widths {
     @include media-breakpoint-up($break) {
       margin-left: -$max-width/2;

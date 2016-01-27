@@ -4,6 +4,6 @@ recl = React.createClass
 module.exports = recl
   render: -> div {}, textarea ref:'ed', value:@props.value
   componentDidMount: ->
-    CodeMirror.fromTextArea @refs.ed.getDOMNode(),
+    CodeMirror.fromTextArea ReactDOM.findDOMNode(@refs.ed),
       readOnly:true
       lineNumbers:true

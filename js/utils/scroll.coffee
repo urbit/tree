@@ -18,7 +18,7 @@ scroll =
   scroll: -> 
     @cs = $(window).scrollTop()
 
-    if @w > 1170 then clearNav()
+    if @w > 1170 then @clearNav()
     if @w < 1170
       dy = @ls-@cs
 

@@ -1,5 +1,4 @@
-rend = React.render
-React.initializeTouchEvents(true)
+rend = ReactDOM.render
 
 $ ->
   util = require './utils/util.coffee'

@@ -107,7 +107,7 @@ module.exports = query {
   onTouchStart: -> @ts = Number Date.now()
   onTouchEnd: -> dt = @ts - Number Date.now()
 
-  toggleFocus: (state) -> $(@getDOMNode()).toggleClass 'focus',state
+  toggleFocus: (state) -> $(ReactDOM.findDOMNode(@)).toggleClass 'focus',state
 
   componentWillUnmount: -> clearInterval @interval; $('body').off 'click', 'a'
   componentDidUpdate: -> @setTitle()
