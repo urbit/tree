@@ -10,20 +10,7 @@
 
 The `desk/` folder in this repo mirrors a desk on an urbit `planet`.  Source files live outside of this folder, we compile them in using watchify / sass and then copy the `/desk` onto the desk we're using for development on a planet.
 
-## JavaScript
-
-Simple:
-
-```
-npm install
-npm run watch
-```
-
-## CSS
-
-We use the sass preprocessor for our css files.  You'll need to [install it](http://sass-lang.com/install) before making css changes. 
-
-Also, our sass depends on bootstrap mixins, so the urbit fork of bootstrap is included as a submodule. 
+Our sass depends on bootstrap mixins, so the urbit fork of bootstrap is included as a submodule. 
 
 First:
 
@@ -35,8 +22,8 @@ git submodule update --remote
 Then:
 
 ```
-mkdir -p desk/web/tree/
-sass --watch css/main.scss:desk/web/tree/main.css
+npm install
+npm run watch
 ```
 
 ## Deploy

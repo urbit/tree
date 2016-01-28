@@ -12,7 +12,7 @@
     "transform": ["coffeeify"]
   },
   "scripts": {
-    "watch": "mkdir -p desk/web/tree/; watchify -v -o desk/web/tree/main.js js/main.coffee"
+    "watch": "sh build/watch.sh"
   },
   "repository": {
     "type": "git",
