@@ -29,9 +29,15 @@ module.exports = recl
       document.body.appendChild l
       @css = l
 
+  componentDidUpdate: ->
+    if @state.loaded is true and @props.component.register
+      @props.component.register()
+
   componentWillUnmount: ->
     if @js then document.body.removeChild @js
     if @css then document.body.removeChild @css
+    # reset tree store state
+    window.tree.actions.clearNav()
     
   render: ->
     unless @state.loaded

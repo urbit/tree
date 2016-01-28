@@ -6,6 +6,7 @@ clog = console.log.bind(console)
 _tree = {}
 _data = {}
 _curr = ""
+_nav  = {}
 
 QUERIES = {body:'r', head:'r', snip:'r', sect:'j', meta:'j'}
 
@@ -114,6 +115,14 @@ TreeStore = _.extend EventEmitter.prototype, {
       _path
     else
       null
+
+  setNav: (nav) -> _nav = nav
+  getNav: -> _nav
+  clearNav: -> _nav = 
+    title:null
+    dpad:null
+    sibs:null
+    subnav:null
 }
 
 TreeStore.dispatchToken = MessageDispatcher.register (payload) ->
@@ -125,6 +134,12 @@ TreeStore.dispatchToken = MessageDispatcher.register (payload) ->
       TreeStore.emitChange()
     when 'set-curr'
       TreeStore.setCurr action.path
+      TreeStore.emitChange()
+    when 'set-nav'
+      TreeStore.setNav action.nav
+      TreeStore.emitChange()
+    when 'clear-nav'
+      TreeStore.clearNav()
       TreeStore.emitChange()
 
 module.exports = TreeStore

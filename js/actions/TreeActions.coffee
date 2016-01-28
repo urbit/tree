@@ -14,3 +14,16 @@ module.exports =
     TreeDispatcher.handleViewAction
       type:"set-curr"
       path:path
+
+  setNav: (title,dpad,sibs,subnav) ->
+    TreeDispatcher.handleViewAction
+      type:"set-nav"
+      nav: {
+        title
+        dpad
+        sibs
+        subnav
+      }
+
+  clearNav: ->
+    TreeDispatcher.handleViewAction {type:"clear-nav"}

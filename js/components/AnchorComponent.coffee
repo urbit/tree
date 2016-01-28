@@ -20,21 +20,27 @@ Links = React.createFactory query {
       meta:'j'
   }, (recl
     displayName: "Links"
+    stateFromStore: -> TreeStore.getNav()
+    getInitialState: -> @stateFromStore()
+    _onChangeStore: -> @setState @stateFromStore()
+    componentDidMount: -> TreeStore.addChangeListener @_onChangeStore
+    componentWillUnmount: -> TreeStore.removeChangeListener @_onChangeStore
+
     toggleNav: -> $('#nav').toggleClass 'open'
     render: -> 
       div {className:'links'}, 
         div {className:'icon'}, 
           (div {className:'home'}, "")
-          (div {className:'app'}, "")
-          (div {className:'dpad'}, 
-            @renderUp(),
-            @renderArrows() 
-          )
+          (div {className:'app'}, 
+            if @state.title then @state.title else "")
+          if @state.dpad isnt false
+            (div {className:'dpad'}, [@renderUp(), @renderArrows()])
+          else ""
           (button {
             className:'navbar-toggler'
             type:'button'
             onClick:@toggleNav}, "☰")
-          @renderSibs()
+          if @state.sibs isnt false then @renderSibs() else ""
 
     renderUp: ->
       if @props.sein 
@@ -99,7 +105,7 @@ module.exports = query {
   meta:'j'
   },(recl
   displayName: "Anchor"
-  getInitialState: -> url: window.location.pathname
+  getInitialState: -> {url: window.location.pathname}
   
   onClick: -> @toggleFocus()
   onMouseOver: -> @toggleFocus true
