@@ -2,17 +2,19 @@ clas        = require 'classnames'
 
 BodyComponent = React.createFactory require './BodyComponent.coffee'
 query       = require './Async.coffee'
-reactify    = require './Reactify.coffee'
 
 TreeStore   = require '../stores/TreeStore.coffee'
 TreeActions = require '../actions/TreeActions.coffee'
+
+Sibs        = require './SibsComponent.coffee'
+Dpad        = require './DpadComponent.coffee'
 
 util        = require '../utils/util.coffee'
 
 recl = React.createClass
 {div,a,ul,li,button} = React.DOM
 
-Links = React.createFactory query {
+Nav = React.createFactory query {
     path:'t'
     kids:
       name:'t'
@@ -26,77 +28,57 @@ Links = React.createFactory query {
     componentDidMount: -> TreeStore.addChangeListener @_onChangeStore
     componentWillUnmount: -> TreeStore.removeChangeListener @_onChangeStore
 
-    toggleNav: -> $('#nav').toggleClass 'open'
+    onClick: -> @toggleFocus()
+    onMouseOver: -> @toggleFocus true
+    onMouseOut: -> @toggleFocus false
+    onTouchStart: -> @ts = Number Date.now()
+    onTouchEnd: -> dt = @ts - Number Date.now()
+
+    toggleFocus: (state) -> $(ReactDOM.findDOMNode(@)).toggleClass 'focus',state
+    toggleNav: -> TreeActions.toggleNav()
+
     render: -> 
-      div {className:'links'}, 
-        div {className:'icon'}, 
-          (div {className:'home'}, "")
-          (div {className:'app'}, 
-            if @state.title then @state.title else "")
-          if @state.dpad isnt false
-            (div {className:'dpad'}, [@renderUp(), @renderArrows()])
-          else ""
-          (button {
-            className:'navbar-toggler'
-            type:'button'
-            onClick:@toggleNav}, "☰")
-          if @state.sibs isnt false then @renderSibs() else ""
+      attr = {@onMouseOver,@onMouseOut,@onClick,@onTouchStart,@onTouchEnd}
+      if _.keys(window).indexOf("ontouchstart") isnt -1
+        delete attr.onMouseOver
+        delete attr.onMouseOut
+      navClas = clas
+        'col-md-2':true
+        ctrl:true
+        open:(@state.open is true)
+      attr = _.extend attr,{className:navClas,key:"nav"}
 
-    renderUp: ->
-      if @props.sein 
-        @renderArrow "up", @props.sein
+      title = if @state.title then @state.title else ""
+      dpad  = if @state.dpad isnt false then (Dpad @props,"") else ""
+      sibs  = if @state.sibs isnt false 
+          (Sibs _.merge(@props,{@toggleNav}), "") 
+        else ""
 
-    renderSibs: ->
-      keys = util.getKeys @props.kids
+      toggleClas = clas
+        'navbar-toggler':true
+        show:@state.subnav?
 
-      ul {className:"nav"}, keys.map (key) =>
-        href = util.basepath @props.path+"/"+key
-        data = @props.kids[key]
-        head = data.meta.title if data.meta
-        head ?= @toText data.head
-        head ||= key
-        className = 
-          "nav-item": true
-          selected: key is @props.curr
-        (li {className,key}, 
-          (a {className:"nav-link",href,onClick:@toggleNav}, head))
-
-    renderArrow: (name, path) ->
-      href = util.basepath path
-      (a {href,key:"#{name}",className:"#{name}"},"")
-
-    renderArrows: ->
-      keys = util.getKeys @props.kids
-      if keys.length > 1
-        index = keys.indexOf(@props.curr)
-        prev = index-1
-        next = index+1
-        if prev < 0 then prev = keys.length-1
-        if next is keys.length then next = 0
-        prev = keys[prev]
-        next = keys[next]
-      if @props.sein
-        sein = @props.sein
-        if sein is "/" then sein = "" 
-        div {},
-          if prev then @renderArrow "prev", "#{sein}/#{prev}"
-          if next then @renderArrow "next", "#{sein}/#{next}"
-
-
-    toText: (elem)-> reactify.walk elem,
-                                 ()->''
-                                 (s)->s
-                                 ({c})->(c ? []).join ''
+      div attr,
+        div {className:'links',key:"links"}, 
+          div {className:'icon'}, 
+            (div {className:'home'}, "")
+            (div {className:'app'}, title)
+            dpad
+            (button {
+              className:toggleClas
+              type:'button'
+              onClick:@toggleNav}, "☰")
+          sibs
   ),  recl
     displayName: "Links_loading"
     render: -> 
-      div {className:'links'}, 
-        @props.children, @_render()
-
-    _render: -> 
-      ul {className:"nav"}, 
-        li {className:"nav-item selected"}, 
-          a {className:"nav-link"}, @props.curr
+      div {className:"col-md-2 ctrl",key:"nav-loading"},
+        div {className:'links'},
+          div {className:'icon'}, 
+            (div {className:'home'}, "")
+          ul {className:"nav"}, 
+            li {className:"nav-item selected"}, 
+              a {className:"nav-link"}, @props.curr
 
 module.exports = query {
   sein:'t'
@@ -105,21 +87,19 @@ module.exports = query {
   meta:'j'
   },(recl
   displayName: "Anchor"
-  getInitialState: -> {url: window.location.pathname}
-  
-  onClick: -> @toggleFocus()
-  onMouseOver: -> @toggleFocus true
-  onMouseOut: -> @toggleFocus false
-  onTouchStart: -> @ts = Number Date.now()
-  onTouchEnd: -> dt = @ts - Number Date.now()
+  stateFromStore: -> TreeStore.getNav()
+  getInitialState: -> _.extend @stateFromStore(),{url: window.location.pathname}
+  _onChangeStore: -> @setState @stateFromStore()
 
-  toggleFocus: (state) -> $(ReactDOM.findDOMNode(@)).toggleClass 'focus',state
-
-  componentWillUnmount: -> clearInterval @interval; $('body').off 'click', 'a'
+  componentWillUnmount: -> 
+    clearInterval @interval; $('body').off 'click', 'a'
+    TreeStore.removeChangeListener @_onChangeStore
   componentDidUpdate: -> @setTitle()
   componentDidMount: -> 
     @setTitle()
     @interval = setInterval @checkURL,100
+
+    TreeStore.addChangeListener @_onChangeStore
         
     _this = @
     $('body').on 'click', 'a', (e) ->
@@ -165,17 +145,17 @@ module.exports = query {
       @setState url: window.location.pathname
   
   render: ->
-    if @props.meta.anchor is 'none' 
-      return (div {}, "")
+    return (div {}, "") if @props.meta.anchor is 'none' 
 
-    obj = {@onMouseOver,@onMouseOut,@onClick,@onTouchStart,@onTouchEnd}
-    if _.keys(window).indexOf("ontouchstart") isnt -1
-      delete obj.onMouseOver
-      delete obj.onMouseOut
+    kids = [(Nav {
+          curr:@props.name
+          dataPath:@props.sein
+          sein:@props.sein
+          key:"nav"
+        }, "div")]
 
-    div obj, Links {
-      @onClick
-      curr:@props.name
-      dataPath:@props.sein
-      sein:@props.sein
-    }), "div"
+    if @state.subnav
+      kids.push (@state.subnav {key:"subnav",open:@state.open},"")
+
+    div {className:"row"}, kids
+  )

@@ -12,13 +12,19 @@
   }
 }
 
+.nav.container .loading {
+  padding-top: 3rem;
+  display:block;
+}
+
 @include media-breakpoint-down(sm) { 
   .nav.container { top: 0; } 
   .nav.container.m-down,
   .nav.container.m-up { position: absolute; }
-  
-  .nav.container.m-down.m-fixed {
-    position: fixed;
+  .nav.container.m-down.m-fixed { position: fixed; }
+
+  .nav.container .loading {
+    padding-top: 0;
   }
 }
 @include media-breakpoint-down(xs) { .nav.container { left: 0; } }
@@ -124,6 +130,10 @@
 
 @include media-breakpoint-up(md) {
   .ctrl .navbar-toggler { display: none; }
+  .ctrl .navbar-toggler.show { 
+    display: block; 
+    padding: 0;
+  }
 }
 
 @include media-breakpoint-down(sm) {

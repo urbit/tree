@@ -46,10 +46,10 @@ TreeStore = _.extend EventEmitter.prototype, {
     if query.prev then data.prev = @getPrev path
     data
 
-  setCurr: (path) -> _curr = path
+  setCurr: ({path}) -> _curr = path
   getCurr: -> _curr
 
-  loadPath: (path,data) ->
+  loadPath: ({path,data}) ->
     @loadValues (@getTree (path.split '/'),true), path, data
   loadValues: (tree,path,data) ->
     old = _data[path] ? {}
@@ -116,30 +116,31 @@ TreeStore = _.extend EventEmitter.prototype, {
     else
       null
 
-  setNav: (nav) -> _nav = nav
+  setNav: ({title,dpad,sibs,subnav}) ->  
+    nav = {
+      title
+      dpad
+      sibs
+      subnav
+      open:(if _nav.open then _nav.open else false)
+    }
+    _nav = nav
   getNav: -> _nav
-  clearNav: -> _nav = 
-    title:null
-    dpad:null
-    sibs:null
-    subnav:null
+  toggleNav: -> _nav.open = !_nav.open
+  clearNav: -> 
+    _nav = 
+      title:null
+      dpad:null
+      sibs:null
+      subnav:null
+      open:false
 }
 
-TreeStore.dispatchToken = MessageDispatcher.register (payload) ->
-  action = payload.action
+TreeStore.dispatchToken = MessageDispatcher.register (p) ->
+  a = p.action
 
-  switch action.type
-    when 'path-load'
-      TreeStore.loadPath action.path,action.data
-      TreeStore.emitChange()
-    when 'set-curr'
-      TreeStore.setCurr action.path
-      TreeStore.emitChange()
-    when 'set-nav'
-      TreeStore.setNav action.nav
-      TreeStore.emitChange()
-    when 'clear-nav'
-      TreeStore.clearNav()
-      TreeStore.emitChange()
+  if TreeStore[a.type]
+    TreeStore[a.type] a
+    TreeStore.emitChange()
 
 module.exports = TreeStore
