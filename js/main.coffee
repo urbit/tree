@@ -12,9 +12,9 @@ $ ->
   # the actions to window here.
   window.tree.actions = require './actions/TreeActions.coffee'
 
-  frag = util.fragpath window.location.pathname
+  frag = util.fragpath window.location.pathname.replace /\.[^\/]*$/,''
   window.tree.actions.setCurr frag 
-  window.tree.actions.loadPath frag,window.tree.body,window.tree.kids 
+  window.tree.actions.loadPath frag,window.tree.data
   
   head = React.createFactory require './components/AnchorComponent.coffee'
   body = React.createFactory require './components/BodyComponent.coffee'

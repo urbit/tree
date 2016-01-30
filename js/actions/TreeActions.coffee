@@ -8,7 +8,9 @@ module.exports =
   sendQuery: (path,query) ->
     return unless query?
     if path.slice(-1) is "/" then path = path.slice(0,-1)
-    TreePersistence.get path,query,(err,res) => @loadPath path,res
+    TreePersistence.get path,query,(err,res) => 
+      if err? then throw err
+      @loadPath path,res
 
   registerComponent: (name,comp) -> window.tree.components[name] = comp
 

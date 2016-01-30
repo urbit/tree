@@ -111,7 +111,7 @@ module.exports = query {
         _this.goTo util.fragpath href
 
   setTitle: ->
-    title = $('#cont h1').first().text() || @props.name
+    title = $('#body h1').first().text() || @props.name
     title = @props.meta.title if @props.meta?.title
     document.title = "#{title} - #{@props.path}"
 
@@ -123,9 +123,9 @@ module.exports = query {
     if hist isnt false
       history.pushState {}, "", util.basepath href_parts.join ""
     if next isnt @props.path
-      React.unmountComponentAtNode $('#cont')[0]
+      React.unmountComponentAtNode $('#body')[0]
       TreeActions.setCurr next
-      React.render (BodyComponent {}, ""),$('#cont')[0]
+      React.render (BodyComponent {}, ""),$('#body')[0]
 
   reset: ->
     $("html,body").animate {scrollTop:0}
@@ -134,7 +134,6 @@ module.exports = query {
     $('#nav').addClass 'm-down m-fixed'
 
   goTo: (path) ->
-    @toggleFocus false
     @reset()
     @setPath path
   

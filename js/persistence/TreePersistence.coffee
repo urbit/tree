@@ -3,7 +3,7 @@ dedup = {}  # XX wrong layer
 
 module.exports =
   get: (path,query="no-query",cb) ->
-    url = "#{util.basepath(path)}.json?q=#{@encode query}"
+    url = "#{util.basepath(path)}.tree-json?q=#{@encode query}"
     return if dedup[url]
     dedup[url] = true
     $.get url, {}, (data) -> if cb then cb null,data
