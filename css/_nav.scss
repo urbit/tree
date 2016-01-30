@@ -29,7 +29,6 @@
 }
 @include media-breakpoint-down(xs) { .nav.container { left: 0; } }
 
-.ctrl,
 .menu .contents { padding-top: 3rem; }
 
 .ctrl {
@@ -37,6 +36,8 @@
   background-color: #fff;
   max-width: 2/$grid-columns*100%;
   transition: max-width .2s ease-in-out;
+  position: fixed;
+  z-index:100;
 
   ul.nav {
     margin-top: 2rem;
@@ -64,6 +65,7 @@
 .ctrl.open,
 .ctrl:hover {
   max-width: 4/$grid-columns*100%;
+  min-width: 2/$grid-columns*100%;
   width: auto;
 }
 

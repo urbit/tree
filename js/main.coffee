@@ -18,5 +18,5 @@ $ ->
   
   head = React.createFactory require './components/AnchorComponent.coffee'
   body = React.createFactory require './components/BodyComponent.coffee'
-  rend (head {}, ""),$('#nav')[0]
-  rend (body {}, ""),$('#cont')[0]
+  rend (head {}, ""),$('#head')[0]
+  rend (body {}, ""),$('#body')[0]

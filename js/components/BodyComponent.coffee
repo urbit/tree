@@ -73,14 +73,16 @@ module.exports = query {
     extra = (name,props={})=> 
       if @props.meta[name]? then React.createElement extras[name], props
     
-    (div {
-        id:'body',
-        key:"body"+@props.path
-        className
-        },
-      extra 'spam'
-      extra 'logo', color: @props.meta.logo
-      reactify @props.body
-      extra 'next', {dataPath:@props.sein,curr:@props.name}
-      extra 'footer'
-    )
+    div {className:"col-md-10 col-md-offset-2 body"},[
+      (div {
+          id:'body',
+          key:"body"+@props.path
+          className
+          },
+        extra 'spam'
+        extra 'logo', color: @props.meta.logo
+        reactify @props.body
+        extra 'next', {dataPath:@props.sein,curr:@props.name}
+        extra 'footer'
+      )
+    ]

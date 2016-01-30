@@ -157,5 +157,5 @@ module.exports = query {
     if @state.subnav
       kids.push (@state.subnav {key:"subnav",open:@state.open},"")
 
-    div {className:"row"}, kids
+    div {}, kids
   )

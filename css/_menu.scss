@@ -1,9 +1,23 @@
 // submenu
 
+@keyframes menu-open {
+  0% { visibility:hidden; }
+  1% { visibility: visible; }
+  100% { visibility: visible; }
+}
+
+@keyframes menu-close {
+  0% { visibility: visible; }
+  1% { visibility: visible; }
+  100% { visibility:hidden; }
+}
+
 .menu {
   padding-left: 0;
   padding-right: 0;
   overflow:hidden;
+  position:fixed;
+  z-index:99;
 
   .contents {
     padding-left: $grid-gutter-width/2;
@@ -11,7 +25,7 @@
     padding-bottom: 6rem;
     position: relative;
     left: -100%;
-    @include transition(left,.3s,ease-in-out)
+    @include transition(left,.3s,ease-in-out);
   }
 
   .close {
@@ -60,9 +74,17 @@
   border-left: 2px solid $gray-light;
 }
 
-.menu.open .contents {
-  left: 0;
+.menu.closed {
+  animation-name: menu-close;
+  animation-duration:.3s;
+  animation-fill-mode: forwards;
 }
+.menu.open { 
+  animation-name: menu-open;
+  animation-duration: .3s;
+  animation-fill-mode: forwards;
+}
+.menu.open .contents { left: 0; }
 
 @include media-breakpoint-down(sm) {
   .menu {
