@@ -18,6 +18,7 @@
   overflow:hidden;
   position:fixed;
   z-index:99;
+  margin-top: -3rem;
 
   .contents {
     padding-left: $grid-gutter-width/2;

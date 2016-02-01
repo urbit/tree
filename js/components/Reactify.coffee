@@ -22,9 +22,10 @@ Virtual = recl
     walk @props.manx,
       ()-> (load {},"")
       (str)-> str
-      ({gn,ga,c},key)-> rele (components[gn] ? gn),
-                             (_.extend {key}, ga),
-                             c
+      ({gn,ga,c},key)-> 
+        rele (components[gn] ? gn),
+             (_.extend {key}, ga),
+             c
 
 reactify = (manx,key)-> rele Virtual, {manx,key}
 module.exports = _.extend reactify, {walk,Virtual}

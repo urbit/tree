@@ -75,7 +75,6 @@ module.exports = query {
     
     div {className:"col-md-10 col-md-offset-2 body"},[
       (div {
-          id:'body',
           key:"body"+@props.path
           className
           },

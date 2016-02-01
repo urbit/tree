@@ -4,6 +4,8 @@ recl = React.createClass
 {div,span,code} = React.DOM
 
 module.exports = recl
+  displayName:"Module"
+  
   getInitialState: -> {loaded:false}
 
   loaded: -> @setState loaded:true # XX handle errors
@@ -41,5 +43,5 @@ module.exports = recl
     
   render: ->
     unless @state.loaded
-     (div {}, "")
+     (div {key:"module-loading"}, "")
     else (reactify gn:@props.component, ga:@props, c:[])

@@ -12,6 +12,7 @@ Dpad        = require './DpadComponent.coffee'
 util        = require '../utils/util.coffee'
 
 recl = React.createClass
+rend = ReactDOM.render
 {div,a,ul,li,button} = React.DOM
 
 Nav = React.createFactory query {
@@ -125,7 +126,7 @@ module.exports = query {
     if next isnt @props.path
       React.unmountComponentAtNode $('#body')[0]
       TreeActions.setCurr next
-      React.render (BodyComponent {}, ""),$('#body')[0]
+      rend (BodyComponent {}, ""),$('#body')[0]
 
   reset: ->
     $("html,body").animate {scrollTop:0}
@@ -154,7 +155,7 @@ module.exports = query {
         }, "div")]
 
     if @state.subnav
-      kids.push (@state.subnav {key:"subnav",open:@state.open},"")
+      kids.push (@state.subnav {key:"subnav",open:@state.open,toggle:TreeActions.toggleNav},"")
 
     div {}, kids
   )
