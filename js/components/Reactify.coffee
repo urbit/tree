@@ -3,6 +3,8 @@ rele       = React.createElement
 {div,span} = React.DOM
 load       = React.createFactory require './LoadComponent.coffee'
 
+TreeStore   = require '../stores/TreeStore.coffee'
+
 walk = (root,_nil,_str,_comp)->
   # manx: {fork: ["string", {gn:"string" ga:{dict:"string"} c:{list:"manx"}}]}
   _walk = (elem,key)-> switch
@@ -17,8 +19,15 @@ walk = (root,_nil,_str,_comp)->
 
 Virtual = recl
   displayName: "Virtual"
+  getInitialState: -> @stateFromStore()
+  stateFromStore: -> components: TreeStore.getVirtualComponents()
+  
+  _onChangeStore: ->  if @isMounted() then @setState @stateFromStore()
+  componentDidMount: -> TreeStore.addChangeListener @_onChangeStore
+  componentWillUnmount: ->  TreeStore.removeChangeListener @_onChangeStore
+
   render: ->
-    {components} = window.tree
+    {components} = @state
     walk @props.manx,
       ()-> (load {},"")
       (str)-> str

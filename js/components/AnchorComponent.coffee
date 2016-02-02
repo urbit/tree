@@ -2,6 +2,7 @@ clas        = require 'classnames'
 
 BodyComponent = React.createFactory require './BodyComponent.coffee'
 query       = require './Async.coffee'
+reactify   = require './Reactify.coffee'
 
 TreeStore   = require '../stores/TreeStore.coffee'
 TreeActions = require '../actions/TreeActions.coffee'
@@ -159,7 +160,10 @@ module.exports = query {
         }, "div")]
 
     if @state.subnav
-      kids.push (@state.subnav {key:"subnav",open:@state.open,toggle:TreeActions.toggleNav},"")
+      kids.push reactify
+        gn:@state.subnav 
+        ga:{key:"subnav",open:@state.open,toggle:TreeActions.toggleNav}
+        c:[]
 
     div {}, kids
   )

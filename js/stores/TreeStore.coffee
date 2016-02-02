@@ -1,8 +1,9 @@
-EventEmitter = require('events').EventEmitter
+{EventEmitter} = require('events').EventEmitter
 
 MessageDispatcher = require '../dispatcher/Dispatcher.coffee'
 clog = console.log.bind(console)
 
+_virt = {}
 _tree = {}
 _data = {}
 _curr = ""
@@ -10,7 +11,7 @@ _nav  = {}
 
 QUERIES = {body:'r', head:'r', snip:'r', sect:'j', meta:'j'}
 
-TreeStore = _.extend EventEmitter.prototype, {
+TreeStore = _.extend (new EventEmitter), {
   addChangeListener: (cb) -> @on 'change', cb
 
   removeChangeListener: (cb) -> @removeListener "change", cb
@@ -49,6 +50,9 @@ TreeStore = _.extend EventEmitter.prototype, {
   setCurr: ({path}) -> _curr = path
   getCurr: -> _curr
 
+  addVirtual: ({components}) -> _.extend _virt, components
+  getVirtualComponents: -> _virt
+  
   loadPath: ({path,data}) ->
     @loadValues (@getTree (path.split '/'),true), path, data
   loadValues: (tree,path,data) ->
