@@ -29,9 +29,8 @@
     @include transition(left,.3s,ease-in-out);
   }
 
-  .close {
-    margin-top: -2rem;
-  }
+  .close { margin-top: -2rem; }
+  .close:hover { opacity: 1; }
 
   h2 { 
     font-size: 1rem; 
@@ -43,25 +42,6 @@
     font-family: 'scp'; 
     margin-left: $grid-gutter-width/2;
     font-size: 1.2rem;
-  }
-
-  .name,
-  .planet {
-    display: inline-block;
-  }
-
-  .name,
-  .planet,
-  .room {
-    font-size: .8rem;
-  }
-
-  .name { 
-    min-width: 33.333%; 
-    font-size: .9rem;
-  }
-  .planet { 
-    min-width: 66.667%; 
   }
 }
 

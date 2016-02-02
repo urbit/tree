@@ -153,7 +153,10 @@
     margin: 6px 9px 12px 0;
     @include circle(24px,transparent); 
     border: 6px solid $gray-light;
+    cursor: pointer;
   }
+
+  .home:hover { border-color: $gray; }
 
   .dpad { display: block; }
 

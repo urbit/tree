@@ -35,6 +35,10 @@ Nav = React.createFactory query {
     onTouchStart: -> @ts = Number Date.now()
     onTouchEnd: -> dt = @ts - Number Date.now()
 
+    _home: -> 
+      if document.location.pathname isnt "/"
+        document.location = "/"
+
     toggleFocus: (state) -> $(ReactDOM.findDOMNode(@)).toggleClass 'focus',state
     toggleNav: -> TreeActions.toggleNav()
 
@@ -62,7 +66,7 @@ Nav = React.createFactory query {
       div attr,
         div {className:'links',key:"links"}, 
           div {className:'icon'}, 
-            (div {className:'home'}, "")
+            (div {className:'home',onClick:@_home}, "")
             (div {className:'app'}, title)
             dpad
             (button {
