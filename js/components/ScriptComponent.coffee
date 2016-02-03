@@ -7,6 +7,7 @@ module.exports = recl
   componentDidMount: ->
     s = document.createElement 'script'
     _.assign s, @props
+    urb.waspElem s
     document.body.appendChild s
     @js = s
 

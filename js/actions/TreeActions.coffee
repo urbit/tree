@@ -14,7 +14,6 @@ module.exports =
 
   registerComponent: (name,comp) -> @addVirtual "#{name}": comp
   addVirtual: (components) ->
-    console.log "addVirtual", components
     TreeDispatcher.handleViewAction {type:"addVirtual", components}
 
   setCurr: (path) ->

@@ -160,10 +160,10 @@ module.exports = query {
         }, "div")]
 
     if @state.subnav
-      kids.push reactify
-        gn:@state.subnav 
-        ga:{key:"subnav",open:@state.open,toggle:TreeActions.toggleNav}
-        c:[]
-
+      kids.push reactify {
+          gn:@state.subnav 
+          ga:{open:@state.open,toggle:TreeActions.toggleNav}
+          c:[]
+        }, "subnav"
     div {}, kids
   )
