@@ -12,7 +12,9 @@ module.exports =
       if err? then throw err
       @loadPath path,res
 
-  registerComponent: (name,comp) -> window.tree.components[name] = comp
+  registerComponent: (name,comp) -> @addVirtual "#{name}": comp
+  addVirtual: (components) ->
+    TreeDispatcher.handleViewAction {type:"addVirtual", components}
 
   setCurr: (path) ->
     TreeDispatcher.handleViewAction

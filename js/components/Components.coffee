@@ -9,4 +9,5 @@ module.exports =
   toc:        require './TocComponent.coffee'
   email:      require './EmailComponent.coffee'
   module:     require './ModuleComponent.coffee'
+  script:     require './ScriptComponent.coffee'
   lost:       recl render: -> (div {}, "<lost(", @props.children, ")>")
