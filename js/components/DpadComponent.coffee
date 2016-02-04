@@ -30,4 +30,4 @@ module.exports = React.createFactory recl
         if next then @renderArrow "next", "#{sein}/#{next}"
 
   render: -> 
-    (div {className:'dpad',key:'dpad'}, [@renderUp(), @renderArrows()])
+    (div {className:'dpad',key:'dpad'}, @renderUp(), @renderArrows())

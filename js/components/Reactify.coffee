@@ -34,7 +34,7 @@ Virtual = recl
       ({gn,ga,c},key)-> 
         rele (components[gn] ? gn),
              (_.extend {key}, ga),
-             c
+             c if c.length
 
 reactify = (manx,key)-> rele Virtual, {manx,key}
 module.exports = _.extend reactify, {walk,Virtual}

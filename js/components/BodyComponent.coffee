@@ -1,17 +1,24 @@
 clas    = require 'classnames'
 
+load       = require './LoadComponent.coffee'
 query      = require './Async.coffee'
 reactify   = require './Reactify.coffee'
+
+TreeActions = require '../actions/TreeActions.coffee'
 
 util        = require '../utils/util.coffee'
 
 recl   = React.createClass
 rele   = React.createElement
-{div,p,img,a}  = React.DOM
+{div,p,img,a,input}  = React.DOM
+
+# named = (x,f)->  f.displayName = x; f
+
+Comment = ({time,body}) -> (div {}, "#{new Date(time)}", (reactify body))
 
 extras =
   spam: recl
-    displayName:"Spam"
+    displayName: "Spam"
     render: ->
       if document.location.hostname isnt 'urbit.org'
         return (div {})
@@ -21,7 +28,7 @@ extras =
       )
 
   logo: recl 
-    displayName:"Logo"
+    displayName: "Logo"
     render: ->
       {color} = @props
       if color is "white" or color is "black"  # else?
@@ -51,14 +58,33 @@ extras =
           next = @props.kids[next]
 
           if next
-            return (div {className:"link-next"}, [
+            return (div {className:"link-next"},
               (a {href:"#{@props.path}/#{next.name}"}, "Next: #{next.meta.title}")
-            ])
+            )
       return (div {},"")
+
+  comments: query {comt:'j', path:'t'}, recl
+    displayName: "Comments"
+    getInitialState: -> loading:no
+    onKeyDown: (e)->
+      if "Enter" is e.key
+        @setState loading:yes
+        TreeActions.addComment @props.path, @refs.in.value
+    render: ->
+      (div {}, "Add comment:",
+        (if @state.loading 
+          rele load
+         else
+          input {className:"comment",type:"text",ref:"in",@onKeyDown}
+        )
+        @props.comt.map (props,key)-> 
+          rele Comment, _.extend {key}, props
+      )
+
   footer: recl
     displayName: "Footer"
     render: ->
-      (div {className:"footer"}, (p {}, "This page was served by Urbit."))
+      (div {className:"footer"}, (p {}, "This page was served by Urbit."))  
 
 module.exports = query {
   body:'r'
@@ -82,6 +108,7 @@ module.exports = query {
         extra 'logo', color: @props.meta.logo
         reactify @props.body
         extra 'next', {dataPath:@props.sein,curr:@props.name}
+        extra 'comments'
         extra 'footer'
       )
     ]

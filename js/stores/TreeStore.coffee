@@ -9,9 +9,9 @@ _data = {}
 _curr = ""
 _nav  = {}
 
-QUERIES = {body:'r', head:'r', snip:'r', sect:'j', meta:'j'}
+QUERIES = {body:'r', head:'r', snip:'r', sect:'j', meta:'j', comt:'j'}
 
-TreeStore = _.extend (new EventEmitter), {
+TreeStore = _.extend (new EventEmitter).setMaxListeners(50), {
   addChangeListener: (cb) -> @on 'change', cb
 
   removeChangeListener: (cb) -> @removeListener "change", cb
