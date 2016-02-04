@@ -82,7 +82,7 @@
     padding-top: 1rem;
     background-color: #fff;
     overflow: hidden;
-    border-bottom: 1px solid #000;
+    border-bottom: 2px solid $gray;
     @include transition(max-height,.2s,ease-in-out)
   }
 
@@ -142,6 +142,8 @@
   .navbar-toggler {
     padding: 0;
     margin-left: 2rem;
+    vertical-align: top;
+    line-height: 18px;
   }
 }
 
@@ -176,8 +178,57 @@
 
 @include media-breakpoint-down(sm) {
   .icon { 
-    margin-left: 0;
+    margin-left: -$grid-gutter-width/2;
+    height: 2rem;
+
     .dpad { display: inline; }
     .home { margin-top: 0; margin-bottom: 0; }
+  }
+}
+
+// menu
+
+.app {
+  vertical-align: top;
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: 1.3rem;
+  margin-top: 9px;
+}
+
+@include media-breakpoint-down(md) {
+  .app { 
+    font-size: 1.1rem;
+    margin-top: 6px;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .app {
+    margin-top: .1rem;
+    line-height: 1rem;
+  }
+}
+
+.context {
+  margin-top: 1rem;
+  
+  .name { 
+    font-weight: 300; 
+    font-size: 1.2rem; 
+    font-family: 'scp';
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .context .name {
+    font-size: 1rem;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .context {
+    line-height: 1rem;
+    margin-bottom: 1rem;
   }
 }
