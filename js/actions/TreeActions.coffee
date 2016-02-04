@@ -16,6 +16,9 @@ module.exports =
   addVirtual: (components) ->
     TreeDispatcher.handleViewAction {type:"addVirtual", components}
 
+  addComment: (path,text)->
+    TreePersistence.put "write-comment", path, text
+  
   setCurr: (path) ->
     TreeDispatcher.handleViewAction
       type:"setCurr"

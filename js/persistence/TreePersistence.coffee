@@ -7,6 +7,8 @@ module.exports =
     return if dedup[url]
     dedup[url] = true
     $.get url, {}, (data) -> if cb then cb null,data
+    
+  put: (mark,pax,txt)-> urb.send {pax,txt}, {mark,appl:'hood'}
 
   encode: (obj)->
     delim = (n)-> Array(n+1).join('_') || '.'

@@ -3,11 +3,17 @@ clas    = require 'classnames'
 query      = require './Async.coffee'
 reactify   = require './Reactify.coffee'
 
+TreeActions = require '../actions/TreeActions.coffee'
+
 util        = require '../utils/util.coffee'
 
 recl   = React.createClass
 rele   = React.createElement
-{div,p,img,a}  = React.DOM
+{div,p,img,a,input}  = React.DOM
+
+# named = (x,f)->  f.displayName = x; f
+
+Comment = ({time,body}) -> (div {}, "#{new Date(time)}", (reactify body))
 
 extras =
   spam: recl
@@ -56,10 +62,22 @@ extras =
             )
       return (div {},"")
 
+  comments: query {comt:'j', path:'t'}, recl
+    displayName: "Comments"
+    onKeyDown: (e)->
+      if "Enter" is e.key
+        TreeActions.addComment @props.path, @refs.in.value
+    render: ->
+      (div {}, "Add comment:",
+        input {className:"comment",type:"text",ref:"in",@onKeyDown}
+        @props.comt.map (props,key)-> 
+          rele Comment, _.extend {key}, props
+      )
+
   footer: recl
     displayName: "Footer"
     render: ->
-      (div {className:"footer"}, (p {}, "This page was served by Urbit."))
+      (div {className:"footer"}, (p {}, "This page was served by Urbit."))  
 
 module.exports = query {
   body:'r'
@@ -83,6 +101,7 @@ module.exports = query {
         extra 'logo', color: @props.meta.logo
         reactify @props.body
         extra 'next', {dataPath:@props.sein,curr:@props.name}
+        extra 'comments'
         extra 'footer'
       )
     ]
