@@ -78,8 +78,14 @@
       left: inherit;
       top: -100%;
       padding-top: $grid-gutter-width/2;
-      padding-bottom: $grid-gutter-width*2;
+      padding-bottom: $grid-gutter-width*1.5;
       @include transition(top,.3s,ease-in-out)
+    }
+
+    .menu.depth-1 .contents,
+    .menu.depth-2 .contents {
+      border-left: 0;
+      border-bottom: 2px solid $gray-light;
     }
 
     .close {

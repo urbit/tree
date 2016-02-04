@@ -1,5 +1,14 @@
 @import "../bootstrap/scss/mixins/grid.scss";
 
+.col-md-10.body { padding-left: $grid-gutter-width*1.5; }
+
+@include media-breakpoint-down(sm) {
+  .col-md-10.body { 
+    margin-top: $grid-gutter-width/2; 
+    padding-left: $grid-gutter-width/2; 
+  }
+}
+
 img.logo {
   height: 2rem;
   width: 2rem;

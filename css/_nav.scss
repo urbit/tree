@@ -12,6 +12,8 @@
   }
 }
 
+#head .loading { display: none; }
+
 .nav.container .loading {
   padding-top: 3rem;
   display:block;
@@ -152,7 +154,7 @@
   a { margin-right: .6rem; }
 
   .home { 
-    margin: 6px 9px 12px 0;
+    margin: 6px $grid-gutter-width/2 12px 0;
     @include circle(24px,transparent); 
     border: 6px solid $gray-light;
     cursor: pointer;
