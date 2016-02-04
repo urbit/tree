@@ -11,7 +11,7 @@ rele   = React.createElement
 
 extras =
   spam: recl
-    displayName:"Spam"
+    displayName: "Spam"
     render: ->
       if document.location.hostname isnt 'urbit.org'
         return (div {})
@@ -21,7 +21,7 @@ extras =
       )
 
   logo: recl 
-    displayName:"Logo"
+    displayName: "Logo"
     render: ->
       {color} = @props
       if color is "white" or color is "black"  # else?
@@ -51,10 +51,11 @@ extras =
           next = @props.kids[next]
 
           if next
-            return (div {className:"link-next"}, [
+            return (div {className:"link-next"},
               (a {href:"#{@props.path}/#{next.name}"}, "Next: #{next.meta.title}")
-            ])
+            )
       return (div {},"")
+
   footer: recl
     displayName: "Footer"
     render: ->
