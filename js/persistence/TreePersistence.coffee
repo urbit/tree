@@ -6,7 +6,9 @@ module.exports =
     url = "#{util.basepath(path)}.tree-json?q=#{@encode query}"
     return if dedup[url]
     dedup[url] = true
-    $.get url, {}, (data) -> if cb then cb null,data
+    $.get url, {}, (data,status,xhr) ->
+      urb.waspLoadedXHR.call(xhr)
+      if cb then cb null,data
     
   put: (mark,pax,txt)-> urb.send {pax,txt}, {mark,appl:'hood'}
 

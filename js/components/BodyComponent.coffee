@@ -1,5 +1,6 @@
 clas    = require 'classnames'
 
+load       = require './LoadComponent.coffee'
 query      = require './Async.coffee'
 reactify   = require './Reactify.coffee'
 
@@ -64,12 +65,18 @@ extras =
 
   comments: query {comt:'j', path:'t'}, recl
     displayName: "Comments"
+    getInitialState: -> loading:no
     onKeyDown: (e)->
       if "Enter" is e.key
+        @setState loading:yes
         TreeActions.addComment @props.path, @refs.in.value
     render: ->
       (div {}, "Add comment:",
-        input {className:"comment",type:"text",ref:"in",@onKeyDown}
+        (if @state.loading 
+          rele load
+         else
+          input {className:"comment",type:"text",ref:"in",@onKeyDown}
+        )
         @props.comt.map (props,key)-> 
           rele Comment, _.extend {key}, props
       )
