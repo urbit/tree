@@ -29,7 +29,7 @@ module.exports = query {
       return (ul {className:k}, kids)
 
     div {className:k},
-      h1  {className:'error'}, 'Error: Empty path'
+      h1  {className:'red inverse block error'}, 'Error: Empty path'
       div {},
         pre  {}, @props.path
         span {}, 'is either empty or does not exist.'

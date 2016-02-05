@@ -98,7 +98,7 @@ module.exports = query {
     extra = (name,props={})=> 
       if @props.meta[name]? then React.createElement extras[name], props
     
-    containerClas =  
+    containerClas = clas
       "col-md-10":true
       "col-md-offset-2":(@props.meta.anchor isnt 'none')
       body:true

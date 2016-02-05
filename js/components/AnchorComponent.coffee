@@ -75,11 +75,12 @@ Nav = React.createFactory query {
           sibs
   ),  recl
     displayName: "Links_loading"
+    _home: -> @props.goTo "/"
     render: -> 
       div {className:"col-md-2 ctrl",key:"nav-loading"},
         div {className:'links'},
           div {className:'icon'}, 
-            (div {className:'home'}, "")
+            (div {className:'home',onClick:@_home}, "")
           ul {className:"nav"}, 
             li {className:"nav-item selected"}, 
               a {className:"nav-link"}, @props.curr
