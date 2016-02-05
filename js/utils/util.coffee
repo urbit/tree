@@ -8,7 +8,8 @@ module.exports =
     if prefix is "/" then prefix = ""
     if path[0] isnt "/" then path = "/"+path
     _path = prefix + path
-    if _path.slice(-1) is "/" then _path = _path.slice(0,-1)
+    if _path.slice(-1) is "/" and _path.length > 1
+      _path = _path.slice(0,-1)
     _path
 
   fragpath: (path) ->

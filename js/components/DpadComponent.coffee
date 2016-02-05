@@ -6,7 +6,8 @@ recl = React.createClass
 module.exports = React.createFactory recl
   displayName: "Dpad"
 
-  renderUp: -> if @props.sein then @renderArrow "up",@props.sein
+  renderUp: -> 
+    if @props.sein then @renderArrow "up",@props.sein
 
   renderArrow: (name, path) ->
     href = util.basepath path

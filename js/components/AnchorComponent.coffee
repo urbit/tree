@@ -36,9 +36,7 @@ Nav = React.createFactory query {
     onTouchStart: -> @ts = Number Date.now()
     onTouchEnd: -> dt = @ts - Number Date.now()
 
-    _home: -> 
-      if document.location.pathname isnt "/"
-        document.location = "/"
+    _home: -> @props.goTo "/"
 
     toggleFocus: (state) -> $(ReactDOM.findDOMNode(@)).toggleClass 'focus',state
     toggleNav: -> TreeActions.toggleNav()
@@ -156,6 +154,7 @@ module.exports = query {
           curr:@props.name
           dataPath:@props.sein
           sein:@props.sein
+          goTo:@goTo
           key:"nav"
         }, "div")]
 

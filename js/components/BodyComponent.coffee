@@ -94,15 +94,20 @@ module.exports = query {
   sein:'t'
 }, recl
   displayName: "Body"
-  render: -> 
-    className = clas (@props.meta.layout?.split ',')    
+  render: ->
     extra = (name,props={})=> 
       if @props.meta[name]? then React.createElement extras[name], props
     
-    div {className:"col-md-10 col-md-offset-2 body"},[
+    containerClas =  
+      "col-md-10":true
+      "col-md-offset-2":(@props.meta.anchor isnt 'none')
+      body:true
+    bodyClas = clas (@props.meta.layout?.split ',')    
+
+    div {className:containerClas},[
       (div {
           key:"body"+@props.path
-          className
+          bodyClas
           },
         extra 'spam'
         extra 'logo', color: @props.meta.logo
