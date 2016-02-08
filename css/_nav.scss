@@ -14,6 +14,7 @@
   #head { 
     top: 0; 
     z-index: 10;
+    width: 100%;
   } 
   #head.m-down,
   #head.m-up { position: absolute; }
@@ -77,6 +78,11 @@
     overflow: hidden;
     border-bottom: 2px solid $gray-light;
     @include transition(max-height,.2s,ease-in-out)
+
+    ul.nav {
+      line-height: 2rem;
+      margin: 0 0 2rem $grid-gutter-width/2;
+    }
   }
 
   .ctrl.open,
@@ -85,9 +91,8 @@
     max-width: inherit;
   }
 
-  ul.nav {
-    line-height: 2rem;
-    margin-bottom: 2rem;  
+  .ctrl.open {
+    max-height: 12rem;  
   }
 
   a.nav-link { font-size: 1rem; }
@@ -97,10 +102,6 @@
       max-height: 9rem;
       overflow-y: scroll;
     }
-  }
-
-  ul.nav {
-    margin-top: 1rem;
   }
 }
 
