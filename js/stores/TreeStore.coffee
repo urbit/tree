@@ -53,6 +53,8 @@ TreeStore = _.extend (new EventEmitter).setMaxListeners(50), {
   addVirtual: ({components}) -> _.extend _virt, components
   getVirtualComponents: -> _virt
   
+  clearData: -> _data = {}; _tree = {}
+  
   loadPath: ({path,data}) ->
     @loadValues (@getTree (path.split '/'),true), path, data
   loadValues: (tree,path,data) ->

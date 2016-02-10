@@ -5,6 +5,10 @@ module.exports =
   loadPath: (path,data) ->
     TreeDispatcher.handleServerAction {path,data,type:"loadPath"}
 
+  clearData: () ->
+    TreePersistence.refresh()  # XX right place?
+    TreeDispatcher.handleServerAction {type:"clearData"}
+
   sendQuery: (path,query) ->
     return unless query?
     if path.slice(-1) is "/" then path = path.slice(0,-1)

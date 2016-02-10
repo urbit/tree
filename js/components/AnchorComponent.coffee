@@ -26,7 +26,7 @@ Nav = React.createFactory query {
     displayName: "Links"
     stateFromStore: -> TreeStore.getNav()
     getInitialState: -> @stateFromStore()
-    _onChangeStore: -> @setState @stateFromStore()
+    _onChangeStore: -> if @isMounted() then @setState @stateFromStore()
     componentDidMount: -> TreeStore.addChangeListener @_onChangeStore
     componentWillUnmount: -> TreeStore.removeChangeListener @_onChangeStore
 
@@ -94,7 +94,7 @@ module.exports = query {
   displayName: "Anchor"
   stateFromStore: -> TreeStore.getNav()
   getInitialState: -> _.extend @stateFromStore(),{url: window.location.pathname}
-  _onChangeStore: -> @setState @stateFromStore()
+  _onChangeStore: -> if @isMounted() then @setState @stateFromStore()
 
   componentWillUnmount: -> 
     clearInterval @interval; $('body').off 'click', 'a'

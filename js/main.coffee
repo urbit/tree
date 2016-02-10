@@ -16,6 +16,10 @@ $ ->
   frag = util.fragpath window.location.pathname.replace /\.[^\/]*$/,''
   window.tree.actions.setCurr frag 
   window.tree.actions.loadPath frag,window.tree.data
+  window.urb.ondataupdate = (dep)->
+    for dat of window.urb.datadeps
+      window.urb.dewasp(dat)
+    window.tree.actions.clearData()
   
   head = React.createFactory require './components/AnchorComponent.coffee'
   body = React.createFactory require './components/BodyComponent.coffee'
