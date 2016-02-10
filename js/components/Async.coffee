@@ -18,7 +18,9 @@ module.exports = (queries, Child, load=_load)-> recl
     if path.slice(-1) is "/"
       path.slice 0,-1
     else path
-  stateFromStore: -> got: TreeStore.fulfill @getPath(), queries
+  stateFromStore: -> 
+    fresh = TreeStore.fulfill @getPath(), queries
+    {fresh, got: _.merge {}, @state?.got, fresh}
   
   componentDidMount: -> 
     TreeStore.addChangeListener @_onChangeStore
@@ -32,8 +34,9 @@ module.exports = (queries, Child, load=_load)-> recl
       @setState @stateFromStore()
     @checkPath()
     
-  checkPath: -> TreeActions.sendQuery @getPath(), @filterQueries()
+  checkPath: -> TreeActions.sendQuery @getPath(), @filterFreshQueries()
   
+  filterFreshQueries: -> @filterWith @state.fresh, queries
   filterQueries: -> @filterWith @state.got, queries
   filterWith: (have,_queries)->
     return _queries unless have?

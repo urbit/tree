@@ -66,6 +66,10 @@ extras =
   comments: query {comt:'j', path:'t'}, recl
     displayName: "Comments"
     getInitialState: -> loading:no
+    componentDidUpdate: (_props)->
+      if @props.comt.length > _props.comt.length
+        @setState loading:no
+        
     onKeyDown: (e)->
       if "Enter" is e.key
         @setState loading:yes
