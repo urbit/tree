@@ -6,6 +6,8 @@ reactify   = require './Reactify.coffee'
 
 TreeActions = require '../actions/TreeActions.coffee'
 
+Comments    = require './CommentsComponent.coffee'
+
 util        = require '../utils/util.coffee'
 
 recl   = React.createClass
@@ -13,8 +15,6 @@ rele   = React.createElement
 {div,p,img,a,input}  = React.DOM
 
 # named = (x,f)->  f.displayName = x; f
-
-Comment = ({time,body}) -> (div {}, "#{new Date(time)}", (reactify body))
 
 extras =
   spam: recl
@@ -63,27 +63,7 @@ extras =
             )
       return (div {},"")
 
-  comments: query {comt:'j', path:'t'}, recl
-    displayName: "Comments"
-    getInitialState: -> loading:no
-    componentDidUpdate: (_props)->
-      if @props.comt.length > _props.comt.length
-        @setState loading:no
-        
-    onKeyDown: (e)->
-      if "Enter" is e.key
-        @setState loading:yes
-        TreeActions.addComment @props.path, @refs.in.value
-    render: ->
-      (div {}, "Add comment:",
-        (if @state.loading 
-          rele load
-         else
-          input {className:"comment",type:"text",ref:"in",@onKeyDown}
-        )
-        @props.comt.map (props,key)-> 
-          rele Comment, _.extend {key}, props
-      )
+  comments: Comments
 
   footer: recl
     displayName: "Footer"

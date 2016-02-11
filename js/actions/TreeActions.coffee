@@ -21,8 +21,7 @@ module.exports =
     TreeDispatcher.handleViewAction {type:"addVirtual", components}
 
   addComment: (path,text)->
-    if path[0] isnt "/"
-      path = "/"+path
+    if path[0] isnt "/" then path = "/"+path
     TreePersistence.put "write-comment", path, text
   
   setCurr: (path) ->

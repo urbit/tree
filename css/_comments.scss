@@ -1,0 +1,53 @@
+.add-comment {
+    width: 100%;
+    border-top: 3px dotted #000;
+    margin-top: 6rem;
+
+    .btn {
+      font-size: .8rem;
+    }
+
+    textarea {
+      width: 66%;
+      display: block;
+      height: 12rem;
+      background-color: #F7F7F7;
+      border-bottom: 0;
+      margin-bottom: 2rem;
+      margin-top: 3rem;
+      padding: .3rem;
+    }
+}
+
+.comments {
+  padding-top: 3rem; 
+
+  .comment {
+    margin-top: 2rem;
+
+    h3,
+    & > span {
+      font-family: 'scp';
+    }
+
+    & > span { 
+      font-size: .8rem; 
+      color: $gray-light;
+    }
+
+    h3 {
+      padding-top: 0;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    p {
+      width: 66%
+    }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .add-comment textarea,
+  .comments .comment p { width: 100% }
+}
