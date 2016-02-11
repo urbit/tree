@@ -1,40 +1,32 @@
 // nav
 
-.nav.container {
-  position: fixed;
-  left: 50%;
-  width: 100%;
-  padding-top: 0;
+#head {
   @each $break,$max-width in $container-max-widths {
     @include media-breakpoint-up($break) {
-      margin-left: -$max-width/2;
+      width: $max-width;
     }
   }
 }
 
 #head .loading { display: none; }
 
-.nav.container .loading {
-  padding-top: 3rem;
-  display:block;
-}
-
 @include media-breakpoint-down(sm) { 
-  .nav.container { top: 0; } 
-  .nav.container.m-down,
-  .nav.container.m-up { position: absolute; }
-  .nav.container.m-down.m-fixed { position: fixed; }
-
-  .nav.container .loading {
-    padding-top: 0;
-  }
+  #head { 
+    top: 0; 
+    z-index: 10;
+    width: 100%;
+  } 
+  #head.m-down,
+  #head.m-up { position: absolute; }
+  #head.m-down.m-fixed { position: fixed; }
 }
 @include media-breakpoint-down(xs) { .nav.container { left: 0; } }
 
 .menu .contents { padding-top: 3rem; }
 
 .ctrl {
-  padding-left: $grid-gutter-width/2;  // no outside gutters.
+  padding-left: 0;  // no outside gutters.
+  padding-right: 0;
   background-color: #fff;
   max-width: 2/$grid-columns*100%;
   transition: max-width .2s ease-in-out;
@@ -84,8 +76,13 @@
     padding-top: 1rem;
     background-color: #fff;
     overflow: hidden;
-    border-bottom: 2px solid $gray;
+    border-bottom: 2px solid $gray-light;
     @include transition(max-height,.2s,ease-in-out)
+
+    ul.nav {
+      line-height: 2rem;
+      margin: 0 0 2rem $grid-gutter-width/2;
+    }
   }
 
   .ctrl.open,
@@ -94,42 +91,30 @@
     max-width: inherit;
   }
 
-  ul.nav {
-    line-height: 2rem;
-    margin-bottom: 2rem;  
+  .ctrl.open {
+    max-height: 12rem;  
   }
 
   a.nav-link { font-size: 1rem; }
 
   .ctrl.open {
-    max-height: 36rem;
-
     ul.nav {
       max-height: 9rem;
       overflow-y: scroll;
     }
   }
-
-  ul.nav {
-    margin-top: 1rem;
-  }
-}
-
-@include media-breakpoint-down(xs) {
-  .ctrl {
-    padding-left: $grid-gutter-width;
-  }
 }
 
 .navbar-toggler {
   font-size: 24px;
-  transition: opacity .2s, transform .3s;
-  -webkit-transition: opacity .2s, transform .3s;
+  transition: opacity .2s, transform .3s, margin-left .2s;
+  -webkit-transition: opacity .2s, transform .3s, margin-left .2s;
 }
 
 .open .navbar-toggler {
   transform: rotate(.25turn);
   opacity: .2;
+  margin-left: -.2rem;
 }
 
 @include media-breakpoint-up(md) {
@@ -147,6 +132,7 @@
     vertical-align: top;
     line-height: 18px;
   }
+  .open .navbar-toggler { margin-left: 2rem; }
 }
 
 .icon {
@@ -154,7 +140,7 @@
   a { margin-right: .6rem; }
 
   .home { 
-    margin: 6px $grid-gutter-width/2 12px 0;
+    margin: 0 $grid-gutter-width/2 $grid-gutter-width/2 0;
     @include circle(24px,transparent); 
     border: 6px solid $gray-light;
     cursor: pointer;
@@ -180,7 +166,7 @@
 
 @include media-breakpoint-down(sm) {
   .icon { 
-    margin-left: -$grid-gutter-width/2;
+    margin-left: $grid-gutter-width/2;
     height: 2rem;
 
     .dpad { display: inline; }
@@ -192,16 +178,16 @@
 
 .app {
   vertical-align: top;
-  font-size: 1.3rem;
+  font-size: 1.6rem;
   font-weight: 500;
-  line-height: 1.3rem;
-  margin-top: 9px;
+  line-height: 1.6rem;
+  margin-top: 0;
 }
 
 @include media-breakpoint-down(md) {
   .app { 
-    font-size: 1.1rem;
-    margin-top: 6px;
+    font-size: 1.3rem;
+    line-height: 1.3rem;
   }
 }
 

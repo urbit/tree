@@ -15,8 +15,8 @@
 .menu {
   padding-left: 0;
   padding-right: 0;
-  overflow:hidden;
-  position:fixed;
+  position: fixed;
+  overflow: hidden;
   z-index:99;
   margin-top: -3rem;
 
@@ -70,8 +70,8 @@
 @include media-breakpoint-down(sm) {
   .menu {
     height: 100%;
-    width: 100%;
     padding-left: 0;
+    padding-right: $grid-gutter-width*1.5;
     border-left: 0;
 
     .contents {
@@ -82,8 +82,8 @@
       @include transition(top,.3s,ease-in-out)
     }
 
-    .menu.depth-1 .contents,
-    .menu.depth-2 .contents {
+    &.depth-1 .contents,
+    &.depth-2 .contents {
       border-left: 0;
       border-bottom: 2px solid $gray-light;
     }
@@ -94,6 +94,6 @@
   }
 
   .menu.open .contents {
-    top: 0;
+    top: 3rem;
   }
 }

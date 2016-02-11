@@ -8,8 +8,9 @@ scroll =
   
   track: ->
     @w = $(window).width()
-    @$n = $('.nav.container')
-    @nh = $('.nav.container .ctrl').outerHeight(true)
+    @$n = $('#head')
+    @$d = $('#head .ctrl')
+    @nh = $('#head .ctrl').outerHeight(true)
 
   clearNav: -> @$n.removeClass 'm-up m-down m-fixed'
 
@@ -37,7 +38,7 @@ scroll =
           top = @cs-@nh
           if @cs > ct and @cs < ct+@nh then top = ct
           # if top < 0 then top = 0
-          @$n.offset top:@$n.top
+          @$n.offset top:top
         # set fixed when at top
         if @$n.hasClass('m-down') and 
         not @$n.hasClass('m-fixed') and 
@@ -49,6 +50,8 @@ scroll =
       if dy < 0
         if not @$n.hasClass 'm-up'
           @$n.removeClass('m-down m-fixed').addClass 'm-up'
+          @$d.removeClass 'open'
+          $('.menu.open').removeClass 'open'
           top = if @cs < 0 then 0 else @cs
           ct = @$n.offset().top
           if top > ct and top < ct+@nh then top = ct
@@ -67,7 +70,6 @@ scroll =
 
     @ls = $(window).scrollTop()
     @cs = $(window).scrollTop()
-    @$d = $('.nav.container .ctrl')
 
     $(window).on 'resize', @resize.bind @
     $(window).on 'scroll', @scroll.bind @
