@@ -18,10 +18,25 @@ module.exports = (queries, Child, load=_load)-> recl
     if path.slice(-1) is "/"
       path.slice 0,-1
     else path
+
   stateFromStore: -> 
     fresh = TreeStore.fulfill @getPath(), queries
-    {fresh, got: _.merge {}, @state?.got, fresh}
-  
+    {fresh, got: @mergeWith @state?.got, fresh}
+
+  mergeWith: (have={},fresh={},_queries=queries)->
+    got = {}
+    for k of _queries when k isnt 'kids'
+      got[k] = fresh[k] ? have[k]
+    if _queries.kids?
+      if not fresh.kids?
+        got.kids = have.kids
+      else
+        got.kids = (_.clone have.kids) ? {}
+        for k,kid of fresh.kids
+          got.kids[k] =
+            @mergeWith got.kids?[k], kid, _queries.kids
+    got
+    
   componentDidMount: -> 
     TreeStore.addChangeListener @_onChangeStore
     @checkPath()
