@@ -39,4 +39,4 @@ module.exports = query {kids: {body:'r', meta:'j'}}, recl
     div {className:klass},
       for k in keys
         elem = @props.kids[keyed[k]] ? ""
-        [(div {key:keyed[k]}, reactify elem.body), (hr {},"")]
+        [(div {key:keyed[k]}, reactify elem.body), (hr {})]
