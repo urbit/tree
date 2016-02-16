@@ -16,8 +16,9 @@
 
   ul li,
   ul li a,
-  ul li h1, {
+  ul li h1 span {
     color: $green;
+    height: 2rem;
   }
 
   .kids > div {
@@ -28,9 +29,21 @@
     margin-bottom: 3rem;
   }
 
-  .kids > div:first-child { max-width: 9rem; }
-
   .kids > div p { font-weight: 500; }
 
   hr { display: none; }
+}
+
+.lead-offset { margin-left: 8rem; }
+
+@include media-breakpoint-down(md) { 
+  .lead-offset { margin-left: 4rem; }
+}
+
+@include media-breakpoint-down(sm) { 
+  .lead-offset { margin-left: 0; }
+
+  .sections {
+    h1 { font-size: 1.6rem;}
+  }
 }

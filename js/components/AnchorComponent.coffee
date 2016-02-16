@@ -42,7 +42,14 @@ Nav = React.createFactory query {
     toggleNav: -> TreeActions.toggleNav()
 
     render: -> 
-      attr = {@onMouseOver,@onMouseOut,@onClick,@onTouchStart,@onTouchEnd}
+      attr = {
+        @onMouseOver
+        @onMouseOut
+        @onClick
+        @onTouchStart
+        @onTouchEnd
+        'data-path':@props.dataPath
+      }
       if _.keys(window).indexOf("ontouchstart") isnt -1
         delete attr.onMouseOver
         delete attr.onMouseOut
@@ -77,7 +84,11 @@ Nav = React.createFactory query {
     displayName: "Links_loading"
     _home: -> @props.goTo "/"
     render: -> 
-      div {className:"col-md-2 ctrl",key:"nav-loading"},
+      div {
+          className:"col-md-2 ctrl",
+          "data-path":@props.dataPath,
+          key:"nav-loading"
+        },
         div {className:'links'},
           div {className:'icon'}, 
             (div {className:'home',onClick:@_home}, "")

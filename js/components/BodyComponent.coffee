@@ -88,7 +88,7 @@ module.exports = query {
       body:true
     bodyClas = clas (@props.meta.layout?.split ',')    
 
-    div {className:containerClas},[
+    div {className:containerClas,'data-path':@props.path},[
       (div {
           key:"body"+@props.path
           bodyClas
