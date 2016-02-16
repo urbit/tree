@@ -174,6 +174,45 @@
   }
 }
 
+// doc execption
+// XX should go somewhere else?
+
+// [data-path^='/docs'] .nav-link { color: $green; }
+
+[data-path^='/docs'] .home {
+  background-color: $blue;
+  border-color: $blue;
+}
+
+[data-path^='/docs'] .home:hover {
+  background-color: $blue;
+  border-color: $blue;
+  opacity: .6;
+}
+
+[data-path^='/docs'] .home:before {
+  content: "~";
+  color: #fff;
+  line-height: .8rem;
+  font-size: 1.4rem;
+}
+
+@include media-breakpoint-down(md) {
+  [data-path^='/docs'] .home:before {
+    line-height: 0.7rem;
+    font-size: 1rem;
+    margin-left: .06rem;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  [data-path^='/docs'] .home:before {
+    line-height: .7rem;
+    margin-left: .05rem;
+    font-size: 1rem;
+  }
+}
+
 // menu
 
 .app {
@@ -220,3 +259,4 @@
     margin-bottom: 1rem;
   }
 }
+

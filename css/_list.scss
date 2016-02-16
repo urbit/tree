@@ -15,3 +15,15 @@
     font-size: 1.4rem;
   }
 }
+
+.body[data-path^='/docs'] .list {
+  list-style-type: none;
+  padding-left: 0;
+  
+  a,
+  h1 {
+    color: $green;
+    font-weight: 500;
+    height: 2rem;
+  }
+}
