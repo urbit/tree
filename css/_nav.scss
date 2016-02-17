@@ -177,7 +177,7 @@
 // doc execption
 // XX should go somewhere else?
 
-// [data-path^='/docs'] .nav-link { color: $green; }
+[data-path^='/docs'] .selected .nav-link { color: $green; }
 
 [data-path^='/docs'] .home {
   background-color: $blue;
