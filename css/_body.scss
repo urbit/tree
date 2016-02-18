@@ -9,8 +9,16 @@
     color: $blue;
     padding: 0;
   }
+
+  .book {
+    h2 { color: $gray-light; }
+    h2 code { 
+      color: $blue;
+      background-color: transparent;
+    }
+  }
 }
 
-.body[data-path^='/docs/system/hoon/runes'] {
+.body[data-path^='/docs/system/hoon/runes/'] {
   h1 { color: $gray-light; }
 }
