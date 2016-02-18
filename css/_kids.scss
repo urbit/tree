@@ -1,7 +1,3 @@
-.kids > div {
-  margin-top: 6rem;
-}
-
 .kids.runes {
   h1 { padding-top: 3rem; }
 
@@ -9,6 +5,8 @@
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
+
+  > div { margin-top: 6rem; }
 
   > hr { display: none; }
 
