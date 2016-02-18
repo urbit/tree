@@ -1,3 +1,12 @@
 .body[data-path^='/docs'] {
   h1 { color: $blue; }
+  h1 code {
+    background-color: transparent;
+    color: $blue;
+    padding: 0;
+  }
+}
+
+.body[data-path^='/docs/system/hoon/runes'] {
+  h1 { color: $gray-light; }
 }

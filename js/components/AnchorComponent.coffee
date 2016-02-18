@@ -120,6 +120,7 @@ module.exports = query {
     _this = @
     $('body').on 'click', 'a', (e) ->
       href = $(@).attr('href')
+      if href[0] is "#" then return true;
       if href and not /^https?:\/\//i.test(href)
         e.preventDefault()
         if href?[0] isnt "/"
@@ -139,7 +140,7 @@ module.exports = query {
     if hist isnt false
       history.pushState {}, "", util.basepath href_parts.join ""
     if next isnt @props.path
-      React.unmountComponentAtNode $('#body')[0]
+      ReactDOM.unmountComponentAtNode $('#body')[0]
       TreeActions.setCurr next
       rend (BodyComponent {}, ""),$('#body')[0]
 
