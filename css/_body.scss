@@ -1,3 +1,7 @@
+.lead h1:first-of-type {
+  padding-bottom: 0;
+}
+
 .body[data-path^='/docs'] {
   h1 { color: $blue; }
   h1 code {
