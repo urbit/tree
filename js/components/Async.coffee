@@ -31,10 +31,10 @@ module.exports = (queries, Child, load=_load)-> recl
       if not fresh.kids?
         got.kids = have.kids
       else
-        got.kids = (_.clone have.kids) ? {}
+        got.kids = {}
         for k,kid of fresh.kids
           got.kids[k] =
-            @mergeWith got.kids?[k], kid, _queries.kids
+            @mergeWith have.kids?[k], kid, _queries.kids
     got
     
   componentDidMount: -> 
