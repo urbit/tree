@@ -6,6 +6,7 @@
       width: $max-width;
     }
   }
+  position: fixed;
 }
 
 #head .loading { display: none; }
@@ -28,9 +29,7 @@
   padding-left: 0;  // no outside gutters.
   padding-right: 0;
   background-color: #fff;
-  max-width: 2/$grid-columns*100%;
   transition: max-width .2s ease-in-out;
-  position: fixed;
   z-index:100;
 
   ul.nav {

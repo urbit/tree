@@ -57,6 +57,7 @@ module.exports = query {
       if elem.meta.hide? then continue
       href = util.basepath path
       if @props.linkToFragments? then href="#"+item
+      if @props.childIsFragment? then href=(util.basepath @props.path)+"#"+item
       if elem.meta.link then href = elem.meta.link
       parts = []
       title = null

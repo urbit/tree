@@ -138,7 +138,7 @@ module.exports = query {
     if next.substr(-1) is "/" then next = next.slice(0,-1)
     href_parts[0] = next
     if hist isnt false
-      history.pushState {}, "", util.basepath href_parts.join ""
+      history.pushState {}, "", util.basepath href_parts.join "#"
     if next isnt @props.path
       ReactDOM.unmountComponentAtNode $('#body')[0]
       TreeActions.setCurr next
