@@ -1,16 +1,24 @@
 util        = require '../utils/util.coffee'
 dedup = {}  # XX wrong layer
 
+pending = {}
+waspWait = []
+
 module.exports =
   refresh: -> dedup = {}
   get: (path,query="no-query",cb) ->
     url = "#{util.basepath(path)}.tree-json?q=#{@encode query}"
     return if dedup[url]
     dedup[url] = true
-    $.get url, {}, (data,status,xhr) ->
+    pending[url] = true
+    $.get url, {}, (data,status,xhr) ->  # XX on error
+      delete pending[url]
       dep = urb.getXHRWasp(xhr)
       urb.sources[dep] = url # debugging info
-      urb.waspData(dep)
+      waspWait.push dep
+      if _.isEmpty pending
+        waspWait.map urb.waspData
+        waspWait = []
       if cb then cb null,data
     
   put: (mark,pax,txt)-> urb.send {pax,txt}, {mark,appl:'hood'}
