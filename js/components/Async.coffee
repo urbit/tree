@@ -20,8 +20,13 @@ module.exports = (queries, Child, load=_load)-> recl
     else path
 
   stateFromStore: -> 
-    fresh = TreeStore.fulfill @getPath(), queries
-    {fresh, got: @mergeWith @state?.got, fresh}
+    path = @getPath()
+    fresh = TreeStore.fulfill path, queries
+    unless @state? and path is @state.path
+      got = fresh
+    else
+      got = @mergeWith @state.got, fresh
+    {path,fresh,got}
 
   mergeWith: (have={},fresh={},_queries=queries)->
     got = {}
