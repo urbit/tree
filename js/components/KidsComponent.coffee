@@ -1,3 +1,5 @@
+clas        = require 'classnames'
+
 reactify    = require './Reactify.coffee'
 query       = require './Async.coffee'
 
@@ -7,9 +9,6 @@ recl = React.createClass
 module.exports = query {kids: {body:'r', meta:'j'}}, recl
   displayName: "Kids"
   render: -> 
-    klass = "kids"
-    if @props.dataType then klass += " #{@props.dataType}"
-
     sorted = true
     keyed = {}
     for k,v of @props.kids
@@ -36,7 +35,11 @@ module.exports = query {kids: {body:'r', meta:'j'}}, recl
     keys = _.keys(keyed).sort()
     if @props.sortBy is 'date' then keys.reverse()
 
-    div {className:klass},
+    k = clas
+      kids:true
+      @props.className
+        
+    div {className:k,key:"kids"},
       for k in keys
         elem = @props.kids[keyed[k]] ? ""
-        [(div {key:keyed[k]}, reactify elem.body), (hr {})]
+        [(div {key:keyed[k],id:keyed[k]}, reactify elem.body), (hr {})]

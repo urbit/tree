@@ -1,3 +1,39 @@
+.lead h1:first-of-type {
+  padding-bottom: 0;
+}
+
 .body[data-path^='/docs'] {
   h1 { color: $blue; }
+  h1 code {
+    background-color: transparent;
+    color: $blue;
+    padding: 0;
+  }
+
+  .book {
+    h2 { color: $gray-light; }
+    
+    h2 code { 
+      color: $blue;
+      background-color: transparent;
+    }
+
+    h2 a { color: $blue; }
+
+    hr { margin-bottom: 3rem; }
+  }
+}
+
+.body[data-path^='/docs/system/hoon/runes/'] { h1 { color: $gray-light; } }
+.body[data-path^='/docs/system/hoon/runes/basic'] { h1 { color: $blue; } }
+
+.body[data-path^='/docs/system/hoon/library/'] { 
+  h3 { font-size: 1.5rem; } 
+  h2 { font-size: 1rem; } 
+  .toc {
+    h3 {
+      padding-top: 0;
+      margin-bottom: 0;
+    }
+  }
 }

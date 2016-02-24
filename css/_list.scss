@@ -1,7 +1,11 @@
 .list {
-  h1 {
+  h1,
+  h1:first-of-type {
     font-size: inherit;
     font-weight: inherit;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    line-height: 2rem;
   }
   h1.error {
     font-size: 1.6rem;
@@ -25,5 +29,51 @@
     color: $green;
     font-weight: 500;
     height: 2rem;
+  }
+}
+
+.body[data-path^='/docs'] .list.runes {
+  margin-top: 3rem;
+
+  li { height: 3rem; }
+
+  a h1,
+  a div,
+  a p {
+    display: inline;
+  }
+
+  a { text-decoration: none; }
+
+  a,
+  a h1 code { color: #000; }
+
+  a h1 code { 
+    margin-right: 1rem; 
+    background-color: transparent;
+    color: $blue;
+  }
+
+  a code { background-color: $gray-lighter; }
+
+  a code {
+    padding: .3rem;
+  }
+
+  a:after {
+    content: "▶";
+    width: 1rem;
+    font-size: .6rem;
+    vertical-align: middle;
+    padding: .3rem;
+    padding-top: .4rem;
+    line-height: 1rem;
+    margin-left: 1rem;
+    background-color: $gray-light;
+    color: #fff;
+  }
+
+  a:hover:after {
+    background-color: $blue;
   }
 }

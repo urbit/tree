@@ -1,0 +1,14 @@
+.kids.runes {
+  h1 { padding-top: 3rem; }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  > div { margin-top: 6rem; }
+
+  > hr { display: none; }
+
+  > div p:first-of-type { font-weight: 500; }
+}

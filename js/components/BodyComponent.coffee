@@ -76,7 +76,7 @@ module.exports = query {
   path:'t'
   meta:'j'
   sein:'t'
-}, recl
+}, (recl
   displayName: "Body"
   render: ->
     extra = (name,props={})=> 
@@ -84,7 +84,7 @@ module.exports = query {
     
     containerClas = clas
       "col-md-10":true
-      "col-md-offset-2":(@props.meta.anchor isnt 'none')
+      "col-md-offset-3":(@props.meta.anchor isnt 'none')
       body:true
     bodyClas = clas (@props.meta.layout?.split ',')    
 
@@ -101,3 +101,6 @@ module.exports = query {
         extra 'footer'
       )
     ]
+), (recl
+  render: -> (div {className:"col-md-offset-3 col-md-10"}, rele(load))
+)

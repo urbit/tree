@@ -6,6 +6,8 @@
       width: $max-width;
     }
   }
+  position: fixed;
+  z-index: 10;
 }
 
 #head .loading { display: none; }
@@ -28,9 +30,7 @@
   padding-left: 0;  // no outside gutters.
   padding-right: 0;
   background-color: #fff;
-  max-width: 2/$grid-columns*100%;
   transition: max-width .2s ease-in-out;
-  position: fixed;
   z-index:100;
 
   ul.nav {
@@ -50,10 +50,7 @@
 
   a.nav-link:hover { text-decoration:underline; }
   a.nav-link { letter-spacing: 1px; }
-  .selected a.nav-link { 
-    font-weight: 500; 
-    letter-spacing: 0;
-  }
+  .selected a.nav-link { font-weight: 500; }
 }
 
 .ctrl.open,
@@ -179,6 +176,8 @@
 
 [data-path^='/docs'] .selected .nav-link { color: $green; }
 
+[data-path^='/docs'] .nav-link { font-weight: 500; }
+
 [data-path^='/docs'] .home {
   background-color: $blue;
   border-color: $blue;
@@ -211,6 +210,12 @@
     margin-left: .05rem;
     font-size: 1rem;
   }
+}
+
+[data-path^='/docs/system/hoon/runes'] .nav-link { font-family: 'scp'; }
+[data-path^='/docs/system/hoon/runes'] .nav-link,
+[data-path^='/docs/system/hoon/runes'] .ctrl .selected a.nav-link { 
+  font-weight: 600; 
 }
 
 // menu

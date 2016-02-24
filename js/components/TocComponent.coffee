@@ -49,8 +49,10 @@ module.exports = query {body:'r'}, recl
   componentWillUnmount: ->
     clearInterval @int
 
-  collectHeader: ({gn,ga,c})->
-    if gn and gn[0] is 'h' and parseInt(gn[1]) isnt NaN
+  collectHeader: ({gn,ga,c}) ->
+    if @props.match then comp = (gn is @props.match) else
+      comp = (gn and gn[0] is 'h' and parseInt(gn[1]) isnt NaN)
+    if comp
       ga = _.clone ga
       ga.onClick = @_click ga.id
       delete ga.id
@@ -60,12 +62,15 @@ module.exports = query {body:'r'}, recl
     if @props.body.c
       for v in @props.body.c
         if v.gn is 'div' and v.ga?.id is "toc"
+          contents = [
+            {gn:"h1", ga:{className:"t"}, c:["Table of contents"]},
+            (_.filter v.c.map @collectHeader)...
+          ]
+          if @props.noHeader then contents.shift()
           return {
             gn:"div"
             ga:{className:"toc"}
-            c:[
-              {gn:"h1", ga:{className:"t"}, c:["Table of contents"]}
-              (_.filter v.c.map @collectHeader)...
-          ]}
+            c:contents
+           }
 
   render: -> reactify @parseHeaders()
