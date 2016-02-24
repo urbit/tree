@@ -19,8 +19,8 @@ scroll =
   scroll: -> 
     @cs = $(window).scrollTop()
 
-    if @w > 1170 then @clearNav()
-    if @w < 1170
+    if @w > 767 then @clearNav()
+    if @w < 767
       dy = @ls-@cs
 
       @$d.removeClass 'focus'

@@ -10,7 +10,7 @@
 
 #head .loading { display: none; }
 
-@include media-breakpoint-down(sm) { 
+@include media-breakpoint-down(xs) { 
   #head { 
     top: 0; 
     z-index: 10;
