@@ -20,7 +20,8 @@
   }
 }
 
-.body[data-path^='/docs'] .list {
+.body[data-path^='/docs'] .list,
+.body[data-path^='/work'] .list {
   list-style-type: none;
   padding-left: 0;
   
@@ -29,7 +30,24 @@
     color: $green;
     font-weight: 500;
     height: 2rem;
+    display: inline;
+    text-decoration: none;
   }
+
+  h1 { 
+    border-bottom: 2px solid $green;
+  }
+}
+
+.body[data-path^='/work'] .list.main {
+  a,
+  h1 {
+    font-size: 2rem;
+    line-height: 4rem; 
+    height: 4rem;
+  }
+
+  h1 { border-width: 4px; }
 }
 
 .body[data-path^='/docs'] .list.runes {

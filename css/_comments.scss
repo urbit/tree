@@ -1,6 +1,6 @@
 .add-comment {
     width: 100%;
-    border-top: 3px dotted #000;
+    border-top: 3px dotted $gray-lightest;
     margin-top: 6rem;
 
     .btn {
@@ -11,7 +11,7 @@
       width: 66%;
       display: block;
       height: 12rem;
-      background-color: #F7F7F7;
+      background-color: $gray-lightest;
       border-bottom: 0;
       margin-bottom: 2rem;
       margin-top: 3rem;
