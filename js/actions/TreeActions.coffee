@@ -22,7 +22,7 @@ module.exports =
 
   addComment: (path,text)->
     if path[0] isnt "/" then path = "/"+path
-    TreePersistence.put "write-comment", path, text
+    TreePersistence.put "talk-comment", path, text
   
   setCurr: (path) ->
     TreeDispatcher.handleViewAction
