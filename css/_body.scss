@@ -2,6 +2,23 @@
   padding-bottom: 0;
 }
 
+.h-arrow {
+  float: left;
+  margin-bottom: 3rem;
+
+  h1 { 
+    color: $blue;
+    display: inline;
+  }
+
+  h1 code {
+    background-color: transparent;
+    color: $blue;
+  }
+
+  img { float: right; }
+}
+
 .body[data-path^='/docs'],
 .body[data-path^='/work'] {
   h1 { color: $blue; }
