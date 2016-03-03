@@ -60,8 +60,9 @@ Nav = React.createFactory query {
       attr = _.extend attr,{className:navClas,key:"nav"}
 
       title = if @state.title then @state.title else ""
-      dpad  = if @state.dpad isnt false then (Dpad @props,"") else ""
-      sibs  = if @state.sibs isnt false 
+      dpad  = if @state.dpad isnt false and @props.meta.dpad isnt false
+        (Dpad @props,"") else ""
+      sibs  = if @state.sibs isnt false and @props.meta.dpad isnt false
           (Sibs _.merge(@props,{@toggleNav}), "") 
         else ""
 
