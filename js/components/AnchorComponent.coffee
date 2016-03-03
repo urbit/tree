@@ -53,10 +53,7 @@ Nav = React.createFactory query {
       if _.keys(window).indexOf("ontouchstart") isnt -1
         delete attr.onMouseOver
         delete attr.onMouseOut
-      navClas = clas
-        'col-md-2':true
-        ctrl:true
-        open:(@state.open is true)
+      navClas = clas 'col-md-2', 'ctrl', open:(@state.open is true)
       attr = _.extend attr,{className:navClas,key:"nav"}
 
       title = if @state.title then @state.title else ""
