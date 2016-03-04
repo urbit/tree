@@ -21,7 +21,7 @@ $ ->
       window.urb.dewasp(dat)
     window.tree.actions.clearData()
   
-  head = React.createFactory require './components/AnchorComponent.coffee'
+  head = React.createFactory require './components/NavComponent.coffee'
   body = React.createFactory require './components/BodyComponent.coffee'
   rend (head {}, ""),$('#head')[0]
   rend (body {}, ""),$('#body')[0]

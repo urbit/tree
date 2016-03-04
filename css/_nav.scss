@@ -52,11 +52,38 @@
   .selected a.nav-link { font-weight: 500; }
 }
 
+.ctrl.navbar {
+  position: relative;
+  margin-bottom: 3rem;
+
+  .icon,
+  ul.nav,
+  li { display: inline-block; }
+
+  ul.nav {
+    margin-top: 0;
+
+    li {
+      width: auto;
+      display: inline-block;
+      margin-right: 2rem;
+    }
+  }
+
+  ul.nav:hover { overflow: hidden; }
+}
+
 .ctrl.open,
 .ctrl:hover {
   max-width: 4/$grid-columns*100%;
   min-width: 2/$grid-columns*100%;
   width: auto;
+}
+
+.ctrl.navbar.open,
+.ctrl.navbar:hover {
+  max-width: none;
+  min-width: none;
 }
 
 @include media-breakpoint-down(md) {
@@ -272,3 +299,33 @@
   }
 }
 
+// urbit.org navbar
+
+.urbit.navbar.ctrl {
+  .icon .home {
+    border-color: $blue;
+    background-color: $blue;
+    width: 3rem;
+    height: 3rem;
+    margin: 0 1rem 0 0;
+  }
+
+  ul.nav {
+    li {
+      height: 3rem;
+      line-height: 3rem;
+      vertical-align: middle;
+    }
+
+    li a {
+      text-decoration: none;
+      color: $gray-light;
+      font-weight: 500;
+      font-size: 1.6rem;
+    }
+
+    li.selected a {
+      color: $blue;
+    }
+  }
+}

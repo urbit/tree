@@ -36,7 +36,8 @@ Nav = React.createFactory query {
     onTouchStart: -> @ts = Number Date.now()
     onTouchEnd: -> dt = @ts - Number Date.now()
 
-    _home: -> @props.goTo "/"
+    _home: -> 
+      @props.goTo if @props.meta.navhome then @props.meta.navhome else "/"
 
     toggleFocus: (state) -> $(ReactDOM.findDOMNode(@)).toggleClass 'focus',state
     toggleNav: -> TreeActions.toggleNav()
@@ -50,20 +51,26 @@ Nav = React.createFactory query {
         @onTouchEnd
         'data-path':@props.dataPath
       }
+
       if _.keys(window).indexOf("ontouchstart") isnt -1
         delete attr.onMouseOver
         delete attr.onMouseOut
-      navClas = clas
-        'col-md-2':true
-        ctrl:true
-        open:(@state.open is true)
+
+      navClas = 
+        'col-md-2': (@props.meta.navmode isnt 'navbar')
+        navbar:     (@props.meta.navmode is 'navbar')
+        ctrl:       true
+        open:       (@state.open is true)
+      if @props.meta.navclass then navClas[@props.meta.navclass] = true
+      navClas = clas navClas
+
       attr = _.extend attr,{className:navClas,key:"nav"}
 
       title = if @state.title then @state.title else ""
-      dpad  = if @state.dpad isnt false and @props.meta.dpad isnt false
+      dpad  = if @state.dpad isnt false and @props.meta?.navdpad isnt "false"
           (Dpad @props,"") 
         else ""
-      sibs  = if @state.sibs isnt false and @props.meta.dpad isnt false
+      sibs  = if @state.sibs isnt false and @props.meta?.navsibs isnt "false"
           (Sibs _.merge(@props,{@toggleNav}), "") 
         else ""
 
@@ -148,9 +155,9 @@ module.exports = query {
 
   reset: ->
     $("html,body").animate {scrollTop:0}
-    $('#nav').attr 'style',''
-    $('#nav').removeClass 'scrolling m-up'
-    $('#nav').addClass 'm-down m-fixed'
+    # $('#nav').attr 'style',''
+    # $('#nav').removeClass 'scrolling m-up'
+    # $('#nav').addClass 'm-down m-fixed'
 
   goTo: (path) ->
     @reset()
@@ -168,6 +175,7 @@ module.exports = query {
     kids = [(Nav {
           curr:@props.name
           dataPath:@props.sein
+          meta:@props.meta
           sein:@props.sein
           goTo:@goTo
           key:"nav"
