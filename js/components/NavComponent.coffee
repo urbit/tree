@@ -63,6 +63,9 @@ Nav = React.createFactory query {
         open:       (@state.open is true)
       if @props.meta.navclass then navClas[@props.meta.navclass] = true
       navClas = clas navClas
+      iconClas = clas
+        icon: true
+        'col-md-2':(@props.meta.navmode is 'navbar')
 
       attr = _.extend attr,{className:navClas,key:"nav"}
 
@@ -80,7 +83,7 @@ Nav = React.createFactory query {
 
       div attr,
         div {className:'links',key:"links"}, 
-          div {className:'icon'}, 
+          div {className:iconClas}, 
             (div {className:'home',onClick:@_home}, "")
             (div {className:'app'}, title)
             dpad

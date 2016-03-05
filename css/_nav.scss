@@ -55,22 +55,33 @@
 .ctrl.navbar {
   position: relative;
   margin-bottom: 3rem;
+  padding: 0;
 
   .icon,
   ul.nav,
-  li { display: inline-block; }
+  li { 
+    display: inline-block; 
+    padding: 0;
+  }
 
   ul.nav {
     margin-top: 0;
+    overflow: visible;
 
     li {
       width: auto;
       display: inline-block;
       margin-right: 2rem;
     }
-  }
 
-  ul.nav:hover { overflow: hidden; }
+    .right { float: right; }
+    .btn {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      text-transform: none;
+    }
+  }
 }
 
 .ctrl.open,
@@ -307,13 +318,12 @@
     background-color: $blue;
     width: 3rem;
     height: 3rem;
-    margin: 0 1rem 0 0;
+    margin: 0 4rem 0 0;
   }
 
   ul.nav {
     li {
       height: 3rem;
-      line-height: 3rem;
       vertical-align: middle;
     }
 
@@ -321,9 +331,29 @@
       text-decoration: none;
       color: $gray-light;
       font-weight: 500;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
+      line-height: 3.4rem;
     }
 
+    .btn {
+      border: 3px solid $blue;
+      margin-top: -3px;
+      height: 3.4rem;
+      padding: 0 .6rem;
+
+      a { 
+        font-size: 1rem;
+        color: $blue;
+        letter-spacing: 0; 
+      }
+    }
+
+    .btn.selected {
+      background-color: $blue;
+      a { color: #fff; }
+    }
+
+    li a:hover,
     li.selected a {
       color: $blue;
     }

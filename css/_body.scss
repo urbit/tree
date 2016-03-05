@@ -20,6 +20,37 @@
   img { float: right; }
 }
 
+.body .urbit {
+  .slide {
+    margin-bottom: 4rem;
+    font-weight: 500;
+    position: relative;
+
+    h1 { color: $blue; }
+
+    &,
+    .col-md-9 {
+      padding: 0;
+    }
+
+    .left {
+      position: absolute;
+      left: 0%;
+      top: 50%;
+      transform: translate(100%, -50%);
+      text-align: center;
+    }
+
+    .right {
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translate(-100%, -50%);
+      text-align: center;
+    }
+  }
+}
+
 .body[data-path^='/docs'],
 .body[data-path^='/work'] {
   h1 { color: $blue; }

@@ -14,7 +14,11 @@ module.exports = React.createFactory recl
   render: ->
     keys = util.getKeys @props.kids
 
-    ul {className:"nav"}, keys.map (key) =>
+    navClas = clas
+      nav: true
+      'col-md-10': (@props.meta.navmode is 'navbar')
+
+    ul {className:navClas}, keys.map (key) =>
       href = util.basepath @props.path+"/"+key
       data = @props.kids[key]
       head = data.meta.title if data.meta
@@ -23,5 +27,7 @@ module.exports = React.createFactory recl
       className = clas
         "nav-item": true
         selected: key is @props.curr
+      if data.meta.sibsclass
+        className += " "+clas(data.meta.sibsclass.split(","))
       (li {className,key}, 
         (a {className:"nav-link",href,onClick:@props.toggleNav}, head))

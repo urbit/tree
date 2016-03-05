@@ -83,9 +83,8 @@ module.exports = query {
       if @props.meta[name]? then React.createElement extras[name], props
     
     containerClas = clas
-      'col-md-10':@props.meta.navmode isnt 'navbar'
-      'col-md-12':@props.meta.navmode is 'navbar'
-      'col-md-offset-3':(@props.meta.anchor isnt 'none' and 
+      'col-md-10':true
+      'col-md-offset-2':(@props.meta.anchor isnt 'none' and 
         @props.meta.navmode isnt 'navbar')
       body:true
     bodyClas = clas (@props.meta.layout?.split ',')    
@@ -93,7 +92,7 @@ module.exports = query {
     div {className:containerClas,'data-path':@props.path},[
       (div {
           key:"body"+@props.path
-          bodyClas
+          className: bodyClas
           },
         extra 'spam'
         extra 'logo', color: @props.meta.logo
