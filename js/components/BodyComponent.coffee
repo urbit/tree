@@ -84,7 +84,7 @@ module.exports = query {
     
     containerClas = clas
       'col-md-10':true
-      'col-md-offset-2':(@props.meta.anchor isnt 'none' and 
+      'col-md-offset-3':(@props.meta.anchor isnt 'none' and 
         @props.meta.navmode isnt 'navbar')
       body:true
     bodyClas = clas (@props.meta.layout?.split ',')    

@@ -3,7 +3,7 @@ util = require '../utils/util.coffee'
 recl = React.createClass
 {div,a} = React.DOM
 
-module.exports = React.createFactory recl
+module.exports = recl
   displayName: "Dpad"
 
   renderUp: -> 

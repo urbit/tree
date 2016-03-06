@@ -71,7 +71,7 @@
     li {
       width: auto;
       display: inline-block;
-      margin-right: 2rem;
+      min-width: 2/$grid-columns*100%;
     }
 
     .right { float: right; }
@@ -321,6 +321,16 @@
     margin: 0 4rem 0 0;
   }
 
+  .icon .home:before {
+    content: "~";
+    color: #fff;
+    font-size: 2.6rem;
+    line-height: 2.6rem;
+    text-align: center;
+    width: 2.4rem;
+    display: inline-block;
+  }
+
   ul.nav {
     li {
       height: 3rem;
@@ -331,7 +341,7 @@
       text-decoration: none;
       color: $gray-light;
       font-weight: 500;
-      font-size: 1.4rem;
+      font-size: 1rem;
       line-height: 3.4rem;
     }
 

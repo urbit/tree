@@ -7,8 +7,8 @@ reactify   = require './Reactify.coffee'
 TreeStore   = require '../stores/TreeStore.coffee'
 TreeActions = require '../actions/TreeActions.coffee'
 
-Sibs        = require './SibsComponent.coffee'
-Dpad        = require './DpadComponent.coffee'
+Sibs        = React.createFactory require './SibsComponent.coffee'
+Dpad        = React.createFactory require './DpadComponent.coffee'
 
 util        = require '../utils/util.coffee'
 
@@ -57,15 +57,15 @@ Nav = React.createFactory query {
         delete attr.onMouseOut
 
       navClas = 
-        'col-md-2': (@props.meta.navmode isnt 'navbar')
+        'col-md-1': (@props.meta.navmode isnt 'navbar')
         navbar:     (@props.meta.navmode is 'navbar')
         ctrl:       true
         open:       (@state.open is true)
       if @props.meta.navclass then navClas[@props.meta.navclass] = true
       navClas = clas navClas
-      iconClas = clas
+      iconClass = clas
         icon: true
-        'col-md-2':(@props.meta.navmode is 'navbar')
+        'col-md-1':(@props.meta.navmode is 'navbar')
 
       attr = _.extend attr,{className:navClas,key:"nav"}
 
@@ -77,13 +77,24 @@ Nav = React.createFactory query {
           (Sibs _.merge(@props,{@toggleNav}), "") 
         else ""
 
+      itemsClass = clas
+        items: true
+        'col-md-11':true
+
+      if @props.meta.navsub
+        subprops = _.cloneDeep @props
+        subprops.dataPath = subprops.meta.navsub
+        delete subprops.meta.navselect
+        subprops.className = 'subnav'
+        sub = Sibs subprops, ""
+
       toggleClas = clas
         'navbar-toggler':true
         show:@state.subnav?
 
       div attr,
         div {className:'links',key:"links"}, 
-          div {className:iconClas}, 
+          div {className:iconClass}, 
             (div {className:'home',onClick:@_home}, "")
             (div {className:'app'}, title)
             dpad
@@ -91,7 +102,10 @@ Nav = React.createFactory query {
               className:toggleClas
               type:'button'
               onClick:@toggleNav}, "☰")
-          sibs
+          (div {className:itemsClass}, 
+            sibs
+            sub
+          )
   ),  recl
     displayName: "Links_loading"
     _home: -> @props.goTo "/"
@@ -120,7 +134,8 @@ module.exports = query {
   _onChangeStore: -> if @isMounted() then @setState @stateFromStore()
 
   componentWillUnmount: -> 
-    clearInterval @interval; $('body').off 'click', 'a'
+    clearInterval @interval
+    $('body').off 'click', 'a'
     TreeStore.removeChangeListener @_onChangeStore
   componentDidUpdate: -> @setTitle()
   componentDidMount: -> 
@@ -138,6 +153,9 @@ module.exports = query {
         if href?[0] isnt "/"
           href = (document.location.pathname.replace /[^\/]*\/?$/, '') + href
         _this.goTo util.fragpath href
+    
+    if @props.meta.redirect 
+      setTimeout (=> (@goTo @props.meta.redirect)), 0
 
   setTitle: ->
     title = $('#body h1').first().text() || @props.name
@@ -175,9 +193,12 @@ module.exports = query {
   render: ->
     return (div {}, "") if @props.meta.anchor is 'none' 
 
+    kidsPath = @props.sein
+    kidsPath = @props.meta.navpath if @props.meta.navpath
+
     kids = [(Nav {
           curr:@props.name
-          dataPath:@props.sein
+          dataPath:kidsPath
           meta:@props.meta
           sein:@props.sein
           goTo:@goTo

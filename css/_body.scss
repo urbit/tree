@@ -22,31 +22,36 @@
 
 .body .urbit {
   .slide {
-    margin-bottom: 4rem;
+    margin-bottom: 12rem;
     font-weight: 500;
     position: relative;
 
-    h1 { color: $blue; }
-
-    &,
-    .col-md-9 {
-      padding: 0;
+    h1 { 
+      color: $blue;
+      padding-bottom: 1rem;
     }
 
-    .left {
-      position: absolute;
-      left: 0%;
-      top: 50%;
-      transform: translate(100%, -50%);
-      text-align: center;
-    }
+    .pair {
+      display: table;
 
-    .right {
-      position: absolute;
-      left: 100%;
-      top: 50%;
-      transform: translate(-100%, -50%);
-      text-align: center;
+      .text,
+      .image {
+        display: table-cell;
+        vertical-align: middle;
+      }
+
+      .image.right { padding-left: 5%; }
+      .image.left { padding-right: 5%; }
+
+      .text { 
+        font-size: 1.4rem;
+        width: 75%; 
+      }
+      .image { width: 20%; }
+
+      p:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 }
