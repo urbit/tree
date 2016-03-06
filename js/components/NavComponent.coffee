@@ -137,7 +137,11 @@ module.exports = query {
     clearInterval @interval
     $('body').off 'click', 'a'
     TreeStore.removeChangeListener @_onChangeStore
-  componentDidUpdate: -> @setTitle()
+    
+  componentDidUpdate: -> 
+    @setTitle()
+    @checkRedirect()
+
   componentDidMount: -> 
     @setTitle()
     @interval = setInterval @checkURL,100
@@ -153,7 +157,9 @@ module.exports = query {
         if href?[0] isnt "/"
           href = (document.location.pathname.replace /[^\/]*\/?$/, '') + href
         _this.goTo util.fragpath href
-    
+    @checkRedirect()
+
+  checkRedirect: ->
     if @props.meta.redirect 
       setTimeout (=> (@goTo @props.meta.redirect)), 0
 

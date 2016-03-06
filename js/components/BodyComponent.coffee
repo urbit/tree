@@ -12,7 +12,7 @@ util        = require '../utils/util.coffee'
 
 recl   = React.createClass
 rele   = React.createElement
-{div,p,img,a,input}  = React.DOM
+{div,h1,h3,p,img,a,input}  = React.DOM
 
 # named = (x,f)->  f.displayName = x; f
 
@@ -37,6 +37,25 @@ extras =
        (img {src,className:"logo first"})
       )
 
+  date: recl
+    displayName: "Date"
+    render: -> (div {className:'date'}, @props.date)
+
+  title: recl
+    displayName: "Title"
+    render: -> (h1 {className:'title'}, @props.title)
+
+  image: recl
+    displayName: "Image"
+    render: -> (img {src:@props.image}, "")
+
+  preview: recl
+    displayName: "Preview"
+    render: -> (p {className:'preview'}, @props.preview)
+
+  author: recl
+    displayName: "Author"
+    render: -> (h3 {className:'author'}, @props.author)
 
   next: query {
     path:'t'
@@ -80,7 +99,10 @@ module.exports = query {
   displayName: "Body"
   render: ->
     extra = (name,props={})=> 
-      if @props.meta[name]? then React.createElement extras[name], props
+      if @props.meta[name]? 
+        if (_.keys props).length is 0
+          props[name] = @props.meta[name]
+        React.createElement extras[name], props
     
     containerClas = clas
       'col-md-10':true
@@ -89,17 +111,31 @@ module.exports = query {
       body:true
     bodyClas = clas (@props.meta.layout?.split ',')    
 
+    parts = [
+      extra 'spam'
+      extra 'logo', color: @props.meta.logo
+      reactify @props.body
+      extra 'next', {dataPath:@props.sein,curr:@props.name}
+      extra 'comments'
+      extra 'footer'
+    ]
+
+    if @props.meta.type is "post"
+      parts.splice(
+        1
+        0
+        extra 'date'
+        extra 'title'
+        extra 'image'
+        extra 'preview'
+        extra 'author'
+      )
+
     div {className:containerClas,'data-path':@props.path},[
       (div {
           key:"body"+@props.path
           className: bodyClas
-          },
-        extra 'spam'
-        extra 'logo', color: @props.meta.logo
-        reactify @props.body
-        extra 'next', {dataPath:@props.sein,curr:@props.name}
-        extra 'comments'
-        extra 'footer'
+          }, parts
       )
     ]
 ), (recl

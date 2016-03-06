@@ -21,15 +21,14 @@
 }
 
 .body .urbit {
+  h1 { color: $blue; }
+  
   .slide {
     margin-bottom: 12rem;
     font-weight: 500;
     position: relative;
 
-    h1 { 
-      color: $blue;
-      padding-bottom: 1rem;
-    }
+    h1 { padding-bottom: 1rem; }
 
     .pair {
       display: table;

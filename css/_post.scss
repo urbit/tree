@@ -1,0 +1,42 @@
+.urbit .post,
+.urbit.post {
+  .date {
+    font-family: 'scp';
+    color: $gray-light;
+    font-size: .7rem;
+    font-weight: 200;
+  }
+
+  h1.title,
+  p.preview { font-weight: 500; }
+
+  h1.title {
+    font-size: 2rem;
+    padding-bottom: 0;
+  }
+
+  h1.title,
+  img { margin-bottom: 2rem; }
+
+  .date,
+  p.preview,
+  h3.author { margin-bottom: .6rem; } 
+
+  h3.author {
+    padding-top: 0;
+    font-size: 1rem;
+    font-weight: 200;
+  }
+
+  h3:before {
+    content: "—";
+    margin-right: .6rem;
+  }
+}
+
+.urbit.post {
+  margin-left: 1/$grid-columns*100%;
+  padding-left: $grid-gutter-width;
+  
+  .preview { max-width: 75%; }
+}

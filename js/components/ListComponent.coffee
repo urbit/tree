@@ -21,7 +21,6 @@ module.exports = query {
     k = clas
       list: true
       @props.dataType
-      posts: @props.dataType is 'post' # needs css update
       default: @props['data-source'] is 'default'
       @props.className
     kids = @renderList()
@@ -61,54 +60,69 @@ module.exports = query {
       if elem.meta.link then href = elem.meta.link
       parts = []
       title = null
+
       if elem.meta?.title
         title = 
           gn: 'h1'
+          ga: {className:'title'}
           c: [elem.meta.title]
       if not title && elem.head.c.length > 0
         title = elem.head
       if not title
         title =
           gn: 'h1'
+          ga: {className:'title'}
           c: [item]
-      unless @props.titlesOnly        # redundant? this seems familiar
-        if @props.dataDates
-          _date = elem.meta.date
-          if not _date or _date.length is 0 then _date = ""
-          date = 
-            gn: 'div'
-            ga: 
-              className: 'date'
-            c: [_date]
-          parts.push date
-      parts.push title
-      unless @props.titlesOnly        # redundant? this seems familiar
-        if @props.dataPreview 
-          if @props.dataType is 'post' and not elem.meta.preview
-            parts.push (elem.snip.c.slice 0,2)...
-          else
-            if elem.meta.preview 
-              preview = 
-                gn: 'p'
-                c: [elem.meta.preview]
-            else 
-              preview = elem.snip
-            parts.push preview
-      li {key:item,className:@props.dataType ? ""},
-        a {href,className:(clas preview: @props.dataPreview?)},            
-          reactify
-            gn: 'div'
-            c: parts
 
-          # if not @props.dataPreview? then (h1 {},item)
-          # else if @props.dataType is 'post'
-          #   head = 
-          #     if elem.meta?.title
-          #       gn: 'h1'
-          #       c: [elem.meta.title]
-          #     else elem.head
-          #   reactify
-          #     gn: 'div'
-          #     c: [head, (elem.snip.c.slice 0,2)...]
-          # else if @props.titlesOnly? then reactify elem.head
-          # else div {}, (reactify elem.head), (reactify elem.snip)
+      unless @props.titlesOnly        # date
+        _date = elem.meta.date
+        if not _date or _date.length is 0 then _date = ""
+        date = 
+          gn: 'div'
+          ga: {className: 'date'}
+          c: [_date]
+        parts.push date
+
+      parts.push title
+
+      unless @props.titlesOnly         # metadata
+        if @props.dataType is 'post'   # image
+          if elem.meta.image 
+            image =
+              gn: 'img'
+              ga:
+                src: elem.meta.image
+            parts.push image
+          if @props.dataPreview         # preview
+            if not elem.meta.preview
+              parts.push (elem.snip.c.slice 0,2)...
+            else
+              if elem.meta.preview 
+                preview = 
+                  gn: 'p'
+                  ga: {className:'preview'}
+                  c: [elem.meta.preview]
+              else 
+                preview = elem.snip
+              parts.push preview
+            if elem.meta.author          # author
+                author =
+                  gn: 'h3'
+                  ga: {className:'author'}
+                  c: [elem.meta.author]
+                parts.push author
+            cont =
+              gn: 'a'
+              ga: {className:'btn continue',href}
+              c: ['Continue reading']
+            parts.push cont
+            linked = true
+
+      node = reactify {gn:'div',c:parts}
+      if not linked?
+        node = (a {
+            href
+            className:(clas preview:@props.dataPreview?)
+          },node)
+
+      li {key:item},node

@@ -95,3 +95,23 @@
     background-color: $blue;
   }
 }
+
+.urbit ul.blog {
+  list-style-type: none;
+
+  margin-left: 1/$grid-columns*100%;
+  padding-left: $grid-gutter-width;
+
+  .btn {
+    padding: .3rem;
+    border: 3px solid $green;
+    color: $green;
+    text-decoration: none;
+    text-transform: none;
+  }
+
+  .btn:hover {
+    background-color: $green;
+    color: #fff;
+  }
+}
