@@ -99,8 +99,7 @@
 .urbit ul.blog {
   list-style-type: none;
 
-  margin-left: 1/$grid-columns*100%;
-  padding-left: $grid-gutter-width;
+  padding-left: 0;
 
   .btn {
     padding: .3rem;

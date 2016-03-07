@@ -104,11 +104,15 @@ module.exports = query {
           props[name] = @props.meta[name]
         React.createElement extras[name], props
     
-    containerClas = clas
-      'col-md-10':true
-      'col-md-offset-3':(@props.meta.anchor isnt 'none' and 
-        @props.meta.navmode isnt 'navbar')
-      body:true
+    containerClas = {body:true}
+    if @props.meta.anchor isnt 'none' and @props.meta.navmode isnt 'navbar'
+      containerClas['col-md-10'] = true
+      containerClas['col-md-offset-3'] = true
+    if @props.meta.navmode is 'navbar'
+      containerClas['col-md-9'] = true
+      containerClas['col-md-offset-1'] = true
+    containerClas = clas containerClas
+
     bodyClas = clas (@props.meta.layout?.split ',')    
 
     parts = [
