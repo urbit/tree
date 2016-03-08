@@ -25,20 +25,21 @@
   .comment {
     margin-top: 2rem;
 
-    h3,
     & > span {
       font-family: 'scp';
-    }
-
-    & > span { 
       font-size: .8rem; 
       color: $gray-light;
     }
 
-    h3 {
+    h2 {
       padding-top: 0;
       font-size: 1rem;
       font-weight: 500;
+
+      code { 
+        background-color: transparent;
+        padding: 0;
+      }
     }
 
     p {

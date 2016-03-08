@@ -25,6 +25,8 @@ module.exports = recl
       waitingScripts = [s]
       appendNext()
 
-  componentWillUnmount: -> document.body.removeChild @js
+  componentWillUnmount: -> 
+    if @js.parentNode == document.body
+      document.body.removeChild @js
     
   render: ->  rele "script", @props

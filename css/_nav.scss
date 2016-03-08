@@ -15,6 +15,7 @@
     top: 0; 
     z-index: 10;
     width: 100%;
+    position: absolute;
   } 
   #head.m-down,
   #head.m-up { position: absolute; }
@@ -307,66 +308,5 @@
   .context {
     line-height: 1rem;
     margin-bottom: 1rem;
-  }
-}
-
-// urbit.org navbar
-
-.urbit.navbar.ctrl {
-  .icon .home {
-    border-color: $blue;
-    background-color: $blue;
-    width: 3rem;
-    height: 3rem;
-    margin: 0 4rem 0 0;
-  }
-
-  .icon .home:before {
-    content: "~";
-    color: #fff;
-    font-size: 2.6rem;
-    line-height: 2.6rem;
-    text-align: center;
-    width: 2.4rem;
-    display: inline-block;
-  }
-
-  ul.nav {
-    li {
-      height: 1.5rem;
-      vertical-align: middle;
-    }
-
-    li a {
-      text-decoration: none;
-      color: $gray-light;
-      font-weight: 500;
-      font-size: 1rem;
-      line-height: 1.5rem;
-    }
-
-    .btn {
-      border: 3px solid $blue;
-      margin-top: -3px;
-      height: 1.5rem;
-      padding: 0rem;
-
-      a { 
-        font-size: 1rem;
-        color: $blue;
-        letter-spacing: 0; 
-      }
-    }
-
-    .btn.selected,
-    .btn:hover {
-      background-color: $blue;
-      a { color: #fff; }
-    }
-
-    li a:hover,
-    li.selected a {
-      color: $blue;
-    }
   }
 }

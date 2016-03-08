@@ -16,7 +16,10 @@
   }
 
   h1.title,
-  img { margin-bottom: 2rem; }
+  img { 
+    width: 100%;
+    margin-bottom: 2rem;
+  }
 
   .date,
   p.preview,

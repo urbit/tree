@@ -56,6 +56,10 @@ Nav = React.createFactory query {
         delete attr.onMouseOver
         delete attr.onMouseOut
 
+      linksClas = clas
+        links: true
+        subnav: (@props.meta.navsub?)
+
       navClas = 
         'col-md-1': (@props.meta.navmode isnt 'navbar')
         navbar:     (@props.meta.navmode is 'navbar')
@@ -74,7 +78,7 @@ Nav = React.createFactory query {
           (Dpad @props,"") 
         else ""
       sibs  = if @state.sibs isnt false and @props.meta?.navsibs isnt "false"
-          (Sibs _.merge(@props,{@toggleNav}), "") 
+          (Sibs _.merge(_.clone(@props),{@toggleNav}), "") 
         else ""
 
       itemsClass = clas
@@ -86,14 +90,14 @@ Nav = React.createFactory query {
         subprops.dataPath = subprops.meta.navsub
         delete subprops.meta.navselect
         subprops.className = 'subnav'
-        sub = Sibs subprops, ""
+        sub = Sibs _.merge(subprops,{@toggleNav}), ""
 
       toggleClas = clas
         'navbar-toggler':true
         show:@state.subnav?
 
       div attr,
-        div {className:'links',key:"links"}, 
+        div {className:linksClas,key:"links"}, 
           div {className:iconClass}, 
             (div {className:'home',onClick:@_home}, "")
             (div {className:'app'}, title)

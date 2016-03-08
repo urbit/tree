@@ -1,0 +1,143 @@
+.body .urbit {
+  h1 { 
+    color: $blue;
+    line-height: 4rem;
+  }
+
+  a.green:hover {
+    color: $green;
+  }
+
+  .front {
+    padding-bottom: 4rem;
+
+    h1 { padding-top: 0; }
+
+    h1,
+    h1 a {
+      font-size: 4rem;
+      line-height: 6rem;
+    }
+  }
+  
+  .slide {
+    margin-bottom: 12rem;
+    font-weight: 500;
+    position: relative;
+
+    h1 { padding-bottom: 1rem; }
+
+    .pair {
+      display: table;
+
+      .text,
+      .image {
+        display: table-cell;
+        vertical-align: middle;
+      }
+
+      .image.right { padding-left: 5%; }
+      .image.left { padding-right: 5%; }
+
+      .text { 
+        font-size: 1.4rem;
+        width: 75%; 
+      }
+      .image { width: 20%; }
+
+      p:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .end {
+    padding: 1rem;
+    background-color: $green;
+    color: white;
+    text-decoration: none;
+    font-size: 2rem;
+    font-weight: 500;
+  }
+
+  input.email,
+  button.submit {
+    line-height: 2rem;
+    padding: .6rem;
+    border: 0;
+  }
+
+  input.email {
+    background-color: $gray-light;
+    color: #fff;
+    margin-right: 1rem;
+  }
+
+  input.email::-moz-placeholder { color: #D2D2D2; }
+  input.email::-webkit-input-placeholder { color: #D2D2D2; }
+
+  button.submit {
+    background-color: $green;
+    color: #fff;
+  }
+
+  .road {
+    border-left: .3rem solid $green;
+    padding-left: 3rem;
+    padding-bottom: 2rem;
+  }
+
+  .road .step {
+    padding-top: 2rem;
+
+    h2,
+    h3 { 
+      display:inline-block;
+      padding-top: 0;
+      font-size: 1.5rem;
+    }
+
+    h2 { 
+      color: $green; 
+      width: 2rem;
+      text-align: center;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      border: 4px solid $gray-light;
+      background-color: $gray-lighter;
+      margin: -.5rem 2.65rem 0 -3.65rem;
+      vertical-align: middle;
+    }
+
+    h3 { 
+      color: $blue; 
+      margin-left: 1rem;
+    }
+
+    p { margin-left: 3rem; }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .body .urbit {
+    margin-top: 4rem;
+
+    .slide .pair {
+      &,
+      .text,
+      .image {
+        display: block;
+        width: 100%;
+      }
+
+      .image { text-align: center; }
+      .image.left { margin-bottom: 2rem; }
+      .image.right { margin-top: 2rem; }
+    }
+  }
+}
