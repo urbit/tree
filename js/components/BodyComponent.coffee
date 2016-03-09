@@ -87,7 +87,11 @@ extras =
   footer: recl
     displayName: "Footer"
     render: ->
-      (div {className:"footer"}, (p {}, "This page was served by Urbit."))  
+      (div {className:"footer"}, (p {}, [
+        "This page was served by an Urbit."
+        (a {href:"mailto:urbit@urbit.org"}, "urbit@urbit.org")
+        ])  
+      )
 
 module.exports = query {
   body:'r'

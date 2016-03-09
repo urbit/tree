@@ -4,11 +4,16 @@
 
 .h-arrow {
   width: 100%;
+  height: 9rem;
   margin-bottom: 3rem;
 
-  &,
   h1,
   img { float: left; }
+
+  img {
+    height: 6rem;
+    margin: 1rem 0 0 1rem;
+  }
 
   h1 { 
     color: $blue;
@@ -21,6 +26,19 @@
     color: $blue;
   }
 
+}
+
+.footer {
+  margin-top: 3rem;
+  font-weight: 500;
+  color: $gray-light;
+
+  a {
+    color: $green;
+    text-decoration: none;
+    border-bottom: 2px solid $green;
+    margin-left: .6rem;
+  }
 }
 
 .body[data-path^='/docs'],
