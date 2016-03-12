@@ -65,7 +65,9 @@ Nav = React.createFactory query {
         navbar:     (@props.meta.navmode is 'navbar')
         ctrl:       true
         open:       (@state.open is true)
-      if @props.meta.navclass then navClas[@props.meta.navclass] = true
+      if @props.meta.layout 
+        for v in @props.meta.layout.split ","
+          navClas[v.trim()] = true
       navClas = clas navClas
       iconClass = clas
         icon: true
@@ -83,7 +85,7 @@ Nav = React.createFactory query {
 
       itemsClass = clas
         items: true
-        'col-md-11':true
+        'col-md-11':(@props.meta.navmode is 'navbar')
 
       if @props.meta.navsub
         subprops = _.cloneDeep @props
@@ -203,6 +205,9 @@ module.exports = query {
   render: ->
     return (div {}, "") if @props.meta.anchor is 'none' 
 
+    navClas = clas
+      container: @props.meta.container is 'false'
+
     kidsPath = @props.sein
     kidsPath = @props.meta.navpath if @props.meta.navpath
 
@@ -221,5 +226,6 @@ module.exports = query {
           ga:{open:@state.open,toggle:TreeActions.toggleNav}
           c:[]
         }, "subnav"
-    div {}, kids
+
+    div {id:'head', className:navClas}, kids
   )

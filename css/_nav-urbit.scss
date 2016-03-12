@@ -74,6 +74,21 @@
   }
 }
 
+.urbit.home.navbar.ctrl {
+  .icon .home {
+    border-color: #fff;
+    background-color: #fff;
+  }
+
+  .icon .home:before {
+    color: #000;
+  }
+
+  ul.nav li a {
+    color: $gray-lightest;
+  }
+}
+
 @include media-breakpoint-down(sm) {
   .urbit.navbar.ctrl {
     .icon {

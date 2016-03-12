@@ -108,14 +108,17 @@ module.exports = query {
           props[name] = @props.meta[name]
         React.createElement extras[name], props
     
-    containerClas = {body:true}
+    outerClas = clas
+      container: @props.meta.container isnt 'false'
+
+    innerClas = {body:true}
     if @props.meta.anchor isnt 'none' and @props.meta.navmode isnt 'navbar'
-      containerClas['col-md-10'] = true
-      containerClas['col-md-offset-3'] = true
-    if @props.meta.navmode is 'navbar'
-      containerClas['col-md-9'] = true
-      containerClas['col-md-offset-1'] = true
-    containerClas = clas containerClas
+      innerClas['col-md-10'] = true
+      innerClas['col-md-offset-3'] = true
+    if @props.meta.navmode is 'navbar' and @props.meta.container isnt 'false'
+      innerClas['col-md-9'] = true
+      innerClas['col-md-offset-1'] = true
+    innerClas = clas innerClas
 
     bodyClas = clas (@props.meta.layout?.split ',')    
 
@@ -139,13 +142,17 @@ module.exports = query {
         extra 'author'
       )
 
-    div {className:containerClas,'data-path':@props.path},[
-      (div {
-          key:"body"+@props.path
-          className: bodyClas
-          }, parts
-      )
+    div {className:outerClas},[
+      div {className:innerClas,'data-path':@props.path},[
+        (div {
+            key:"body"+@props.path
+            id: 'body'
+            className: bodyClas
+            }, parts
+        )
+      ]
     ]
 ), (recl
-  render: -> (div {className:"col-md-offset-3 col-md-10"}, rele(load))
+  render: -> 
+    (div {id:'body', className:"col-md-offset-3 col-md-10"}, rele(load))
 )
