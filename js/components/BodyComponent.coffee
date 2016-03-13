@@ -87,11 +87,17 @@ extras =
   footer: recl
     displayName: "Footer"
     render: ->
-      (div {className:"footer"}, (p {}, [
-        "This page was served by an Urbit."
-        (a {href:"mailto:urbit@urbit.org"}, "urbit@urbit.org")
-        ])  
-      )
+      containerClas = clas
+        footer: true
+        container: (@props.container is 'false')
+      footerClas = clas
+        'col-md-12': (@props.container is 'false')
+      (div {className:containerClas}, [
+        (div {className:footerClas}, [
+          "This page was served by an Urbit."
+          (a {href:"mailto:urbit@urbit.org"}, "urbit@urbit.org")
+        ])
+      ])
 
 module.exports = query {
   body:'r'
@@ -128,7 +134,7 @@ module.exports = query {
       reactify @props.body
       extra 'next', {dataPath:@props.sein,curr:@props.name}
       extra 'comments'
-      extra 'footer'
+      extra 'footer', {container:@props.meta.container}
     ]
 
     if @props.meta.type is "post"

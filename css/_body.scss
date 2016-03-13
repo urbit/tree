@@ -29,14 +29,14 @@
 }
 
 .footer {
-  margin-top: 3rem;
+  margin-top: 6rem;
   font-weight: 500;
   color: $gray-light;
 
   a {
-    color: $green;
+    color: $gray;
     text-decoration: none;
-    border-bottom: 2px solid $green;
+    border-bottom: 2px solid $gray;
     margin-left: .6rem;
   }
 }

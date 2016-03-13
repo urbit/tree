@@ -36,9 +36,10 @@ module.exports = recl
 
   render: ->
     if @state.submit is false
+      submit = @props.submit ? "Sign up"
       cont = [
         (input {key:"field",className:"email",placeholder:"your@email.com",@onKeyUp}, @state.email)
-        (button {key:"submit",className:"submit",@onClick}, "Sign up")
+        (button {key:"submit",className:"submit",@onClick}, submit)
       ]
     else
       cont = [(div {className:"submitted"},"Got it. Thanks!")]
