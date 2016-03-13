@@ -5,6 +5,7 @@ query      = require './Async.coffee'
 reactify   = require './Reactify.coffee'
 
 TreeActions = require '../actions/TreeActions.coffee'
+TreeStore   = require '../stores/TreeStore.coffee'
 
 Comments    = require './CommentsComponent.coffee'
 
@@ -92,8 +93,8 @@ extras =
         container: (@props.container is 'false')
       footerClas = clas
         'col-md-12': (@props.container is 'false')
-      (div {className:containerClas}, [
-        (div {className:footerClas}, [
+      (div {className:containerClas,key:'footer-container'}, [
+        (div {className:footerClas,key:'footer-inner'}, [
           "This page was served by an Urbit."
           (a {href:"mailto:urbit@urbit.org"}, "urbit@urbit.org")
         ])
@@ -107,15 +108,17 @@ module.exports = query {
   sein:'t'
 }, (recl
   displayName: "Body"
+  stateFromStore: -> {curr:TreeStore.getCurr()}
+  getInitialState: -> @stateFromStore()
+  _onChangeStore: -> if @isMounted() then @setState @stateFromStore()
+  componentDidMount: -> TreeStore.addChangeListener @_onChangeStore
+
   render: ->
     extra = (name,props={})=> 
       if @props.meta[name]? 
         if (_.keys props).length is 0
           props[name] = @props.meta[name]
         React.createElement extras[name], props
-    
-    outerClas = clas
-      container: @props.meta.container isnt 'false'
 
     innerClas = {body:true}
     if @props.meta.anchor isnt 'none' and @props.meta.navmode isnt 'navbar'
@@ -126,7 +129,7 @@ module.exports = query {
       innerClas['col-md-offset-1'] = true
     innerClas = clas innerClas
 
-    bodyClas = clas (@props.meta.layout?.split ',')    
+    bodyClas = clas (@props.meta.layout?.split ',')
 
     parts = [
       extra 'spam'
@@ -148,8 +151,8 @@ module.exports = query {
         extra 'author'
       )
 
-    div {className:outerClas},[
-      div {className:innerClas,'data-path':@props.path},[
+    div {dataPath:@state.curr,key:@state.curr},[
+      div {className:innerClas,'data-path':@props.path,key:'body-inner'},[
         (div {
             key:"body"+@props.path
             id: 'body'

@@ -98,8 +98,11 @@
 
 .urbit ul.blog {
   list-style-type: none;
-
   padding-left: 0;
+
+  li {
+    margin-bottom: 12rem;
+  }
 
   .btn {
     padding: .3rem;

@@ -16,6 +16,29 @@ img.logo.first {
   margin-bottom: 2rem;
 }
 
+div.logo {
+  width: 3rem;
+  height: 3rem;
+  background-color: #fff;
+  display: inline-block;
+  margin-right: 2rem;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-top: -.8rem;
+}
+
+div.logo:before {
+  content: "~";
+  color: $gray-light;
+  font-size: 2.6rem;
+  vertical-align: middle;
+  line-height: 3rem;
+  margin-top: .2rem;
+  text-align: center;
+  width: 2rem;
+  display: inline-block;
+}
+
 .short {
   width: 9 / $grid-columns * 100%;
 }

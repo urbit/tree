@@ -2,8 +2,8 @@
 
 .urbit.navbar.ctrl {
   .icon .home {
-    border-color: $blue;
-    background-color: $blue;
+    border-color: $gray-light;
+    background-color: $gray-light;
     width: 3rem;
     height: 3rem;
     margin: 0 4rem 0 0;
@@ -34,27 +34,27 @@
     }
 
     .btn {
-      border: 3px solid $blue;
+      border: 3px solid $black;
       margin-top: -3px;
       height: 3rem;
       padding: 0rem;
 
       a { 
         font-size: 1rem;
-        color: $blue;
+        color: $black;
         letter-spacing: 0; 
       }
     }
 
     .btn.selected,
     .btn:hover {
-      background-color: $blue;
+      background-color: $black;
       a { color: #fff; }
     }
 
     li a:hover,
     li.selected a {
-      color: $blue;
+      color: $black;
     }
   }
 
@@ -76,6 +76,7 @@
 
 .urbit.home.navbar.ctrl {
   .icon .home {
+    opacity: 0;
     border-color: #fff;
     background-color: #fff;
   }

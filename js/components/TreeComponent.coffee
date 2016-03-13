@@ -28,7 +28,7 @@ module.exports = query {
       container: @props.meta.container isnt 'false'
 
     (div {className:treeClas},[
-      (head {}, "")
-      (body {}, "")
+      (head {key:'head-container'}, "")
+      (body {key:'body-container'}, "")
     ])
 )

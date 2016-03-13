@@ -182,9 +182,9 @@ module.exports = query {
     if hist isnt false
       history.pushState {}, "", util.basepath href_parts.join "#"
     if next isnt @props.path
-      ReactDOM.unmountComponentAtNode $('#body')[0]
+      # ReactDOM.unmountComponentAtNode $('#body')[0]
       TreeActions.setCurr next
-      rend (BodyComponent {}, ""),$('#body')[0]
+      # rend (BodyComponent {}, ""),$('#body')[0]
 
   reset: ->
     $("html,body").animate {scrollTop:0}
