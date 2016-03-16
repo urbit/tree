@@ -21,7 +21,7 @@
   ul li,
   ul li a,
   ul li h1 span {
-    color: $green;
+    color: $gray;
     height: 2rem;
   }
 
@@ -39,7 +39,7 @@
   hr { display: none; }
 }
 
-.lead-offset { margin-left: 8rem; }
+.lead-offset { margin-left: 4rem; }
 
 @include media-breakpoint-down(md) { 
   .lead-offset { margin-left: 4rem; }

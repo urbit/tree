@@ -1,6 +1,6 @@
 .body .urbit {
   h1 { 
-    color: $black;
+    color: $brand-primary;
     line-height: 4rem;
   }
 
@@ -27,7 +27,7 @@
 
   button.submit:hover,
   .btn.black:hover {
-    background-color: $black;
+    background-color: $brand-primary;
     color: #fff;
   }
 

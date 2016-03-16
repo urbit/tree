@@ -48,8 +48,12 @@
     overflow:visible;
   }
 
-  a.nav-link:hover { text-decoration:underline; }
-  a.nav-link { letter-spacing: 1px; }
+  a.nav-link { 
+    letter-spacing: 1px;
+    text-decoration: none;
+    border-bottom: 2px solid;
+    line-height: 1rem;
+  }
   .selected a.nav-link { font-weight: 500; }
 }
 
@@ -131,7 +135,12 @@
     max-height: 12rem;  
   }
 
-  a.nav-link { font-size: 1rem; }
+  a.nav-link { 
+    font-size: 1rem;
+    line-height: 1rem;
+    text-decoration: none;
+    border-bottom: 2px solid;
+  }
 
   .ctrl.open {
     ul.nav {
@@ -214,21 +223,21 @@
 // XX should go somewhere else?
 
 [data-path^='/docs'] .selected .nav-link,
-[data-path^='/work'] .selected .nav-link { color: $green; }
+[data-path^='/work'] .selected .nav-link { color: $gray; }
 
 [data-path^='/docs'] .nav-link,
 [data-path^='/work'] .nav-link { font-weight: 500; }
 
 [data-path^='/docs'] .home,
 [data-path^='/work'] .home {
-  background-color: $blue;
-  border-color: $blue;
+  background-color: $gray;
+  border-color: $gray;
 }
 
 [data-path^='/docs'] .home:hover,
 [data-path^='/work'] .home:hover {
-  background-color: $blue;
-  border-color: $blue;
+  background-color: $gray-light;
+  border-color: $gray-light;
   opacity: .6;
 }
 

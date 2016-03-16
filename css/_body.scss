@@ -16,14 +16,14 @@
   }
 
   h1 { 
-    color: $blue;
+    color: $brand-primary;
     display: inline-block;
     line-height: 4rem;
   }
 
   h1 code {
     background-color: transparent;
-    color: $blue;
+    color: $brand-primary;
   }
 
 }
@@ -43,10 +43,10 @@
 
 .body[data-path^='/docs'],
 .body[data-path^='/work'] {
-  h1 { color: $blue; }
+  h1 { color: $brand-primary; }
   h1 code {
     background-color: transparent;
-    color: $blue;
+    color: $brand-primary;
     padding: 0;
   }
 
@@ -54,22 +54,22 @@
     h2 { color: $gray-light; }
     
     h2 code { 
-      color: $blue;
+      color: $brand-primary;
       background-color: transparent;
     }
 
-    h2 a { color: $blue; }
+    h2 a { color: $brand-primary; }
 
     hr { margin-bottom: 3rem; }
   }
 }
 
 .body[data-path^='/work'] {
-  h2 { color: $blue; }
+  h2 { color: $brand-primary; }
 }
 
 .body[data-path^='/docs/system/hoon/runes/'] { h1 { color: $gray-light; } }
-.body[data-path^='/docs/system/hoon/runes/basic'] { h1 { color: $blue; } }
+.body[data-path^='/docs/system/hoon/runes/basic'] { h1 { color: $brand-primary; } }
 
 .body[data-path^='/docs/system/hoon/library/'] { 
   h3 { font-size: 1.5rem; } 
