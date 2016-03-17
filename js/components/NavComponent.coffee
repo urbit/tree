@@ -61,7 +61,6 @@ Nav = React.createFactory query {
         subnav: (@props.meta.navsub?)
 
       navClas = 
-        'col-md-1': (@props.meta.navmode isnt 'navbar')
         navbar:     (@props.meta.navmode is 'navbar')
         ctrl:       true
         open:       (@state.open is true)
