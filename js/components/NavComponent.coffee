@@ -149,7 +149,6 @@ module.exports = query {
 
   componentDidMount: -> 
     @setTitle()
-    # @interval = setInterval @checkURL,100
 
     TreeStore.addChangeListener @_onChangeStore
         
@@ -190,12 +189,6 @@ module.exports = query {
   goTo: (path) ->
     @reset()
     @setPath path
-  
-  checkURL: ->
-    if @state.url isnt window.location.pathname
-      @reset()
-      @setPath window.location.pathname,false
-      @setState url: window.location.pathname
   
   render: ->
     return (div {}, "") if @props.meta.anchor is 'none' 
