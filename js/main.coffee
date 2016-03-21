@@ -4,6 +4,10 @@ $ ->
   util = require './utils/util.coffee'
   require './utils/scroll.coffee'
 
+  if document.location.pathname.substr(-1) isnt "/"
+    history.replaceState {}, "",document.location.pathname+"/"+
+      document.location.search+
+      document.location.hash
 
   # we load modules that may need to send actions up, so we attach
   # the actions to window here.

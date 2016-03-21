@@ -149,7 +149,7 @@ module.exports = query {
 
   componentDidMount: -> 
     @setTitle()
-    @interval = setInterval @checkURL,100
+    # @interval = setInterval @checkURL,100
 
     TreeStore.addChangeListener @_onChangeStore
         
@@ -159,9 +159,10 @@ module.exports = query {
       if href[0] is "#" then return true;
       if href and not /^https?:\/\//i.test(href)
         e.preventDefault()
-        if href?[0] isnt "/"
-          href = (document.location.pathname.replace /[^\/]*\/?$/, '') + href
-        _this.goTo util.fragpath href
+        url = new URL @.href
+        if url.pathname.substr(-1) isnt "/"
+          url.pathname += "/"
+        _this.goTo url.pathname+url.search+url.hash
     @checkRedirect()
 
   checkRedirect: ->
@@ -173,17 +174,12 @@ module.exports = query {
     title = @props.meta.title if @props.meta?.title
     document.title = "#{title} - #{@props.path}"
 
-  setPath: (href,hist) ->
-    href_parts = href.split("#")
-    next = href_parts[0]
-    if next.substr(-1) is "/" then next = next.slice(0,-1)
-    href_parts[0] = next
+  setPath: (path,hist) ->
     if hist isnt false
-      history.pushState {}, "", util.basepath href_parts.join "#"
+      history.pushState {},"",path
+    next = util.fragpath path.split('#')[0]
     if next isnt @props.path
-      # ReactDOM.unmountComponentAtNode $('#body')[0]
       TreeActions.setCurr next
-      # rend (BodyComponent {}, ""),$('#body')[0]
 
   reset: ->
     $("html,body").animate {scrollTop:0}
@@ -198,7 +194,7 @@ module.exports = query {
   checkURL: ->
     if @state.url isnt window.location.pathname
       @reset()
-      @setPath (util.fragpath window.location.pathname),false
+      @setPath window.location.pathname,false
       @setState url: window.location.pathname
   
   render: ->
