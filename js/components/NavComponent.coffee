@@ -41,6 +41,7 @@ Nav = React.createFactory query {
 
     toggleFocus: (state) -> $(ReactDOM.findDOMNode(@)).toggleClass 'focus',state
     toggleNav: -> TreeActions.toggleNav()
+    closeNav: -> TreeActions.closeNav()
 
     render: -> 
       attr = {
@@ -62,6 +63,7 @@ Nav = React.createFactory query {
 
       navClas = 
         navbar:     (@props.meta.navmode is 'navbar')
+        'col-md-2': (@props.meta.navmode isnt 'navbar')
         ctrl:       true
         open:       (@state.open is true)
       if @props.meta.layout 
@@ -79,7 +81,7 @@ Nav = React.createFactory query {
           (Dpad @props,"") 
         else ""
       sibs  = if @state.sibs isnt false and @props.meta?.navsibs isnt "false"
-          (Sibs _.merge(_.clone(@props),{@toggleNav}), "") 
+          (Sibs _.merge(_.clone(@props),{@closeNav}), "") 
         else ""
 
       itemsClass = clas
@@ -150,6 +152,8 @@ module.exports = query {
   componentDidMount: -> 
     @setTitle()
 
+    window.onpopstate = @pullPath
+
     TreeStore.addChangeListener @_onChangeStore
         
     _this = @
@@ -172,6 +176,11 @@ module.exports = query {
     title = $('#body h1').first().text() || @props.name
     title = @props.meta.title if @props.meta?.title
     document.title = "#{title} - #{@props.path}"
+
+  pullPath: ->
+    l = document.location
+    path = l.pathname+l.search+l.hash
+    @setPath path,false
 
   setPath: (path,hist) ->
     if hist isnt false

@@ -39,6 +39,7 @@ module.exports =
     }
 
   toggleNav: -> TreeDispatcher.handleViewAction {type:"toggleNav"}
+  closeNav: -> TreeDispatcher.handleViewAction {type:"closeNav"}
 
   clearNav: ->
     TreeDispatcher.handleViewAction {type:"clearNav"}

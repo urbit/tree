@@ -133,6 +133,7 @@ TreeStore = _.extend (new EventEmitter).setMaxListeners(50), {
     _nav = nav
   getNav: -> _nav
   toggleNav: -> _nav.open = !_nav.open
+  closeNav: -> _nav.open = false
   clearNav: -> 
     _nav = 
       title:null
