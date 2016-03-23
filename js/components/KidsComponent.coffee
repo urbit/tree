@@ -35,11 +35,14 @@ module.exports = query {kids: {body:'r', meta:'j'}}, recl
     keys = _.keys(keyed).sort()
     if @props.sortBy is 'date' then keys.reverse()
 
-    k = clas
+    kidsClas = clas
       kids:true
       @props.className
+
+    kidClas = clas
+      "col-md-4":(@props.grid is 'true')
         
-    div {className:k,key:"kids"},
+    div {className:kidsClas,key:"kids"},
       for k in keys
         elem = @props.kids[keyed[k]] ? ""
-        [(div {key:keyed[k],id:keyed[k],className:"col-md-4"}, reactify elem.body), (hr {})]
+        [(div {key:keyed[k],id:keyed[k],className:kidClas}, reactify elem.body), (hr {})]
