@@ -19,17 +19,23 @@ module.exports = query {
   path:'t'
 }, recl
   displayName: "Plan"
-  getInitialState: -> edit:no, plan:@props.plan
+  getInitialState: -> edit:no, plan:@props.plan, focus: null
   componentWillReceiveProps: (props)->
     if _.isEqual @props.plan, @state.plan
       @setState plan: props.plan
+    
+  refInput: (ref)-> 
+    (node)=>
+      @[ref] = node
+      if ref is @state.focus
+        node?.focus()
       
   saveInfo: ->
-    {who,loc} = @refs
-    plan = {who:who.value,loc:loc.value,acc:@props.plan?.acc}
+    plan = {who:@who.value,loc:@loc.value,acc:@props.plan?.acc}
     unless _.isEqual plan, @state.plan
       TreeActions.setPlanInfo plan
       @setState {plan}
+    @setState edit:no, focus:null
     
   render: ->
     {beak,path} = @props
@@ -39,18 +45,26 @@ module.exports = query {
         "~"+urb.sein
       else "self"
         
-    if @state.edit
-      editButton = button {onClick:=> @saveInfo(); @setState edit:no}, "save"
-      editable = (ref,s)=> input {ref,defaultValue:s}
+    if urb.user isnt urb.ship
+      editButton = null
+      editable = (ref,s)-> s
+    else if @state.edit
+      editButton = button {onClick:=> @saveInfo()}, "save"
+      editable = (ref,s)=>
+        input {
+          defaultValue:s
+          ref: @refInput ref
+          onKeyDown: ({keyCode})=> @saveInfo() if keyCode is 13
+        }
     else
       editButton = button {onClick:=> @setState edit:yes}, "edit"
       editable = (ref,s)=>
         loading = unless @props.plan?[ref] is @state.plan?[ref]
           rele load, {}
-        span {}, s, loading
+        span {onClick:=> @setState edit:yes, focus:ref}, s, loading
     
     (div {className:"plan"},
-       editButton if urb.user is urb.ship
+       editButton
        (code {}, "~"+urb.ship)
        (h6 {}, editable 'who', who) if who? or @state.edit
        (Grid {className:"grid"},
