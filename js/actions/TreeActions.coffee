@@ -23,6 +23,9 @@ module.exports =
   addComment: (path,text)->
     if path[0] isnt "/" then path = "/"+path
     TreePersistence.put "talk-comment", path, text
+    
+  setPlanInfo: ({who,loc})->
+    console.log "send-stub", {who,loc}
   
   setCurr: (path) ->
     TreeDispatcher.handleViewAction

@@ -1,7 +1,11 @@
+load       = require './LoadComponent.coffee'
 query      = require './Async.coffee'
 
+TreeActions = require '../actions/TreeActions.coffee'
+
 recl = React.createClass
-{div,textarea,a,h6,code} = React.DOM
+rele = React.createElement
+{div,textarea,button,input,a,h6,code,span} = React.DOM
 
 {table,tbody,tr,td}  = React.DOM      # XX flexbox?
 Grid = (props,rows...)-> # Grid [[1,2],null,[3,4],[5,6]]
@@ -15,18 +19,42 @@ module.exports = query {
   path:'t'
 }, recl
   displayName: "Plan"
+  getInitialState: -> edit:no, plan:@props.plan
+  componentWillReceiveProps: (props)->
+    if _.isEqual @props.plan, @state.plan
+      @setState plan: props.plan
+      
+  saveInfo: ->
+    {who,loc} = @refs
+    plan = {who:who.value,loc:loc.value,acc:@props.plan?.acc}
+    unless _.isEqual plan, @state.plan
+      TreeActions.setPlanInfo plan
+      @setState {plan}
+    
   render: ->
-    {beak,path,plan} = @props
-    {acc,loc,who} = plan ? {}
+    {beak,path} = @props
+    {acc,loc,who} = @state.plan ? {}
     issuedBy =
       if urb.sein isnt urb.ship
         "~"+urb.sein
       else "self"
+        
+    if @state.edit
+      editButton = button {onClick:=> @saveInfo(); @setState edit:no}, "save"
+      editable = (ref,s)=> input {ref,defaultValue:s}
+    else
+      editButton = button {onClick:=> @setState edit:yes}, "edit"
+      editable = (ref,s)=>
+        loading = unless @props.plan?[ref] is @state.plan?[ref]
+          rele load, {}
+        span {}, s, loading
+    
     (div {className:"plan"},
+       editButton if urb.user is urb.ship
        (code {}, "~"+urb.ship)
-       (h6 {}, who) if who?
+       (h6 {}, editable 'who', who) if who? or @state.edit
        (Grid {className:"grid"},
-         ["Location:",       loc ? "unknown"]
+         ["Location:",       (editable 'loc', (loc ? "unknown"))]
          ["Issued by:",      issuedBy],
          ["Immutable link:", (a {href:beak+"/web"+path}, beak)],
          ["Connected to:",   div {},
