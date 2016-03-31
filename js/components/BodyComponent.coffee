@@ -8,6 +8,7 @@ TreeActions = require '../actions/TreeActions.coffee'
 TreeStore   = require '../stores/TreeStore.coffee'
 
 Comments    = require './CommentsComponent.coffee'
+Plan        = require './PlanComponent.coffee'
 
 util        = require '../utils/util.coffee'
 
@@ -16,7 +17,7 @@ rele   = React.createElement
 {div,h1,h3,p,img,a,input}  = React.DOM
 
 # named = (x,f)->  f.displayName = x; f
-
+  
 extras =
   spam: recl
     displayName: "Spam"
@@ -57,6 +58,9 @@ extras =
   author: recl
     displayName: "Author"
     render: -> (h3 {className:'author'}, @props.author)
+
+  plan: Plan
+
 
   next: query {
     path:'t'
@@ -134,6 +138,7 @@ module.exports = query {
     parts = [
       extra 'spam'
       extra 'logo', color: @props.meta.logo
+      extra 'plan'
       reactify @props.body
       extra 'next', {dataPath:@props.sein,curr:@props.name}
       extra 'comments'

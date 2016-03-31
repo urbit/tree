@@ -21,9 +21,9 @@ module.exports =
         waspWait = []
       if cb then cb null,data
     
-  put: (mark,pax,txt)->
-    appl = /[a-z]*/.exec(mark)[0]
-    urb.send {pax,txt}, {mark,appl}
+  put: (data,mark,appl)->
+    appl ?= /[a-z]*/.exec(mark)[0]
+    urb.send data, {mark,appl}
 
   encode: (obj)->
     delim = (n)-> Array(n+1).join('_') || '.'

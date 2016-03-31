@@ -20,9 +20,12 @@ module.exports =
   addVirtual: (components) ->
     TreeDispatcher.handleViewAction {type:"addVirtual", components}
 
-  addComment: (path,text)->
-    if path[0] isnt "/" then path = "/"+path
-    TreePersistence.put "talk-comment", path, text
+  addComment: (pax,txt)->
+    if pax[0] isnt "/" then pax = "/"+pax
+    TreePersistence.put {pax,txt}, "talk-comment"
+    
+  setPlanInfo: ({who,loc})->
+    TreePersistence.put {who,loc}, "write-plan-info", "hood"
   
   setCurr: (path) ->
     TreeDispatcher.handleViewAction
