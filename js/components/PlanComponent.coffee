@@ -47,28 +47,30 @@ module.exports = query {
         
     if urb.user isnt urb.ship
       editButton = null
-      editable = (ref,s)-> s
+      editable = (ref,val,placeholder)-> val ? placeholder
     else if @state.edit
       editButton = button {onClick:=> @saveInfo()}, "save"
-      editable = (ref,s)=>
+      editable = (ref,val,placeholder)=>
         input {
-          defaultValue:s
+          placeholder
+          defaultValue:val
           ref: @refInput ref
           onKeyDown: ({keyCode})=> @saveInfo() if keyCode is 13
         }
     else
       editButton = button {onClick:=> @setState edit:yes}, "edit"
-      editable = (ref,s)=>
-        loading = unless @props.plan?[ref] is @state.plan?[ref]
-          rele load, {}
-        span {onClick:=> @setState edit:yes, focus:ref}, s, loading
+      editable = (ref,val,placeholder)=>
+        span {onClick:=> @setState edit:yes, focus:ref},
+          val ? placeholder
+          unless @props.plan?[ref] is @state.plan?[ref]
+            rele load, {}
     
     (div {className:"plan"},
        editButton
        (code {}, "~"+urb.ship)
        (h6 {}, editable 'who', who) if who? or @state.edit
        (Grid {className:"grid"},
-         ["Location:",       (editable 'loc', (loc ? "unknown"))]
+         ["Location:",       (editable 'loc', loc, "unknown")]
          ["Issued by:",      issuedBy],
          ["Immutable link:", (a {href:beak+"/web"+path}, beak)],
          ["Connected to:",   div {},
