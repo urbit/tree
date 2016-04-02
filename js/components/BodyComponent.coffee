@@ -122,6 +122,7 @@ module.exports = query {
       if @props.meta[name]? 
         if (_.keys props).length is 0
           props[name] = @props.meta[name]
+        props.key = name
         React.createElement extras[name], props
 
     innerClas = {body:true}
@@ -139,7 +140,7 @@ module.exports = query {
       extra 'spam'
       extra 'logo', color: @props.meta.logo
       extra 'plan'
-      reactify @props.body
+      reactify @props.body, 'body'
       extra 'next', {dataPath:@props.sein,curr:@props.name}
       extra 'comments'
       extra 'footer', {container:@props.meta.container}
