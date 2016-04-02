@@ -8,7 +8,7 @@ TreeActions = require '../actions/TreeActions.coffee'
 TreeStore   = require '../stores/TreeStore.coffee'
 
 Comments    = require './CommentsComponent.coffee'
-Plan        = require './PlanComponent.coffee'
+# Plan        = require './PlanComponent.coffee'
 
 util        = require '../utils/util.coffee'
 
@@ -59,7 +59,7 @@ extras =
     displayName: "Author"
     render: -> (h3 {className:'author'}, @props.author)
 
-  plan: Plan
+  # plan: Plan
 
 
   next: query {
@@ -138,7 +138,7 @@ module.exports = query {
     parts = [
       extra 'spam'
       extra 'logo', color: @props.meta.logo
-      extra 'plan'
+      # extra 'plan'
       reactify @props.body
       extra 'next', {dataPath:@props.sein,curr:@props.name}
       extra 'comments'

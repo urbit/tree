@@ -10,4 +10,5 @@ module.exports =
   email:      require './EmailComponent.coffee'
   module:     require './ModuleComponent.coffee'
   script:     require './ScriptComponent.coffee'
+  plan:       require './PlanComponent.coffee'
   lost:       recl render: -> (div {}, "<lost(", @props.children, ")>")
