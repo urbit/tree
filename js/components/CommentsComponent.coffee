@@ -49,12 +49,12 @@ module.exports = query {comt:'j', path:'t'}, recl
                           }
 
       (div {}, 
-        (div {className:"add-comment"},[
-          (form {ref:"in",@onSubmit},[
+        (div {className:"add-comment"},
+          (form {ref:"in",@onSubmit},
             (textarea textareaAttr),
             (input inputAttr)
-          ])
-        ])
+          )
+        )
         (if @state.loading is true then (rele load) else "")
         (div {className:"comments"}, @props.comt.map (props,key)-> 
             rele Comment, _.extend {key}, props
