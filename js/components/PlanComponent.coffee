@@ -9,9 +9,9 @@ rele = React.createElement
 
 {table,tbody,tr,td}  = React.DOM      # XX flexbox?
 Grid = (props,rows...)-> # Grid [[1,2],null,[3,4],[5,6]]
-  _td = (x)-> (td {}, x)
-  _tr = (x)-> if x? then (tr {}, x.map(_td)...)
-  (table props, (tbody {}, rows.map(_tr)...))
+  _td = (x)-> (div {className:"td"}, x)
+  _tr = (x)-> if x? then (div {className:"tr"}, x.map(_td)...)
+  (div props, rows.map(_tr)...)
 
 module.exports = query {
   plan:'j'
@@ -49,7 +49,7 @@ module.exports = query {
       editButton = null
       editable = (ref,val,placeholder)-> val ? placeholder
     else if @state.edit
-      editButton = button {onClick:=> @saveInfo()}, "save"
+      editButton = button {className:'edit', onClick:=> @saveInfo()}, "Save"
       editable = (ref,val,placeholder)=>
         input {
           placeholder
@@ -58,7 +58,7 @@ module.exports = query {
           onKeyDown: ({keyCode})=> @saveInfo() if keyCode is 13
         }
     else
-      editButton = button {onClick:=> @setState edit:yes}, "edit"
+      editButton = button {className:'edit', onClick:=> @setState edit:yes}, "Edit"
       editable = (ref,val,placeholder)=>
         span {onClick:=> @setState edit:yes, focus:ref},
           val ? placeholder
@@ -66,19 +66,20 @@ module.exports = query {
             rele load, {}
     
     (div {className:"plan"},
-       editButton
-       (code {}, "~"+urb.ship)
-       (h6 {}, editable 'who', who) if who? or @state.edit
+       (div {className:"home"}, "")
+       (div {className:"mono"}, "~"+urb.ship)
+       (h6 {}, editable 'who', who, "Sun Tzu") if who? or @state.edit
        (Grid {className:"grid"},
-         ["Location:",       (editable 'loc', loc, "unknown")]
+         ["Location:",       (editable 'loc', loc, "94107/usa")]
          ["Issued by:",      issuedBy],
          ["Immutable link:", (a {href:beak+"/web"+path}, beak)],
          ["Connected to:",   div {},
             for key,{usr,url} of acc
-              (div {key},
+              (div {key, className:'service'},
                 if !url? then key+"/"+usr
                 else a {href:url}, key+"/"+usr
               )
          ] unless _.isEmpty acc 
        )
+       editButton
     )
