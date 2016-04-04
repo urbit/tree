@@ -163,6 +163,10 @@ module.exports = query {
       if href and not /^https?:\/\//i.test(href)
         e.preventDefault()
         url = new URL @.href
+        if urb.util.basepath("",url.pathname) isnt 
+        urb.util.basepath("",document.location.pathname)
+          document.location = @.href
+          return
         if url.pathname.substr(-1) isnt "/"
           url.pathname += "/"
         _this.goTo url.pathname+url.search+url.hash

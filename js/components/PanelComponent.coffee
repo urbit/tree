@@ -1,17 +1,27 @@
 recl = React.createClass
 rele = React.createElement
-{div,textarea,button,input,a,h6,code,span} = React.DOM
+{nav,ul,li,a} = React.DOM
 
 module.exports = recl
   render: ->
     if urb.user isnt urb.ship
-      (div {className:"panel"}, [
-        (div {}, "Log in")
+      (nav {className:"navbar panel"}, [
+        (ul {className:"nav navbar-nav"},[
+          (li {className:'nav-item pull-right'}, 
+            (a {href:"/~~"}, "Log in"))
+        ])
       ])
+
     else
-      (div {className:"panel"}, [
-        (div {}, "Talk")
-        (div {}, "Dojo")
-        (div {}, "Static")
-        (div {}, "Log out")
+      (nav {className:"navbar panel"}, [
+        (ul {className:"nav navbar-nav"},[
+          (li {className:"nav-item"}, 
+            (a {href:"/~~/talk"}, "Talk"))
+          (li {className:"nav-item"}, 
+            (a {href:"/~~/dojo"}, "Dojo"))
+          (li {className:"nav-item"}, 
+            (a {href:"/~~/static"}, "Static"))
+          (li {className:'nav-item pull-right'}, 
+            (a {href:"/~/away"}, "Log out"))
+        ])
       ])
