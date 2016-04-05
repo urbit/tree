@@ -1,6 +1,11 @@
 // urbit.org navbar
 
 .urbit.navbar.ctrl {
+  margin-top: 1rem;
+  
+  &,
+  .items { height: 3rem; }
+
   .icon .home {
     border-color: $gray-light;
     background-color: $gray-light;
