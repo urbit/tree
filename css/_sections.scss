@@ -22,17 +22,14 @@
   ul li a,
   ul li h1 span {
     color: $gray;
-    height: 2rem;
+    margin-bottom: 1rem;
+    line-height: 1.5rem;
   }
 
   .kids > div {
     display: inline-block;
     vertical-align: top;
-    margin-right: 3rem;
-    margin-top: 2rem;
-    min-width: 14rem;
     margin-bottom: 3rem;
-    padding: 0;
     float: none;
   }
 
