@@ -1,3 +1,4 @@
+util  = require '../utils/util.coffee'
 _load = require './LoadComponent.coffee'
 
 TreeStore   = require '../stores/TreeStore.coffee'
@@ -5,6 +6,11 @@ TreeActions = require '../actions/TreeActions.coffee'
 
 recl = React.createClass
 {div,span,code} = React.DOM
+
+fragsrc = (src)->
+  if src?
+    {pathname} = new URL src, document.location
+    util.fragpath(pathname)
 
 module.exports = (queries, Child, load=_load)-> recl
   displayName: "Async"
@@ -14,7 +20,7 @@ module.exports = (queries, Child, load=_load)-> recl
     if @isMounted() then @setState @stateFromStore()
   
   getPath: -> 
-    path = @props.dataPath ? TreeStore.getCurr()
+    path = @props.dataPath ? (fragsrc @props.src) ? TreeStore.getCurr()
     if path.slice(-1) is "/"
       path.slice 0,-1
     else path
