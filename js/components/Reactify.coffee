@@ -28,13 +28,17 @@ Virtual = recl
 
   render: ->
     {components} = @state
+    {basePath} = @props
     walk @props.manx,
       ()-> (load {},"")
       (str)-> str
       ({gn,ga,c},key)-> 
+        props = {key}
+        if components[gn]
+          props.basePath = basePath
         rele (components[gn] ? gn),
-             (_.extend {key}, ga),
+             (_.extend props, ga),
              c if c.length
 
-reactify = (manx,key)-> rele Virtual, {manx,key}
+reactify = (manx,key,{basePath}={})-> rele Virtual, {manx,key,basePath}
 module.exports = _.extend reactify, {walk,Virtual}

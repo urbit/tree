@@ -7,9 +7,11 @@ TreeActions = require '../actions/TreeActions.coffee'
 recl = React.createClass
 {div,span,code} = React.DOM
 
-fragsrc = (src)->
+fragsrc = (src, basePath)->
   if src?
-    {pathname} = new URL src, document.location
+    base = new URL document.location
+    base.pathname = util.basepath basePath
+    {pathname} = new URL src, base
     util.fragpath(pathname)
 
 module.exports = (queries, Child, load=_load)-> recl
@@ -20,7 +22,9 @@ module.exports = (queries, Child, load=_load)-> recl
     if @isMounted() then @setState @stateFromStore()
   
   getPath: -> 
-    path = @props.dataPath ? (fragsrc @props.src) ? TreeStore.getCurr()
+    path = @props.dataPath
+    base = @props.basePath ? TreeStore.getCurr()
+    path ?= (fragsrc @props.src, base) ? base
     if path.slice(-1) is "/"
       path.slice 0,-1
     else path

@@ -6,7 +6,7 @@ query       = require './Async.coffee'
 recl = React.createClass
 {div,a,ul,li,hr} = React.DOM
 
-module.exports = query {kids: {body:'r', meta:'j'}}, recl
+module.exports = query {kids: {body:'r', meta:'j', path:'t'}}, recl
   displayName: "Kids"
   render: -> 
     sorted = true
@@ -45,4 +45,5 @@ module.exports = query {kids: {body:'r', meta:'j'}}, recl
     div {className:kidsClas,key:"kids"},
       for k in keys
         elem = @props.kids[keyed[k]] ? ""
-        [(div {key:keyed[k],id:keyed[k],className:kidClas}, reactify elem.body), (hr {})]
+        body = reactify elem.body, k, {basePath:elem.path}
+        [(div {key:keyed[k],id:keyed[k],className:kidClas}, body), (hr {})]

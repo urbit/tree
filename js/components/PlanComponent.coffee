@@ -70,7 +70,7 @@ module.exports = query {
        (div {className:"mono"}, "~"+urb.ship)
        (h6 {}, editable 'who', who, "Sun Tzu") if who? or @state.edit
        (Grid {className:"grid"},
-         ["Location:",       (editable 'loc', loc, "94107/usa")]
+         ["Location:",       (editable 'loc', loc, "Unknown")]
          ["Issued by:",      issuedBy],
          ["Immutable link:", (a {href:beak+"/web"+path}, beak)],
          ["Connected to:",   div {},
