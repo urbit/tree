@@ -1,9 +1,16 @@
 // nav
 
-#head {
-  @each $break,$max-width in $container-max-widths {
-    @include media-breakpoint-up($break) {
-      width: $max-width;
+
+@each $break,$max-width in $container-max-widths {
+  @include media-breakpoint-up($break) {
+    .ctrl {
+      width: $max-width*(3/$grid-columns)-30;  // 30=grid-gutter-width
+    }
+    .ctrl.open,
+    .ctrl:hover {
+      max-width: $max-width*(6/$grid-columns)-30;
+      min-width: $max-width*(3/$grid-columns)-30;
+      width: auto;
     }
   }
 }
@@ -92,13 +99,6 @@
       text-transform: none;
     }
   }
-}
-
-.ctrl.open,
-.ctrl:hover {
-  max-width: 4/$grid-columns*100%;
-  min-width: 2/$grid-columns*100%;
-  width: auto;
 }
 
 .ctrl.navbar.open,
