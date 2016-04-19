@@ -17,7 +17,7 @@ rele   = React.createElement
 {div,h1,h3,p,img,a,input}  = React.DOM
 
 # named = (x,f)->  f.displayName = x; f
-  
+
 extras =
   spam: recl
     displayName: "Spam"
@@ -29,13 +29,13 @@ extras =
         " for our newsletter."
       )
 
-  logo: recl 
+  logo: recl
     displayName: "Logo"
     render: ->
       {color} = @props
       if color is "white" or color is "black"  # else?
         src = "//storage.googleapis.com/urbit-extra/logo/logo-#{color}-100x100.png"
-      (a {href:"http://urbit.org",style:{border:"none"}}, 
+      (a {href:"http://urbit.org",style:{border:"none"}},
        (img {src,className:"logo first"})
       )
 
@@ -118,8 +118,8 @@ module.exports = query {
   componentDidMount: -> TreeStore.addChangeListener @_onChangeStore
 
   render: ->
-    extra = (name,props={})=> 
-      if @props.meta[name]? 
+    extra = (name,props={})=>
+      if @props.meta[name]?
         if (_.keys props).length is 0
           props[name] = @props.meta[name]
         props.key = name
@@ -127,7 +127,7 @@ module.exports = query {
 
     innerClas = {body:true}
     if @props.meta.anchor isnt 'none' and @props.meta.navmode isnt 'navbar'
-      innerClas['col-md-10'] = true
+      innerClas['col-md-9'] = true
       innerClas['col-md-offset-3'] = true
     if @props.meta.navmode is 'navbar' and @props.meta.container isnt 'false'
       innerClas['col-md-9'] = true
@@ -168,6 +168,6 @@ module.exports = query {
       ]
     ]
 ), (recl
-  render: -> 
-    (div {id:'body', className:"col-md-offset-3 col-md-10"}, rele(load))
+  render: ->
+    (div {id:'body', className:"col-md-offset-3 col-md-9"}, rele(load))
 )

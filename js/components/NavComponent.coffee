@@ -36,14 +36,14 @@ Nav = React.createFactory query {
     onTouchStart: -> @ts = Number Date.now()
     onTouchEnd: -> dt = @ts - Number Date.now()
 
-    _home: -> 
+    _home: ->
       @props.goTo if @props.meta.navhome then @props.meta.navhome else "/"
 
     toggleFocus: (state) -> $(ReactDOM.findDOMNode(@)).toggleClass 'focus',state
     toggleNav: -> TreeActions.toggleNav()
     closeNav: -> TreeActions.closeNav()
 
-    render: -> 
+    render: ->
       attr = {
         @onMouseOver
         @onMouseOut
@@ -61,11 +61,11 @@ Nav = React.createFactory query {
         links: true
         subnav: (@props.meta.navsub?)
 
-      navClas = 
+      navClas =
         navbar:     (@props.meta.navmode is 'navbar')
         ctrl:       true
         open:       (@state.open is true)
-      if @props.meta.layout 
+      if @props.meta.layout
         for v in @props.meta.layout.split ","
           navClas[v.trim()] = true
       navClas = clas navClas
@@ -77,10 +77,10 @@ Nav = React.createFactory query {
 
       title = if @state.title then @state.title else ""
       dpad  = if @state.dpad isnt false and @props.meta?.navdpad isnt "false"
-          (Dpad @props,"") 
+          (Dpad @props,"")
         else ""
       sibs  = if @state.sibs isnt false and @props.meta?.navsibs isnt "false"
-          (Sibs _.merge(_.clone(@props),{@closeNav}), "") 
+          (Sibs _.merge(_.clone(@props),{@closeNav}), "")
         else ""
 
       itemsClass = clas
@@ -99,8 +99,8 @@ Nav = React.createFactory query {
         show:@state.subnav?
 
       div attr,
-        div {className:linksClas,key:"links"}, 
-          div {className:iconClass}, 
+        div {className:linksClas,key:"links"},
+          div {className:iconClass},
             (div {className:'home',onClick:@_home}, "")
             (div {className:'app'}, title)
             dpad
@@ -108,24 +108,24 @@ Nav = React.createFactory query {
               className:toggleClas
               type:'button'
               onClick:@toggleNav}, "☰")
-          (div {className:itemsClass}, 
+          (div {className:itemsClass},
             sibs
             sub
           )
   ),  recl
     displayName: "Links_loading"
     _home: -> @props.goTo "/"
-    render: -> 
+    render: ->
       div {
           className:"ctrl",
           "data-path":@props.dataPath,
           key:"nav-loading"
         },
         div {className:'links'},
-          div {className:'icon'}, 
+          div {className:'icon'},
             (div {className:'home',onClick:@_home}, "")
-          ul {className:"nav"}, 
-            li {className:"nav-item selected"}, 
+          ul {className:"nav"},
+            li {className:"nav-item selected"},
               a {className:"nav-link"}, @props.curr
 
 module.exports = query {
@@ -134,27 +134,27 @@ module.exports = query {
   name:'t'
   meta:'j'
   },(recl
-  displayName: "Anchor"
+  displayName: "Nav"
   stateFromStore: -> TreeStore.getNav()
   getInitialState: -> _.extend @stateFromStore(),{url: window.location.pathname}
   _onChangeStore: -> if @isMounted() then @setState @stateFromStore()
 
-  componentWillUnmount: -> 
+  componentWillUnmount: ->
     clearInterval @interval
     $('body').off 'click', 'a'
     TreeStore.removeChangeListener @_onChangeStore
-    
-  componentDidUpdate: -> 
+
+  componentDidUpdate: ->
     @setTitle()
     @checkRedirect()
 
-  componentDidMount: -> 
+  componentDidMount: ->
     @setTitle()
 
     window.onpopstate = @pullPath
 
     TreeStore.addChangeListener @_onChangeStore
-        
+
     _this = @
     $('body').on 'click', 'a', (e) ->
       href = $(@).attr('href')
@@ -162,7 +162,7 @@ module.exports = query {
       if href and not /^https?:\/\//i.test(href)
         e.preventDefault()
         url = new URL @.href
-        if urb.util.basepath("",url.pathname) isnt 
+        if urb.util.basepath("",url.pathname) isnt
         urb.util.basepath("",document.location.pathname)
           document.location = @.href
           return
@@ -172,13 +172,15 @@ module.exports = query {
     @checkRedirect()
 
   checkRedirect: ->
-    if @props.meta.redirect 
+    if @props.meta.redirect
       setTimeout (=> (@goTo @props.meta.redirect)), 0
 
   setTitle: ->
     title = $('#body h1').first().text() || @props.name
     title = @props.meta.title if @props.meta?.title
-    document.title = "#{title} - #{@props.path}"
+    path = @props.path
+    path = "/" if path is ""
+    document.title = "#{title} - #{path}"
 
   pullPath: ->
     l = document.location
@@ -201,9 +203,9 @@ module.exports = query {
   goTo: (path) ->
     @reset()
     @setPath path
-  
+
   render: ->
-    return (div {}, "") if @props.meta.anchor is 'none' 
+    return (div {}, "") if @props.meta.anchor is 'none'
 
     navClas = clas
       container: @props.meta.container is 'false'
@@ -222,7 +224,7 @@ module.exports = query {
 
     if @state.subnav
       kids.push reactify {
-          gn:@state.subnav 
+          gn:@state.subnav
           ga:{open:@state.open,toggle:TreeActions.toggleNav}
           c:[]
         }, "subnav"
