@@ -3,6 +3,11 @@
   padding-bottom: 6rem;
 }
 
+@include media-breakpoint-down(sm) {
+  #tree > div > .container { padding-top: 0; }
+  .body { padding-top: 1rem; }
+}
+
 .lead h1:first-of-type {
   padding-bottom: 0;
 }
@@ -24,7 +29,7 @@
     margin: 1rem 0 0 1rem;
   }
 
-  h1 { 
+  h1 {
     color: $brand-primary;
     display: inline-block;
     line-height: 4rem;
@@ -61,8 +66,8 @@
 
   .book {
     h2 { color: $gray-light; }
-    
-    h2 code { 
+
+    h2 code {
       color: $brand-primary;
       background-color: transparent;
     }
@@ -80,9 +85,9 @@
 .body[data-path^='/docs/system/hoon/runes/'] { h1 { color: $gray-light; } }
 .body[data-path^='/docs/system/hoon/runes/basic'] { h1 { color: $brand-primary; } }
 
-.body[data-path^='/docs/system/hoon/library/'] { 
-  h3 { font-size: 1.5rem; } 
-  h2 { font-size: 1rem; } 
+.body[data-path^='/docs/system/hoon/library/'] {
+  h3 { font-size: 1.5rem; }
+  h2 { font-size: 1rem; }
   .toc {
     h3 {
       padding-top: 0;

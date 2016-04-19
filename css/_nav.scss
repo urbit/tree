@@ -2,28 +2,30 @@
 
 
 @each $break,$max-width in $container-max-widths {
-  @include media-breakpoint-up($break) {
-    .ctrl {
-      width: $max-width*(3/$grid-columns)-30;  // 30=grid-gutter-width
-    }
-    .ctrl.open,
-    .ctrl:hover {
-      max-width: $max-width*(6/$grid-columns)-30;
-      min-width: $max-width*(3/$grid-columns)-30;
-      width: auto;
+  @if $break != 'sm' {
+    @include media-breakpoint-up($break) {
+      .ctrl {
+        width: $max-width*(3/$grid-columns);
+      }
+      .ctrl.open,
+      .ctrl:hover {
+        max-width: $max-width*(6/$grid-columns);
+        min-width: $max-width*(3/$grid-columns);
+        width: auto;
+      }
     }
   }
 }
 
 #head .loading { display: none; }
 
-@include media-breakpoint-down(xs) { 
-  #head { 
-    top: 0; 
+@include media-breakpoint-down(xs) {
+  #head {
+    top: 0;
     z-index: 10;
     width: 100%;
     position: absolute;
-  } 
+  }
   #head.m-down,
   #head.m-up { position: absolute; }
   #head.m-down.m-fixed { position: fixed; }
@@ -59,7 +61,7 @@
     overflow-x:visible;
   }
 
-  a.nav-link { 
+  a.nav-link {
     letter-spacing: 1px;
     text-decoration: none;
     border-bottom: 2px solid;
@@ -76,8 +78,8 @@
 
   .icon,
   ul.nav,
-  li { 
-    display: inline-block; 
+  li {
+    display: inline-block;
     padding: 0;
   }
 
@@ -136,10 +138,10 @@
   }
 
   .ctrl.open {
-    max-height: 12rem;  
+    max-height: 12rem;
   }
 
-  a.nav-link { 
+  a.nav-link {
     font-size: 1rem;
     line-height: 1rem;
     text-decoration: none;
@@ -170,8 +172,8 @@
 
 @include media-breakpoint-up(md) {
   .ctrl .navbar-toggler { display: none; }
-  .ctrl .navbar-toggler.show { 
-    display: block; 
+  .ctrl .navbar-toggler.show {
+    display: block;
     padding: 0;
   }
 }
@@ -190,9 +192,9 @@
   div, a { display: inline-block; }
   a { margin-right: .6rem; }
 
-  .home { 
+  .home {
     margin: 0 $grid-gutter-width/2 $grid-gutter-width/2 0;
-    @include circle(24px,transparent); 
+    @include circle(24px,transparent);
     border: 6px solid $gray-light;
     cursor: pointer;
   }
@@ -216,7 +218,7 @@
 }
 
 @include media-breakpoint-down(sm) {
-  .icon { 
+  .icon {
     margin-left: $grid-gutter-width/2;
     height: 2rem;
 
@@ -276,8 +278,8 @@
 
 [data-path^='/docs/system/hoon/runes'] .nav-link { font-family: 'scp'; }
 [data-path^='/docs/system/hoon/runes'] .nav-link,
-[data-path^='/docs/system/hoon/runes'] .ctrl .selected a.nav-link { 
-  font-weight: 600; 
+[data-path^='/docs/system/hoon/runes'] .ctrl .selected a.nav-link {
+  font-weight: 600;
 }
 
 // menu
@@ -291,7 +293,7 @@
 }
 
 @include media-breakpoint-down(md) {
-  .app { 
+  .app {
     font-size: 1.3rem;
     line-height: 1.3rem;
   }
@@ -306,10 +308,10 @@
 
 .context {
   margin-top: 1rem;
-  
-  .name { 
-    font-weight: 300; 
-    font-size: 1.2rem; 
+
+  .name {
+    font-weight: 300;
+    font-size: 1.2rem;
     font-family: 'scp';
   }
 }
