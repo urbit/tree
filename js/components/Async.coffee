@@ -9,19 +9,20 @@ recl = React.createClass
 
 fragsrc = (src, basePath)->
   if src?
-    base = new URL document.location
-    base.pathname = util.basepath basePath
+    basePath = util.basepath basePath
+    if basePath.slice(-1) isnt "/"  then basePath += "/"
+    base = new URL basePath, document.location
     {pathname} = new URL src, base
     util.fragpath(pathname)
 
 module.exports = (queries, Child, load=_load)-> recl
   displayName: "Async"
-  
+
   getInitialState: -> @stateFromStore()
   _onChangeStore: ->
     if @isMounted() then @setState @stateFromStore()
-  
-  getPath: -> 
+
+  getPath: ->
     path = @props.dataPath
     base = @props.basePath ? TreeStore.getCurr()
     path ?= (fragsrc @props.src, base) ? base
@@ -29,7 +30,7 @@ module.exports = (queries, Child, load=_load)-> recl
       path.slice 0,-1
     else path
 
-  stateFromStore: -> 
+  stateFromStore: ->
     path = @getPath()
     fresh = TreeStore.fulfill path, queries
     unless @state? and path is @state.path
@@ -51,21 +52,21 @@ module.exports = (queries, Child, load=_load)-> recl
           got.kids[k] =
             @mergeWith have.kids?[k], kid, _queries.kids
     got
-    
-  componentDidMount: -> 
+
+  componentDidMount: ->
     TreeStore.addChangeListener @_onChangeStore
     @checkPath()
-    
+
   componentWillUnmount: ->
     TreeStore.removeChangeListener @_onChangeStore
-    
+
   componentDidUpdate: (_props,_state) ->
     if _props isnt @props
       @setState @stateFromStore()
     @checkPath()
-    
+
   checkPath: -> TreeActions.sendQuery @getPath(), @filterFreshQueries()
-  
+
   filterFreshQueries: -> @filterWith @state.fresh, queries
   filterQueries: -> @filterWith @state.got, queries
   filterWith: (have,_queries)->
@@ -83,7 +84,7 @@ module.exports = (queries, Child, load=_load)-> recl
         if _.isEmpty request.kids
           delete request.kids
     request unless _.isEmpty request
-  
+
   scrollHash: -> @getHashElement()?.scrollIntoView()
   getHashElement: ->
     {hash} = document.location

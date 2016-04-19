@@ -21,7 +21,7 @@ Virtual = recl
   displayName: "Virtual"
   getInitialState: -> @stateFromStore()
   stateFromStore: -> components: TreeStore.getVirtualComponents()
-  
+
   _onChangeStore: ->  if @isMounted() then @setState @stateFromStore()
   componentDidMount: -> TreeStore.addChangeListener @_onChangeStore
   componentWillUnmount: ->  TreeStore.removeChangeListener @_onChangeStore
@@ -32,7 +32,7 @@ Virtual = recl
     walk @props.manx,
       ()-> (load {},"")
       (str)-> str
-      ({gn,ga,c},key)-> 
+      ({gn,ga,c},key)->
         props = {key}
         if components[gn]
           props.basePath = basePath
