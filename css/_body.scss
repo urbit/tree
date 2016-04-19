@@ -5,7 +5,7 @@
 
 @include media-breakpoint-down(sm) {
   #tree > div > .container { padding-top: 0; }
-  .body { padding-top: 1rem; }
+  #body { padding-top: 4rem; }
 }
 
 .lead h1:first-of-type {
