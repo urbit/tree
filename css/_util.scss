@@ -1,9 +1,9 @@
 .col-md-10.body { padding-left: 0; }
 
 @include media-breakpoint-down(sm) {
-  .col-md-10.body { 
-    margin-top: $grid-gutter-width/2; 
-    padding-left: $grid-gutter-width/2; 
+  .col-md-10.body {
+    margin-top: $grid-gutter-width/2;
+    padding-left: $grid-gutter-width/2;
   }
 }
 
@@ -17,27 +17,27 @@ img.logo.first {
 }
 
 div.logo {
-  width: 3rem;
-  height: 3rem;
-  background-color: #fff;
+  width: 4rem;
+  height: 4rem;
+  background-color: $brand-primary;
   display: inline-block;
   margin-right: 1rem;
   border-radius: 50%;
   vertical-align: middle;
   margin-top: -.8rem;
-  background-color: $brand-primary;
 }
 
 div.logo:before {
   content: "~";
-  color: $gray-light;
-  font-size: 2.6rem;
+  color: #FFFFFF;
+  font-size: 4rem;
   vertical-align: middle;
-  line-height: 3rem;
+  line-height: 4rem;
   margin-top: .2rem;
   text-align: center;
   width: 2rem;
   display: inline-block;
+  font-weight: 200;
 }
 
 div.logo.inverse:before {
@@ -60,7 +60,7 @@ div.logo.inverse:before {
   margin-bottom: 2rem;
 
   h2,
-  h3 { 
+  h3 {
     padding: 0;
     margin: 0;
     font-size: 1rem;
@@ -85,7 +85,7 @@ div.logo.inverse:before {
   }
 }
 
-.loading:before { 
+.loading:before {
   font-family: 'scp';
   background-color: #000;
   color: #fff;

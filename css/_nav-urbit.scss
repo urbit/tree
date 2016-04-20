@@ -2,7 +2,7 @@
 
 .urbit.navbar.ctrl {
   margin-top: 1rem;
-  
+
   &,
   .items { height: 3rem; }
 
@@ -28,14 +28,17 @@
     li {
       height: 3rem;
       vertical-align: middle;
+      min-width: 0;
+      margin-right: 2rem;
     }
 
     li a {
       text-decoration: none;
-      color: $gray-light;
+      color: #fff;
       font-weight: 500;
       font-size: 1rem;
-      line-height: 3rem;
+      border-bottom: 3px solid #fff;
+      margin-top: 1rem;
     }
 
     .btn {
@@ -44,10 +47,10 @@
       height: 3rem;
       padding: 0rem;
 
-      a { 
+      a {
         font-size: 1rem;
         color: $brand-primary;
-        letter-spacing: 0; 
+        letter-spacing: 0;
       }
     }
 
@@ -69,7 +72,7 @@
 
       li { height: 1.5rem; }
       li a { line-height: 1.5rem; }
-      
+
       .btn {
         position:relative;
         height: 3rem;
@@ -89,22 +92,21 @@
   .icon .home:before {
     color: $gray-light;
   }
-
-  ul.nav li a {
-    color: $gray-lightest;
-  }
 }
 
 @include media-breakpoint-down(sm) {
   .urbit.navbar.ctrl {
+    height: auto;
+    margin: 0;
+    position: absolute;
+    border: none;
+
     .icon {
       margin-top: .5rem;
       margin-bottom: .5rem;
 
       .home {
-        width: 2rem;
-        height: 2rem;
-        margin: 0;
+        display: none;
       }
 
       .home:before {
@@ -112,31 +114,38 @@
         line-height: 1.8rem;
         width: 1.6rem;
       }
+      .open .navbar-toggler { opacity: 1; }
     }
 
-    .navbar-toggler { 
+    .navbar-toggler {
       margin-top: .5rem;
-      margin-left: 1rem;
+      margin-left: 0;
     }
 
     ul.nav,
     .subnav ul.nav {
       overflow: visible;
+      background-color: #fff;
       height: auto;
-      margin-left: 3rem;
+      padding-left: 2rem;
+      padding-top: .8rem;
       float: left;
 
-      li { 
+      li {
         display: block;
         height: 1.5rem;
-        a { line-height: 1.5rem; }
+        a {
+          line-height: 1.5rem;
+          margin-top: 0;
+          color: #000;
+        }
       }
 
       li.btn {
         height: 1.5rem;
         border: 0;
-        a { 
-          color: $green; 
+        a {
+          color: $green;
           line-height: 1.5rem;
         }
       }

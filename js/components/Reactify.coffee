@@ -34,6 +34,11 @@ Virtual = recl
       (str)-> str
       ({gn,ga,c},key)->
         props = {key}
+        if ga?.style
+          try
+            ga.style = eval "(#{ga.style})"
+          catch e
+            ga.style = ga.style
         if components[gn]
           props.basePath = basePath
         rele (components[gn] ? gn),

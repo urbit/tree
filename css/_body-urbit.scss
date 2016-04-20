@@ -1,7 +1,15 @@
 .body .urbit {
-  .logo { background-color: #fff; }
+  padding-bottom: 9rem;
 
-  h1 { 
+  .logo {
+    background-color: transparent;
+    border: .3rem solid #fff;
+  }
+  .logo:before {
+    line-height: 3.4rem;
+  }
+
+  h1 {
     color: $brand-primary;
     line-height: 4rem;
   }
@@ -71,14 +79,27 @@
       }
 
       .rect {
-        width: 60%;
         margin-left: auto;
         margin-right: auto;
 
-        h1 { 
+        h1 {
           padding-bottom: 1rem;
           text-align: left;
         }
+      }
+
+      @each $break,$max-width in $container-max-widths {
+        @include media-breakpoint-up($break) {
+          .rect {
+            width: $max-width*(10/$grid-columns);
+          }
+        }
+      }
+
+      .rect { padding: 0 60px 0 60px; }
+
+      @include media-breakpoint-down(sm) {
+        .rect { padding: 0 30px 0 30px; }
       }
 
       .rect.no-header {
@@ -87,10 +108,6 @@
         font-size: 1.4rem;
 
         p.email { font-size: 1rem; }
-        button.submit {
-          background-color: transparent;
-          border-color: #fff;
-        }
       }
     }
 
@@ -100,15 +117,23 @@
       width: 100%;
       overflow: hidden;
 
-      img {
-        position: relative;
-        left: 50%;
-        margin-left: -50%;
-        top: 50%;
-        margin-top: -50%;
-        min-height: 44rem;
-        min-width: 100%;
-      }
+      background-repeat: no-repeat;
+      background-position: center center;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+
+
+      // img {
+      //   position: relative;
+      //   left: 50%;
+      //   margin-left: -50%;
+      //   top: 50%;
+      //   margin-top: -50%;
+      //   min-height: 44rem;
+      //   min-width: 100%;
+      // }
     }
 
     h1 {
@@ -119,8 +144,10 @@
 
   .image-fs.first {
     margin-top: -9rem;
+
+    h1 { padding-bottom: 0; }
   }
-  
+
   .slide {
     margin-bottom: 12rem;
     position: relative;
@@ -139,8 +166,8 @@
       .image.right { padding-left: 5%; }
       .image.left { padding-right: 5%; }
 
-      .text { 
-        width: 75%; 
+      .text {
+        width: 75%;
       }
       .image { width: 20%; }
 
@@ -159,19 +186,20 @@
     font-weight: 500;
   }
 
-  input.email,
-  button.submit {
-    line-height: 1rem;
-    padding: .6rem;
-    border: 0;
-  }
+  p.email { margin-top: 1rem; }
 
   input.email {
     font-weight: 500;
-    background-color: $gray-light;
+    background-color: #000;
     color: #fff;
+    font-size: 1rem;
     margin-right: 1rem;
-    border: 3px solid $gray-light;
+    border: 3px solid #000;
+    padding: .375rem 1rem;
+    margin: 0 1rem 0 0;
+    line-height: 1.6rem;
+    vertical-align: top;
+    margin-bottom: .6rem;
   }
 
   input.email::-moz-placeholder { color: #D2D2D2; }
@@ -180,8 +208,8 @@
   button.submit {
     text-transform: none;
     text-decoration: none;
-    border: 3px solid #000;
-    background-color: #fff;
+    background-color: #000000;
+    color: #fff;
     font-weight: 500;
     letter-spacing: 0;
   }
@@ -189,7 +217,8 @@
   .last a {
     display:block;
     font-weight: 500;
-    color: $gray-light;
+    color: $gray;
+    line-height: 2rem;
   }
 
   .last h2 {
@@ -197,12 +226,8 @@
     padding-bottom:1rem;
     margin-bottom: 0;
   }
-}
 
-.body .urbit.home {
-  p.email {
-    margin-top: 3rem;
-  }
+
 }
 
 @include media-breakpoint-down(sm) {
@@ -221,5 +246,8 @@
       .image.left { margin-bottom: 2rem; }
       .image.right { margin-top: 2rem; }
     }
+
+    .last .col-md-4 { margin-top: 2rem; }
+    .last .col-md-4.col-md-offset-1 { margin-top: 0; }
   }
 }

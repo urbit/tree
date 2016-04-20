@@ -9,19 +9,19 @@ module.exports = recl
   getInitialState: -> {submit:false,email:""}
 
   onClick: -> @submit()
-  onChange: (e) -> 
+  onChange: (e) ->
     email = e.target.value
     @setState {email:e.target.value}
-    valid = (email.indexOf('@') != -1 && 
-      email.indexOf('.') != -1 && 
-      email.length > 7 && 
+    valid = (email.indexOf('@') != -1 &&
+      email.indexOf('.') != -1 &&
+      email.length > 7 &&
       email.split(".")[1].length > 1 &&
       email.split("@")[0].length > 0 &&
       email.split("@")[1].length > 4)
     @$email.toggleClass 'valid',valid
     @$email.removeClass 'error'
-    if e.keyCode is 13 
-      if valid is true 
+    if e.keyCode is 13
+      if valid is true
         @submit()
         e.stopPropagation()
         e.preventDefault()
@@ -40,7 +40,7 @@ module.exports = recl
       submit = @props.submit ? "Sign up"
       cont = [
         (input {key:"field",className:"email",placeholder:"your@email.com",@onChange,value:@state.email})
-        (button {key:"submit",className:"submit",@onClick}, submit)
+        (button {key:"submit",className:"submit btn",@onClick}, submit)
       ]
     else
       cont = [(div {className:"submitted"},"Got it. Thanks!")]

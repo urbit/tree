@@ -16,7 +16,7 @@ module.exports = query {
       meta:'j'
   }, recl
   displayName: "List"
-  
+
   render: ->
     k = clas
       list: true
@@ -62,7 +62,7 @@ module.exports = query {
       title = null
 
       if elem.meta?.title
-        title = 
+        title =
           gn: 'h1'
           ga: {className:'title'}
           c: [elem.meta.title]
@@ -77,7 +77,7 @@ module.exports = query {
       unless @props.titlesOnly        # date
         _date = elem.meta.date
         if not _date or _date.length is 0 then _date = ""
-        date = 
+        date =
           gn: 'div'
           ga: {className: 'date'}
           c: [_date]
@@ -86,37 +86,38 @@ module.exports = query {
       parts.push title
 
       unless @props.titlesOnly         # metadata
-        if @props.dataType is 'post'   # image
-          if elem.meta.image 
+        if @props.dataType is 'post'
+          if elem.meta.image           # image
             image =
               gn: 'img'
               ga:
                 src: elem.meta.image
             parts.push image
-          if @props.dataPreview         # preview
-            if not elem.meta.preview
-              parts.push (elem.snip.c.slice 0,2)...
+        if @props.dataPreview         # preview
+          if not elem.meta.preview
+            parts.push (elem.snip.c.slice 0,2)...
+          else
+            if elem.meta.preview
+              preview =
+                gn: 'p'
+                ga: {className:'preview'}
+                c: [elem.meta.preview]
             else
-              if elem.meta.preview 
-                preview = 
-                  gn: 'p'
-                  ga: {className:'preview'}
-                  c: [elem.meta.preview]
-              else 
-                preview = elem.snip
-              parts.push preview
-            if elem.meta.author          # author
-                author =
-                  gn: 'h3'
-                  ga: {className:'author'}
-                  c: [elem.meta.author]
-                parts.push author
-            cont =
-              gn: 'a'
-              ga: {className:'btn continue',href}
-              c: ['Continue reading']
-            parts.push cont
-            linked = true
+              preview = elem.snip
+            parts.push preview
+        if @props.dataType is 'post'
+          if elem.meta.author          # author
+              author =
+                gn: 'h3'
+                ga: {className:'author'}
+                c: [elem.meta.author]
+              parts.push author
+          cont =
+            gn: 'a'
+            ga: {className:'btn continue',href}
+            c: ['Continue reading']
+          parts.push cont
+          linked = true
 
       node = reactify {gn:'div',c:parts}
       if not linked?

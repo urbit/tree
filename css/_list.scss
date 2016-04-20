@@ -15,7 +15,7 @@
 
 .list.children {
   h1 {
-    font-weight: 500; 
+    font-weight: 500;
     font-size: 1.4rem;
   }
 }
@@ -24,7 +24,7 @@
 .body[data-path^='/work'] .list {
   list-style-type: none;
   padding-left: 0;
-  
+
   a,
   h1 {
     color: $gray;
@@ -34,8 +34,8 @@
     text-decoration: none;
   }
 
-  h1 { 
-    border-bottom: 2px solid $gray;
+  h1 {
+    border-bottom: 2px solid #000;
   }
 }
 
@@ -43,7 +43,7 @@
   a,
   h1 {
     font-size: 2rem;
-    line-height: 4rem; 
+    line-height: 4rem;
     height: 4rem;
   }
 
@@ -51,25 +51,30 @@
 }
 
 .body[data-path^='/docs'] .list.runes {
-  margin-top: 3rem;
-
-  li { height: 3rem; }
-
   a h1,
   a div,
   a p {
-    display: inline;
+    display: inline-block;
   }
+
+  a p { font-weight: 300; }
 
   a { text-decoration: none; }
 
   a,
   a h1 code { color: #000; }
 
-  a h1 code { 
-    margin-right: 1rem; 
+  a h1 {
+    display: block;
+    margin-bottom: .3rem;
+    height: 1.8rem;
+  }
+
+  a h1 code {
     background-color: transparent;
-    color: $gray;
+    font-weight: 500;
+    font-size: 1.2rem;
+    padding: 0;
   }
 
   a code { background-color: $gray-lighter; }
@@ -78,22 +83,22 @@
     padding: .3rem;
   }
 
-  a:after {
-    content: "▶";
-    width: 1rem;
-    font-size: .6rem;
-    vertical-align: middle;
-    padding: .3rem;
-    padding-top: .4rem;
-    line-height: 1rem;
-    margin-left: 1rem;
-    background-color: $gray-light;
-    color: #fff;
-  }
+  // a:after {
+  //   content: "▶";
+  //   width: 1rem;
+  //   font-size: .6rem;
+  //   vertical-align: middle;
+  //   padding: .3rem;
+  //   padding-top: .4rem;
+  //   line-height: 1rem;
+  //   margin-left: 1rem;
+  //   background-color: $gray-light;
+  //   color: #fff;
+  // }
 
-  a:hover:after {
-    background-color: $blue;
-  }
+  // a:hover:after {
+  //   background-color: $black;
+  // }
 }
 
 .urbit ul.blog {
