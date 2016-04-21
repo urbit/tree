@@ -34,10 +34,10 @@
 
     li a {
       text-decoration: none;
-      color: #fff;
+      color: $black;
       font-weight: 500;
       font-size: 1rem;
-      border-bottom: 3px solid #fff;
+      border-bottom: 3px solid $black;
       margin-top: 1rem;
     }
 
@@ -62,7 +62,8 @@
 
     li a:hover,
     li.selected a {
-      color: $brand-primary;
+      color: $gray;
+      border-color: $gray;
     }
   }
 
@@ -91,6 +92,11 @@
 
   .icon .home:before {
     color: $gray-light;
+  }
+
+  ul li a {
+    color: #fff;
+    border-color: #fff;
   }
 }
 

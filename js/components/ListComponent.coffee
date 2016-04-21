@@ -114,8 +114,8 @@ module.exports = query {
               parts.push author
           cont =
             gn: 'a'
-            ga: {className:'btn continue',href}
-            c: ['Continue reading']
+            ga: {className:'continue',href}
+            c: ['Read more']
           parts.push cont
           linked = true
 

@@ -16,14 +16,16 @@
   }
 
   h1.title,
-  img { 
+  img {
     width: 100%;
     margin-bottom: 2rem;
   }
 
+  img { border: 12px solid #000; }
+
   .date,
   p.preview,
-  h3.author { margin-bottom: .6rem; } 
+  h3.author { margin-bottom: .6rem; }
 
   h3.author {
     padding-top: 0;
