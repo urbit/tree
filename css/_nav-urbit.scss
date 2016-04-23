@@ -3,9 +3,6 @@
 .urbit.navbar.ctrl {
   margin-top: 1rem;
 
-  &,
-  .items { height: 3rem; }
-
   .icon .home {
     border-color: $gray-light;
     background-color: $gray-light;
@@ -101,6 +98,10 @@
 }
 
 @include media-breakpoint-down(sm) {
+  .urbit.home.navbar.ctrl {
+    .icon .home { display: none; }
+  }
+
   .urbit.navbar.ctrl {
     height: auto;
     margin: 0;
@@ -108,24 +109,25 @@
     border: none;
 
     .icon {
-      margin-top: .5rem;
+      margin-top: 1rem;
       margin-bottom: .5rem;
 
       .home {
-        display: none;
+        width: 18px;
+        height: 18px;
+        margin: 0 1rem 0 0;
       }
 
       .home:before {
-        font-size: 1.6rem;
-        line-height: 1.8rem;
-        width: 1.6rem;
+        font-size: 1rem;
+        line-height: .7rem;
+        width: .6rem;
       }
-      .open .navbar-toggler { opacity: 1; }
-    }
 
-    .navbar-toggler {
-      margin-top: .5rem;
-      margin-left: 0;
+      .navbar-toggler { margin-left: 0; }
+
+      .navbar-toggler,
+      .open .navbar-toggler { opacity: 1; }
     }
 
     ul.nav,
@@ -133,7 +135,8 @@
       overflow: visible;
       background-color: #fff;
       height: auto;
-      margin-left: 0;
+      margin-left: -1rem;
+      padding-left: 1rem;
       padding-top: .8rem;
       float: left;
 

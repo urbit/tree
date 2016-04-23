@@ -8,7 +8,7 @@ recl = React.createClass
 
 module.exports = query {kids: {body:'r', meta:'j', path:'t'}}, recl
   displayName: "Kids"
-  render: -> 
+  render: ->
     sorted = true
     keyed = {}
     for k,v of @props.kids
@@ -18,7 +18,7 @@ module.exports = query {kids: {body:'r', meta:'j', path:'t'}}, recl
             sorted = false
             continue
           d = v.meta.date.slice(1).split "."
-          if d.length < 3 
+          if d.length < 3
             sorted = false
             continue
           str = "#{d[0]}-#{d[1]}-#{d[2]}"
@@ -31,7 +31,7 @@ module.exports = query {kids: {body:'r', meta:'j', path:'t'}}, recl
         keyed[Number(v.meta?.sort)] = k
 
     if sorted is false then keyed = _.keys this.props.kids
-    
+
     keys = _.keys(keyed).sort()
     if @props.sortBy is 'date' then keys.reverse()
 
@@ -41,7 +41,7 @@ module.exports = query {kids: {body:'r', meta:'j', path:'t'}}, recl
 
     kidClas = clas
       "col-md-4":(@props.grid is 'true')
-        
+
     div {className:kidsClas,key:"kids"},
       for k in keys
         elem = @props.kids[keyed[k]] ? ""

@@ -55,6 +55,25 @@
   }
 }
 
+ol {
+  counter-reset:li;
+  list-style: none;
+  padding-left: 2rem;
+}
+
+ol > li { margin-bottom: 2rem; }
+.top ol { padding-left: 0; }
+
+ol > li:before {
+  content:counter(li) ".";
+  counter-increment: li;
+  text-align: left;
+  font-weight: 500;
+  float: left;
+  margin-right: 1rem;
+  margin-left: -2rem;
+}
+
 .body[data-path^='/docs'],
 .body[data-path^='/work'] {
   h1 { color: $brand-primary; }

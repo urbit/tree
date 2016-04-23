@@ -62,10 +62,20 @@ module.exports = query {
       title = null
 
       if elem.meta?.title
-        title =
-          gn: 'h1'
-          ga: {className:'title'}
-          c: [elem.meta.title]
+        if @props.dataType is 'post'
+          title =
+            gn: 'a'
+            ga: {href}
+            c: [
+              gn: 'h1'
+              ga: {className:'title'}
+              c: [elem.meta.title]
+            ]
+        else
+          title =
+            gn: 'h1'
+            ga: {className:'title'}
+            c: [elem.meta.title]
       if not title && elem.head.c.length > 0
         title = elem.head
       if not title
@@ -89,9 +99,13 @@ module.exports = query {
         if @props.dataType is 'post'
           if elem.meta.image           # image
             image =
-              gn: 'img'
-              ga:
-                src: elem.meta.image
+              gn: 'a'
+              ga: {href}
+              c: [
+                gn: 'img'
+                ga:
+                  src: elem.meta.image
+              ]
             parts.push image
         if @props.dataPreview         # preview
           if not elem.meta.preview
@@ -112,11 +126,11 @@ module.exports = query {
                 ga: {className:'author'}
                 c: [elem.meta.author]
               parts.push author
-          cont =
-            gn: 'a'
-            ga: {className:'continue',href}
-            c: ['Read more']
-          parts.push cont
+          # cont =
+          #   gn: 'a'
+          #   ga: {className:'continue',href}
+          #   c: ['Read more']
+          # parts.push cont
           linked = true
 
       node = reactify {gn:'div',c:parts}

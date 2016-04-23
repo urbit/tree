@@ -99,7 +99,7 @@ extras =
         'col-md-12': (@props.container is 'false')
       (div {className:containerClas,key:'footer-container'}, [
         (div {className:footerClas,key:'footer-inner'}, [
-          "This page was served by an Urbit."
+          "This page was served by Urbit."
           (a {href:"mailto:urbit@urbit.org"}, "urbit@urbit.org")
         ])
       ])
@@ -135,6 +135,8 @@ module.exports = query {
     innerClas = clas innerClas
 
     bodyClas = clas (@props.meta.layout?.split ',')
+    if @props.meta.type && bodyClas.indexOf(@props.meta.type) is -1
+      bodyClas += " #{@props.meta.type}"
 
     parts = [
       extra 'spam'

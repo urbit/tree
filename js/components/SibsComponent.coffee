@@ -21,7 +21,7 @@ module.exports = query {
   render: ->
     keys = util.getKeys @props.kids
 
-    navClas = 
+    navClas =
       nav: true
       'col-md-12': (@props.meta.navmode is 'navbar')
     if @props.className then navClas[@props.className] = true
@@ -41,5 +41,5 @@ module.exports = query {
         selected: selected
       if data.meta.sibsclass
         className += " "+clas(data.meta.sibsclass.split(","))
-      (li {className,key}, 
-        (a {className:"nav-link",href,onClick:@props.toggleNav}, head))
+      (li {className,key},
+        (a {className:"nav-link",href,onClick:@props.closeNav}, head))

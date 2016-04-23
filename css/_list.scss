@@ -20,6 +20,11 @@
   }
 }
 
+.list.post .date {
+  font-family: 'scp';
+  font-size: .7rem;
+}
+
 .body[data-path^='/docs'] .list,
 .body[data-path^='/work'] .list {
   list-style-type: none;
@@ -34,9 +39,7 @@
     text-decoration: none;
   }
 
-  h1 {
-    border-bottom: 2px solid #000;
-  }
+  h1 { border-bottom: 2px solid #000; }
 }
 
 .body[data-path^='/work'] .list.main {
@@ -67,7 +70,8 @@
   a h1 {
     display: block;
     margin-bottom: .3rem;
-    height: 1.8rem;
+    height: auto;
+    border-bottom: none;
   }
 
   a h1 code {
@@ -75,6 +79,7 @@
     font-weight: 500;
     font-size: 1.2rem;
     padding: 0;
+    border-bottom: 2px solid #000;
   }
 
   a code { background-color: $gray-lighter; }
@@ -112,4 +117,8 @@
     text-decoration: none;
     border-bottom: 3px solid #000;
   }
+}
+
+@include media-breakpoint-down(sm) {
+  .urbit ul.blog li { margin-bottom: 6rem; }
 }

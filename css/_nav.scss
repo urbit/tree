@@ -77,6 +77,9 @@
   background-color: transparent;
   width: auto;
 
+  &,
+  .items { height: 3rem; }
+
   .icon,
   ul.nav,
   li {
@@ -256,7 +259,6 @@
   color: #fff;
   line-height: .8rem;
   font-size: 1.4rem;
-  padding-left:1px;
 }
 
 @include media-breakpoint-down(md) {
