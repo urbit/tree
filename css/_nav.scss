@@ -142,7 +142,9 @@
   }
 
   .ctrl.open {
+    height: auto;
     max-height: 12rem;
+    min-height: 3rem;
   }
 
   a.nav-link {

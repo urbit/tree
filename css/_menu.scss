@@ -17,7 +17,7 @@
   padding-right: 0;
   position: fixed;
   overflow: hidden;
-  z-index:99;
+  z-index:101;
   margin-top: -3rem;
 
   .contents {
@@ -32,14 +32,14 @@
   .close { margin-top: -2rem; }
   .close:hover { opacity: 1; }
 
-  h2 { 
-    font-size: 1rem; 
+  h2 {
+    font-size: 1rem;
     padding-top: 3rem;
   }
   h2:first-of-type { padding-top: 0; }
-  
-  label.sum { 
-    font-family: 'scp'; 
+
+  label.sum {
+    font-family: 'scp';
     margin-left: $grid-gutter-width/2;
     font-size: 1.2rem;
   }
@@ -60,7 +60,7 @@
   animation-duration:.3s;
   animation-fill-mode: forwards;
 }
-.menu.open { 
+.menu.open {
   animation-name: menu-open;
   animation-duration: .3s;
   animation-fill-mode: forwards;
