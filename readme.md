@@ -47,3 +47,12 @@ If you have a patch you'd like to contribute:
 # Distribution
 
 Compiled `main.js` and `main.css` get periodically shipped to the [urbit core](http://github.com/urbit/urbit).  Each time these compiled files are moved to urbit core their commit message should contain the sha-1 of the commit from this repo.  
+
+As a performance optimization, they are bundled with dependant `js` and `css` respectively: after copying `desk/` over into `arvo/`,
+
+```
+cat web/{tree/main,lib/js/{hoon,urb}}.js >web/tree/main_hoon_urb.js
+cat web/{tree/main,lib/css/{codemirror,fonts,bootstrap.min}}.css >web/tree/main_codemirror_fonts_bootstrap.css
+```
+
+to ensure the latest version is available without `?dbg.nopack`.
