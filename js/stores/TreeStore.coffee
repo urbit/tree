@@ -39,12 +39,13 @@ TreeStore = _.extend (new EventEmitter).setMaxListeners(50), {
       for k,t of query when QUERIES[k]
         if t isnt QUERIES[k] then throw TypeError "Wrong query type: #{k}, '#{t}'"
         data[k] = have[k]
-      if query.kids
-        if have.kids is false
-          data.kids = {}
-        else for k,sub of tree
-          data.kids ?= {}
-          data.kids[k] = @fulfillAt sub, path+"/"+k, query.kids
+        
+    if query.kids
+      if have?.kids is false
+        data.kids = {}
+      else for k,sub of tree
+        data.kids ?= {}
+        data.kids[k] = @fulfillAt sub, path+"/"+k, query.kids
     data unless _.isEmpty data
       
   fulfillLocal: (path, query)->
@@ -64,8 +65,14 @@ TreeStore = _.extend (new EventEmitter).setMaxListeners(50), {
   
   clearData: -> _data = {}; _tree = {}
   
+  loadSein: ({path,data}) ->
+    sein = @getPare path
+    if sein?
+      @loadPath {path:sein,data}
+    
   loadPath: ({path,data}) ->
     @loadValues (@getTree (path.split '/'),true), path, data
+    
   loadValues: (tree,path,data) ->
     old = _data[path] ? {}
     for k of data when QUERIES[k]
@@ -73,7 +80,10 @@ TreeStore = _.extend (new EventEmitter).setMaxListeners(50), {
     
     for k,v of data.kids
       tree[k] ?= {}
-      @loadValues tree[k], path+"/"+k, v
+      _path = path
+      if _path is "/"
+        _path = ""
+      @loadValues tree[k], _path+"/"+k, v
       
     if data.kids && _.isEmpty data.kids
       old.kids = false
@@ -91,6 +101,7 @@ TreeStore = _.extend (new EventEmitter).setMaxListeners(50), {
   getTree: (_path,make=false) ->
     tree = _tree
     for sub in _path
+      unless sub then continue  # discard empty path elements
       if not tree[sub]?
         if not make then return null
         tree[sub] = {}

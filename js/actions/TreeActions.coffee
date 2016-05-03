@@ -5,6 +5,9 @@ module.exports =
   loadPath: (path,data) ->
     TreeDispatcher.handleServerAction {path,data,type:"loadPath"}
 
+  loadSein: (path,data) ->
+    TreeDispatcher.handleServerAction {path,data,type:"loadSein"}
+
   clearData: () ->
     TreePersistence.refresh()  # XX right place?
     TreeDispatcher.handleServerAction {type:"clearData"}

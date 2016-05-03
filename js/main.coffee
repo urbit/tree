@@ -20,6 +20,8 @@ $ ->
   frag = util.fragpath window.location.pathname.replace /\.[^\/]*$/,''
   window.tree.actions.setCurr frag 
   window.tree.actions.loadPath frag,window.tree.data
+  if window.tree.sein?
+    window.tree.actions.loadSein frag,window.tree.sein
   window.urb.ondataupdate = (dep)->
     for dat of window.urb.datadeps
       window.urb.dewasp(dat)
