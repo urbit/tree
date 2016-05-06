@@ -1,7 +1,7 @@
 recl       = React.createClass
 {div}      = React.DOM
 
-module.exports = 
+module.exports =
   codemirror: require './CodeMirror.coffee'
   search:     require './SearchComponent.coffee'
   list:       require './ListComponent.coffee'
@@ -12,4 +12,5 @@ module.exports =
   script:     require './ScriptComponent.coffee'
   plan:       require './PlanComponent.coffee'
   panel:      require './PanelComponent.coffee'
+  imagepanel: require './ImagepanelComponent.coffee'
   lost:       recl render: -> (div {}, "<lost(", @props.children, ")>")
