@@ -9,7 +9,6 @@ recl = React.createClass
 module.exports = query {
     path:'t'
     kids:
-      snip:'r'
       head:'r'
       meta:'j'
   }, recl
