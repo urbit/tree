@@ -23,9 +23,20 @@
 .list.post .date {
   font-family: 'scp';
   font-size: .7rem;
+  margin-bottom: .6rem;
 }
 
-.body[data-path^='/docs'] .list,
+.list.post .author {
+  font-size: 1rem;
+  padding-top: 0;
+}
+
+.list.post .author:before {
+  content: "—";
+  margin-right: .6rem;
+}
+
+.body[data-path*='/docs'] .list,
 .body[data-path^='/work'] .list {
   list-style-type: none;
   padding-left: 0;
@@ -53,7 +64,7 @@
   h1 { border-width: 4px; }
 }
 
-.body[data-path^='/docs'] .list.runes {
+.body[data-path*='/docs'] .list.runes {
   a h1,
   a div,
   a p {
