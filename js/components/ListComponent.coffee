@@ -126,11 +126,11 @@ module.exports = query {
                 ga: {className:'author'}
                 c: [elem.meta.author]
               parts.push author
-          # cont =
-          #   gn: 'a'
-          #   ga: {className:'continue',href}
-          #   c: ['Read more']
-          # parts.push cont
+          cont =
+            gn: 'a'
+            ga: {className:'continue',href}
+            c: ['Read more']
+          parts.push cont
           linked = true
 
       node = reactify {gn:'div',c:parts}

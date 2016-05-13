@@ -41,6 +41,8 @@
   img { border: 12px solid #000; }
 }
 
+.urbit .post img { max-width: 24rem; }
+
 .urbit.post {
-  .preview { max-width: 75%; }
+  .preview { display:none; }
 }
