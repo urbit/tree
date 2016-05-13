@@ -24,7 +24,7 @@
 
   .comment {
     margin-top: 2rem;
-
+    
     & > span {
       font-family: 'scp';
       font-size: .8rem; 
@@ -44,6 +44,14 @@
 
     p {
       width: 66%
+    }
+    
+    &.loading {
+      color: $gray-light
+    }
+    
+    &.loading > span {
+      color: $gray-lighter
     }
   }
 }

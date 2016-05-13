@@ -12,23 +12,32 @@ recl   = React.createClass
 rele   = React.createElement
 {div,p,img,a,form,textarea,input}  = React.DOM
 
-Comment = ({time,body}) -> 
-  (div {className:"comment"}, "#{window.urb.util.toDate(new Date(time))}", (reactify body))
+Comment = ({time,body,loading=false}) ->
+  
+  (div {className:(clas "comment", {loading})},
+     "#{window.urb.util.toDate(new Date(time))}",
+     (reactify body)
+  )
 
 module.exports = query {comt:'j', path:'t'}, recl
     displayName: "Comments"
     getInitialState: -> 
-      loading:no
+      loading:null
       value:""
     componentDidUpdate: (_props)->
       if @props.comt.length > _props.comt.length
-        @setState loading:no
+        @setState loading:null
         
     onSubmit: (e) ->
-      TreeActions.addComment @props.path, @refs.in.comment.value
+      {value} = @refs.in.comment
+      TreeActions.addComment @props.path, value
+      body = {gn:'div', c:[           # XX structured user/content
+        {gn:'h2',c:["~"+urb.user]}
+        {gn:'p',c:[value]}
+      ]}
       @setState 
-        loading:yes
         value:""
+        loading:{'loading', body, time:Date.now()}
       e.preventDefault()
 
     onChange: (e) -> @setState {value:e.target.value}
@@ -55,8 +64,9 @@ module.exports = query {comt:'j', path:'t'}, recl
             (input inputAttr)
           )
         )
-        (if @state.loading is true then (rele load) else "")
-        (div {className:"comments"}, @props.comt.map (props,key)-> 
+        (div {className:"comments"},
+          (if @state.loading? then rele Comment, @state.loading),
+          @props.comt.map (props,key)-> 
             rele Comment, _.extend {key}, props
         )
       )
