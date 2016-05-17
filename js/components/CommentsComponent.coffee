@@ -10,7 +10,7 @@ util        = require '../utils/util.coffee'
 
 recl   = React.createClass
 rele   = React.createElement
-{div,p,img,a,form,textarea,input}  = React.DOM
+{div,p,img,a,form,textarea,input,code}  = React.DOM
 
 Comment = ({time,body,loading=false}) ->
   
@@ -62,6 +62,7 @@ module.exports = query {comt:'j', path:'t'}, recl
           (form {ref:"in",@onSubmit},
             (textarea textareaAttr),
             (input inputAttr)
+            " as: ", (code {}, "~", (util.shortShip urb.user))
           )
         )
         (div {className:"comments"},

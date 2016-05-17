@@ -15,6 +15,12 @@ module.exports =
   fragpath: (path) ->
     path.replace(/\/$/,'')
         .replace(_basepath,"")
+      
+  shortShip: (ship=urb.user)->
+    if ship.length <= 13
+      ship
+    else
+      ship[0...6] + "_" + ship[-6...] # s/(.{6}).*(.{6})/\1_\2/
 
   getKeys: (kids) -> # child node keys, respecting metadata
     # kids = _.filter(kids,({meta})-> !(meta?.hide))
