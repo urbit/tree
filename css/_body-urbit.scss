@@ -43,32 +43,6 @@
     border-bottom: 3px solid #000;
   }
 
-  // .slide-1 .btn {
-  //   color: #fff;
-  //   background-color: #000;
-  //   width: 11.5rem;
-  // }
-  // .slide-1 .btn:hover {
-  //   color: #000;
-  //   background-color: #fff;
-  // }
-  //
-  // .slide-1 input.email {
-  //   width: 24rem;
-  //   background-color: #fff;
-  //   border: 3px solid #000;
-  //   color: #000;
-  // }
-  //
-  // .slide-1 .submit {
-  //   border: 3px solid #000;
-  //   color: #000;
-  //   width: auto;
-  // }
-
-  // .slide-1 p:first-child { margin-bottom: 2rem; }
-  // .slide-1 p.email { margin-top: 2rem; }
-
   .front {
     padding-bottom: 4rem;
 
@@ -210,33 +184,46 @@
     font-weight: 500;
   }
 
+  p.last { margin-bottom: 2rem; }
   p.email { margin-top: 2rem; }
 
   input.email {
     font-weight: 500;
-    background-color: #000;
-    color: #fff;
+    font-family: 'scp';
+    background-color: $gray-lighter;
+    color: #000;
     font-size: 1rem;
     margin-right: 1rem;
-    border: 3px solid #000;
+    border: 3px solid $gray-lighter;
     padding: .375rem 1rem;
     margin: 0 1rem 0 0;
     line-height: 1.6rem;
     vertical-align: top;
     margin-bottom: .6rem;
+    min-width: 16rem;
   }
 
-  input.email::-moz-placeholder { color: #D2D2D2; }
-  input.email::-webkit-input-placeholder { color: #D2D2D2; }
+  input.email::-moz-placeholder {
+    color: $gray;
+    font-weight: 400;
+  }
+  input.email::-webkit-input-placeholder {
+    color: $gray;
+    font-weight: 400;
+  }
 
   button.submit {
     text-transform: none;
     text-decoration: none;
-    background-color: #000000;
-    color: #fff;
+    background-color: #fff;
+    color: #000;
+    border: 3px solid #000;
     font-weight: 500;
     letter-spacing: 0;
   }
+
+  .image-fs input.email { background-color: #fff }
+  .image-fs input.email,.image-fs button.submit { border-color: #fff; }
 
   .last a {
     display:block;
@@ -291,6 +278,7 @@
       .image { text-align: center; }
       .image.left { margin-bottom: 2rem; }
       .image.right { margin-top: 2rem; }
+      .image img { max-width: 12rem; }
     }
 
     .last .col-md-4 { margin-top: 2rem; }
