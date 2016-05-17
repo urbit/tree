@@ -62,7 +62,8 @@ module.exports = query {comt:'j', path:'t'}, recl
           (form {ref:"in",@onSubmit},
             (textarea textareaAttr),
             (input inputAttr)
-            " as: ", (code {}, "~", (util.shortShip urb.user))
+            " as: "
+            (code {title:"~"+urb.user}, "~", (util.shortShip urb.user))
           )
         )
         (div {className:"comments"},
