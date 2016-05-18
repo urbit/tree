@@ -12,6 +12,9 @@ recl   = React.createClass
 rele   = React.createElement
 {div,p,img,a,form,textarea,input,code}  = React.DOM
 
+Ship = (name)->
+  (code {title:"~"+name}, "~", (util.shortShip name))
+  
 Comment = ({time,body,loading=false}) ->
   
   (div {className:(clas "comment", {loading})},
@@ -60,10 +63,9 @@ module.exports = query {comt:'j', path:'t'}, recl
       (div {}, 
         (div {className:"add-comment"},
           (form {ref:"in",@onSubmit},
-            (textarea textareaAttr),
+            (Ship urb.user)
+            (textarea textareaAttr)
             (input inputAttr)
-            " as: "
-            (code {title:"~"+urb.user}, "~", (util.shortShip urb.user))
           )
         )
         (div {className:"comments"},
