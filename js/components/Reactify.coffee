@@ -5,6 +5,8 @@ load       = React.createFactory require './LoadComponent.coffee'
 
 TreeStore   = require '../stores/TreeStore.coffee'
 
+name = (displayName,component)-> _.extend component, {displayName}
+
 walk = (root,_nil,_str,_comp)->
   # manx: {fork: ["string", {gn:"string" ga:{dict:"string"} c:{list:"manx"}}]}
   _walk = (elem,key)-> switch
@@ -17,19 +19,19 @@ walk = (root,_nil,_str,_comp)->
     else throw "Bad react-json #{JSON.stringify elem}"
   _walk root
 
-Virtual = recl
-  displayName: "Virtual"
+DynamicVirtual = recl
+  displayName: "DynamicVirtual"
   getInitialState: -> @stateFromStore()
   stateFromStore: -> components: TreeStore.getVirtualComponents()
 
   _onChangeStore: ->  if @isMounted() then @setState @stateFromStore()
   componentDidMount: -> TreeStore.addChangeListener @_onChangeStore
   componentWillUnmount: ->  TreeStore.removeChangeListener @_onChangeStore
-
-  render: ->
-    {components} = @state
-    {basePath} = @props
-    walk @props.manx,
+  
+  render: -> (Virtual _.extend {}, @props, components: @state.components)
+  
+Virtual = name "Virtual", ({manx,components,basePath})->
+    walk manx,
       ()-> (load {},"")
       (str)-> str
       ({gn,ga,c},key)->
@@ -45,5 +47,8 @@ Virtual = recl
              (_.extend props, ga),
              c if c.length
 
-reactify = (manx,key,{basePath}={})-> rele Virtual, {manx,key,basePath}
+reactify = (manx,key,{basePath,components}={})->
+  if components?
+    rele Virtual, {manx,key,basePath,components}
+  else rele DynamicVirtual, {manx,key,basePath}
 module.exports = _.extend reactify, {walk,Virtual}

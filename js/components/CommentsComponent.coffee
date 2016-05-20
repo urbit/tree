@@ -16,10 +16,9 @@ Ship = (name)->
   (code {title:"~"+name}, "~", (util.shortShip name))
   
 Comment = ({time,body,loading=false}) ->
-  
   (div {className:(clas "comment", {loading})},
      "#{window.urb.util.toDate(new Date(time))}",
-     (reactify body)
+     (reactify body,"comt",{components:{}})
   )
 
 module.exports = query {comt:'j', path:'t'}, recl

@@ -1,5 +1,3 @@
-reactify    = require './Reactify.coffee'
-
 recl = React.createClass
 {div,p,button,input} = React.DOM
 
