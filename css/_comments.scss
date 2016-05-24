@@ -1,33 +1,51 @@
 .add-comment {
     width: 100%;
-    border-top: 3px dotted $gray-lightest;
-    margin-top: 6rem;
+    border-top: 3px solid $gray-light;
+    margin-top: 8rem;
 
     .btn {
-      font-size: .8rem;
+      padding: .6rem .3rem .4rem .3rem;
+      text-transform: none;
+    }
+
+    .ship {
+      display: inline-block;
+      margin-top: 2rem;
+      background-color: transparent;
+      padding: 0;
     }
 
     textarea {
-      width: 66%;
+      width: 100%;
       display: block;
       height: 12rem;
       background-color: $gray-lightest;
       border-bottom: 0;
-      margin-bottom: 2rem;
-      margin-top: 3rem;
+      margin-bottom: .6rem;
+      margin-top: .6rem;
       padding: .3rem;
     }
 }
 
+.add-comment,
 .comments {
-  padding-top: 3rem; 
+  .ship {
+    font-family: 'scp';
+    font-size: 1rem;
+  }
+}
+
+.comments {
+  margin-top: 4rem;
+  padding-top: 1rem;
+  border-top: 3px solid $gray-lighter;
 
   .comment {
     margin-top: 2rem;
-    
+
     & > span {
       font-family: 'scp';
-      font-size: .8rem; 
+      font-size: .8rem;
       color: $gray-light;
     }
 
@@ -36,7 +54,7 @@
       font-size: 1rem;
       font-weight: 500;
 
-      code { 
+      code {
         background-color: transparent;
         padding: 0;
       }
@@ -45,11 +63,11 @@
     p {
       width: 66%
     }
-    
+
     &.loading {
       color: $gray-light
     }
-    
+
     &.loading > span {
       color: $gray-lighter
     }

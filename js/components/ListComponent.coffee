@@ -49,7 +49,6 @@ module.exports = query {
     if @props.sortBy is 'date' then _keys.reverse()
     if sorted isnt true
       _keys = _.keys(@props.kids).sort()
-    if @props.dataType is 'post' then _keys=_keys.reverse()
     for item in _.values _keys
       path = @props.path+"/"+item
       elem = @props.kids[item]

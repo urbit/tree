@@ -13,4 +13,6 @@ module.exports =
   plan:       require './PlanComponent.coffee'
   panel:      require './PanelComponent.coffee'
   imagepanel: require './ImagepanelComponent.coffee'
+  load:       require './LoadComponent.coffee'
+  ship:       require './ShipComponent.coffee'
   lost:       recl render: -> (div {}, "<lost(", @props.children, ")>")

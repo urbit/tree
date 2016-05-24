@@ -2,7 +2,10 @@ _basepath = window.urb.util.basepath("/")
 _basepath +=
   (window.location.pathname.replace window.tree._basepath, "").split("/")[0]
 
-module.exports = 
+module.exports =
+  components:
+    ship: require '../components/ShipComponent.coffee'
+    
   basepath: (path) ->
     prefix = _basepath
     if prefix is "/" then prefix = ""
@@ -15,7 +18,7 @@ module.exports =
   fragpath: (path) ->
     path.replace(/\/$/,'')
         .replace(_basepath,"")
-      
+
   shortShip: (ship=urb.user)->
     if ship.length <= 13
       ship

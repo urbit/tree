@@ -185,7 +185,6 @@
   }
 
   p.last { margin-bottom: 2rem; }
-  p.email { margin-top: 2rem; }
 
   input.email {
     font-weight: 500;
@@ -237,32 +236,6 @@
     padding-bottom:1rem;
     margin-bottom: 0;
   }
-
-  .fade-out {
-    background: -webkit-linear-gradient(top, rgba(153,153,153,0) 0%,rgba(255,255,255,1) 100%);
-    background: linear-gradient(to bottom, rgba(153,153,153,0) 0%,rgba(255,255,255,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00999999', endColorstr='#ffffff',GradientType=0 );
-    margin-top: -14rem;
-    position: absolute;
-    height: 12rem;
-    width: 100%;
-  }
-
-  .grams { margin: 2rem 0; }
-
-  .grams .gram {
-    label { background-color: #000; }
-
-    .speech { font-size: 1.6rem; }
-
-    .iden,
-    .path {
-      max-width: 12rem;
-      white-space: nowrap;
-      overflow: hidden;
-      vertical-align: middle;
-    }
-  }
 }
 
 @include media-breakpoint-down(sm) {
@@ -284,4 +257,74 @@
     .last .col-md-4 { margin-top: 2rem; }
     .last .col-md-4.col-md-offset-1 { margin-top: 0; }
   }
+}
+
+.body[data-path="/stream"] {
+  .audience { display: none; }
+
+  .speech, .message { margin-left: 0; }
+
+  .length { color: $gray; }
+
+  .input[contenteditable=true]:empty:before {
+    content: 'say hello, or ask a question';
+    color: $gray-light;
+  }
+
+  .grams { margin: 2rem 0; }
+
+  .grams .meta {
+    .time, .path { display: none; }
+  }
+
+  .grams .gram {
+    label { background-color: #000; }
+
+    // .speech { font-size: 1.6rem; }
+
+    .meta h2 {
+      margin-bottom: 0;
+      vertical-align: middle;
+    }
+
+
+    .meta label:before { font-weight: 200; }
+
+    .time { display: none; }
+
+    .iden,
+    .path {
+      max-width: 32rem;
+      white-space: nowrap;
+      overflow: hidden;
+      vertical-align: middle;
+    }
+  }
+}
+
+.ship {
+  color:#fff;
+  padding-right: 2rem;
+  max-width: 12rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ship:before {
+  content: attr(data-alias);
+  margin-right: 2rem;
+  color: #000;
+}
+
+.ship:hover {
+  color: #000;
+  max-width: none;
+  overflow: visible;
+  white-space: normal;
+  &:before { display: none; }
+}
+
+@include media-breakpoint-down(sm) {
+  .iden,
+  .path { max-width: 12rem; }
 }

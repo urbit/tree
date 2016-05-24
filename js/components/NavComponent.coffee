@@ -117,7 +117,7 @@ Nav = React.createFactory query {
     _home: -> @props.goTo "/"
     render: ->
       div {
-          className:"ctrl",
+          className:"ctrl loading",
           "data-path":@props.dataPath,
           key:"nav-loading"
         },
