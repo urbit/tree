@@ -51,8 +51,8 @@ Compiled `main.js` and `main.css` get periodically shipped to the [urbit core](h
 As a performance optimization, they are bundled with dependant `js` and `css` respectively: after copying `desk/` over into `arvo/`,
 
 ```
-cat web/{tree/main,lib/js/{hoon,urb}}.js >web/tree/main_hoon_urb.js
-cat web/{tree/main,lib/css/{codemirror,fonts,bootstrap.min}}.css >web/tree/main_codemirror_fonts_bootstrap.css
+cat web/{tree/main,lib/js/urb}}.js >web/tree/~.main_urb.js
+cat web/{lib/css/{codemirror,fonts,bootstrap.min},tree/main}.css >web/tree/~.codemirror_fonts_bootstrap_main.css
 ```
 
 to ensure the latest version is available without `?dbg.nopack`.
