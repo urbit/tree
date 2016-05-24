@@ -37,7 +37,7 @@ module.exports = (queries, Child, load=_load)-> recl
       got = fresh
     else
       got = @mergeWith @state.got, fresh
-    {path,fresh,got}
+    {path,fresh,got, queries}
 
   mergeWith: (have={},fresh={},_queries=queries)->
     got = {}

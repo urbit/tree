@@ -18,6 +18,7 @@ QUERIES = {
   comt:'j'
   plan:'j'
   beak:'t'
+  spur:'t'
 }
 
 TreeStore = _.extend (new EventEmitter).setMaxListeners(50), {

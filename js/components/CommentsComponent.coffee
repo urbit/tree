@@ -21,7 +21,7 @@ Comment = ({time,body,loading=false}) ->
      (reactify body,"comt",{components:{}})
   )
 
-module.exports = query {comt:'j', path:'t'}, recl
+module.exports = query {comt:'j', path:'t', spur:'t'}, recl
     displayName: "Comments"
     getInitialState: -> 
       loading:null
@@ -32,7 +32,7 @@ module.exports = query {comt:'j', path:'t'}, recl
         
     onSubmit: (e) ->
       {value} = @refs.in.comment
-      TreeActions.addComment @props.path, value
+      TreeActions.addComment @props.path, @props.spur, value
       body = {gn:'div', c:[           # XX structured user/content
         {gn:'h2',c:["~"+urb.user]}
         {gn:'p',c:[value]}
