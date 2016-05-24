@@ -12,15 +12,16 @@ Ship        = require './ShipComponent.coffee'
 
 recl   = React.createClass
 rele   = React.createElement
-{div,p,img,a,form,textarea,input,code}  = React.DOM
+{div,p,h2,img,a,form,textarea,input,code}  = React.DOM
 
-Comment = ({time,body,loading=false}) ->
+Comment = ({time,user,body,loading=false}) ->
   (div {className:(clas "comment", {loading})},
      "#{window.urb.util.toDate(new Date(time))}",
-     (reactify body,"comt",{components:{ship:Ship}})
+     (h2 {}, (rele Ship, ship:user))
+     (reactify body,"comt",{components:{}})
   )
 
-module.exports = query {comt:'j', path:'t'}, recl
+module.exports = query {comt:'j', path:'t', spur:'t'}, recl
     displayName: "Comments"
     getInitialState: ->
       loading:null
@@ -31,14 +32,12 @@ module.exports = query {comt:'j', path:'t'}, recl
 
     onSubmit: (e) ->
       {value} = @refs.in.comment
-      TreeActions.addComment @props.path, value
-      body = {gn:'div', c:[           # XX structured user/content
-        {gn:'ship',ga:{ship:urb.user}, c:[]}
-        {gn:'p',c:[value]}
-      ]}
+      TreeActions.addComment @props.path, @props.spur, value
+      body = {gn:'p',c:[value]}
+      user = urb.user
       @setState
         value:""
-        loading:{'loading', body, time:Date.now()}
+        loading:{'loading', body, user:urb.user, time:Date.now()}
       e.preventDefault()
 
     onChange: (e) -> @setState {value:e.target.value}
