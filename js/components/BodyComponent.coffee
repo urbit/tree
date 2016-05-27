@@ -99,9 +99,10 @@ extras =
         'col-md-12': (@props.container is 'false')
       (div {className:containerClas,key:'footer-container'}, [
         (div {className:footerClas,key:'footer-inner'}, [
-          "This page was made by Urbit. "
-          (a {href:"urbit.org"}, "urbit.org")
-          (a {href:"mailto:urbit@urbit.org"}, "contact")
+          "This page was made by Urbit. Feedback: "
+          (a {href:"mailto:urbit@urbit.org"}, "urbit@ubrit.org")
+          " "
+          (a {href:"https://twitter.com/urbit_"}, "@urbit_")
         ])
       ])
 

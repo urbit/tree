@@ -4,13 +4,13 @@
 
 `tree` is a fairly straightforward [flux](https://facebook.github.io/flux/) app.  Because pages load inside of a [react](https://facebook.github.io/react/) environment you can use JSX to invoke components found in `components/` in this repo.
 
-`tree` ships as compiled `main.js` and `main.css` on your urbit (in `/home/web/tree`).  If you want to make changes or develop on top, you'll need these source files. 
+`tree` ships as compiled `main.js` and `main.css` on your urbit (in `/home/web/tree`).  If you want to make changes or develop on top, you'll need these source files.
 
 # Developing
 
 The `desk/` folder in this repo mirrors a desk on an urbit `planet`.  Source files live outside of this folder, we compile them in using watchify / sass and then copy the `/desk` onto the desk we're using for development on a planet.
 
-Our sass depends on bootstrap mixins, so the urbit fork of bootstrap is included as a submodule. 
+Our sass depends on bootstrap mixins, so the urbit fork of bootstrap is included as a submodule.
 
 First:
 
@@ -51,8 +51,8 @@ Compiled `main.js` and `main.css` get periodically shipped to the [urbit core](h
 As a performance optimization, they are bundled with dependant `js` and `css` respectively: after copying `desk/` over into `arvo/`,
 
 ```
-cat web/{tree/main,lib/js/urb}}.js >web/tree/~.main_urb.js
-cat web/{lib/css/{codemirror,fonts,bootstrap.min},tree/main}.css >web/tree/~.codemirror_fonts_bootstrap_main.css
+cat web/{tree/main,lib/js/urb}.js >web/tree/~.main_urb.js
+cat web/{lib/css/{codemirror,fonts,bootstrap},tree/main}.css >web/tree/~.codemirror_fonts_bootstrap_main.css
 ```
 
 to ensure the latest version is available without `?dbg.nopack`.
