@@ -19,7 +19,8 @@ module.exports = query {
   path:'t'
 }, recl
   displayName: "Plan"
-  getInitialState: -> edit:no, plan:@props.plan, focus: null
+  getInitialState: -> edit:no, plan:@props.plan, focus: null, loaded:urb.ship?
+  componentDidMount: -> urb.init => @setState {'loaded'}
   componentWillReceiveProps: (props)->
     if _.isEqual @props.plan, @state.plan
       @setState plan: props.plan
@@ -38,6 +39,8 @@ module.exports = query {
     @setState edit:no, focus:null
     
   render: ->
+    unless @state.loaded
+      return (div {className:"plan"}, "Loading authentication info")
     {beak,path} = @props
     {acc,loc,who} = @state.plan ? {}
     issuedBy =

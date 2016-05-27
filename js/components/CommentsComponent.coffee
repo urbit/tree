@@ -26,6 +26,9 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
     getInitialState: ->
       loading:null
       value:""
+      user: urb.user ? ""
+      
+    componentDidMount: -> urb.init => @setState user:urb.user
     componentDidUpdate: (_props)->
       if @props.comt.length > _props.comt.length
         @setState loading:null
@@ -33,11 +36,9 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
     onSubmit: (e) ->
       {value} = @refs.in.comment
       TreeActions.addComment @props.path, @props.spur, value
-      body = {gn:'p',c:[value]}
-      user = urb.user
       @setState
         value:""
-        loading:{'loading', body, user:urb.user, time:Date.now()}
+        loading:{'loading', body:{gn:'p',c:[value]}, time:Date.now()}
       e.preventDefault()
 
     onChange: (e) -> @setState {value:e.target.value}
@@ -60,13 +61,15 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
       (div {},
         (div {className:"add-comment"},
           (form {ref:"in",@onSubmit},
-            (rele Ship,{ship:urb.user})
+            (rele Ship,{ship:@state.user})
             (textarea textareaAttr)
             (input inputAttr)
           )
         )
         (div {className:"comments"},
-          (if @state.loading? then rele Comment, @state.loading),
+          (if @state.loading?
+            rele Comment, _.extend {}, @state.loading, user: @state.user
+          )
           @props.comt.map (props,key)->
             rele Comment, _.extend {key}, props
         )

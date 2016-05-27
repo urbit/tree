@@ -4,7 +4,7 @@ rele = React.createElement
 
 module.exports = recl
   render: ->
-    if urb.user isnt urb.ship
+    if !urb.user? or urb.user isnt urb.ship
       (nav {className:"navbar panel"}, [
         (ul {className:"nav navbar-nav"},[
           (li {className:'nav-item pull-right'}, 

@@ -23,7 +23,7 @@ module.exports =
     
   put: (data,mark,appl)->
     appl ?= /[a-z]*/.exec(mark)[0]
-    urb.send data, {mark,appl}
+    urb.init -> urb.send data, {mark,appl}
 
   encode: (obj)->
     delim = (n)-> Array(n+1).join('_') || '.'
