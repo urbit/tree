@@ -4,6 +4,7 @@
 @each $break,$max-width in $container-max-widths {
   @if $break != 'sm' {
     @include media-breakpoint-up($break) {
+      .menu,
       .ctrl {
         width: $max-width*(3/$grid-columns);
       }
@@ -13,6 +14,9 @@
         min-width: $max-width*(3/$grid-columns);
         width: auto;
       }
+
+      .menu.depth-1 { margin-left: $max-width*(3/$grid-columns); }
+      .menu.depth-2 { margin-left: $max-width*(6/$grid-columns); }
     }
   }
 }
