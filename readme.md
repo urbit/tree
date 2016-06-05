@@ -36,6 +36,12 @@ If you have urbit installed in `~/urbit` with a planet called `sampel-sipnym` an
 
 `cp -r desk/ ~/urbit/sampel-sipnym/home/`
 
+Then use the `?dbg.nopack=true` query string to test:
+
+`http://localhost:8080/some/page?dbg.nopack=true`
+
+Your Urbit links to the concatenated JS / CSS by default.  This query string loads the scripts directly.  See below for more information.
+
 # Contributing
 
 If you have a patch you'd like to contribute:
