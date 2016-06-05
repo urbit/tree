@@ -6,6 +6,7 @@
     @include media-breakpoint-up($break) {
       .ctrl {
         width: $max-width*(3/$grid-columns);
+        max-width: $max-width*(3/$grid-columns);
       }
       .ctrl.open,
       .ctrl:hover {
