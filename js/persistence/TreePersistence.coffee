@@ -13,18 +13,23 @@ module.exports =
     pending[url] = true
     $.get url, {}, (data,status,xhr) ->  # XX on error
       delete pending[url]
-      dep = urb.getXHRWasp(xhr)
-      urb.sources[dep] = url # debugging info
-      waspWait.push dep
-      if _.isEmpty pending
-        waspWait.map urb.waspData
-        waspWait = []
+      if urb.wasp?
+        dep = urb.getXHRWasp(xhr)
+        urb.sources[dep] = url # debugging info
+        waspWait.push dep
+        if _.isEmpty pending
+          waspWait.map urb.waspData
+          waspWait = []
       if cb then cb null,data
     
   put: (data,mark,appl)->
     appl ?= /[a-z]*/.exec(mark)[0]
     urb.init -> urb.send data, {mark,appl}
 
+  waspElem: (a)->
+    if urb.wasp?
+      urb.waspElem a
+    
   encode: (obj)->
     delim = (n)-> Array(n+1).join('_') || '.'
     _encode = (obj)->

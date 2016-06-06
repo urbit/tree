@@ -20,6 +20,8 @@ module.exports =
       @loadPath path,res
 
   registerComponent: (name,comp) -> @addVirtual "#{name}": comp
+  registerScriptElement: (elem)-> TreePersistence.waspElem elem
+    
   addVirtual: (components) ->
     TreeDispatcher.handleViewAction {type:"addVirtual", components}
 
