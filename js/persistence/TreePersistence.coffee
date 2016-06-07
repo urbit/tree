@@ -22,9 +22,9 @@ module.exports =
           waspWait = []
       if cb then cb null,data
     
-  put: (data,mark,appl)->
+  put: (data,mark,appl,cb)->
     appl ?= /[a-z]*/.exec(mark)[0]
-    urb.init -> urb.send data, {mark,appl}
+    urb.init -> urb.send data, {mark,appl}, cb
 
   waspElem: (a)->
     if urb.wasp?
