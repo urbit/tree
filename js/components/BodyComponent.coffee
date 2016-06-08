@@ -49,7 +49,7 @@ extras =
 
   image: recl
     displayName: "Image"
-    render: -> (img {src:@props.image}, "")
+    render: -> (img {src:@props.image})
 
   preview: recl
     displayName: "Preview"
