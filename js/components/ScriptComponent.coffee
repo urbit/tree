@@ -1,6 +1,8 @@
 recl = React.createClass
 rele = React.createElement
 
+TreeActions = require '../actions/TreeActions.coffee'
+
 waitingScripts = null  # null = none waiting, [] = one in flight, [...] = blocked
 appendNext = -> 
   unless waitingScripts?
@@ -16,7 +18,7 @@ module.exports = recl
   componentDidMount: ->
     s = document.createElement 'script'
     _.assign s, @props
-    urb.waspElem s
+    TreeActions.registerScriptElement s
     s.onload = appendNext
     @js = s
     if waitingScripts?

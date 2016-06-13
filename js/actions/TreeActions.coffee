@@ -20,11 +20,15 @@ module.exports =
       @loadPath path,res
 
   registerComponent: (name,comp) -> @addVirtual "#{name}": comp
+  registerScriptElement: (elem)-> TreePersistence.waspElem elem
+    
   addVirtual: (components) ->
     TreeDispatcher.handleViewAction {type:"addVirtual", components}
 
   addComment: (pax,sup,txt)->
-    TreePersistence.put {pax,sup,txt}, "talk-comment"
+    TreePersistence.put {pax,sup,txt}, "talk-comment", "talk", (err,res)=>
+      if !err?
+        @clearData()
     
   setPlanInfo: ({who,loc})->
     TreePersistence.put {who,loc}, "write-plan-info", "hood"
