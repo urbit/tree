@@ -100,7 +100,7 @@ extras =
       (div {className:containerClas,key:'footer-container'}, [
         (div {className:footerClas,key:'footer-inner'}, [
           "This page was made by Urbit. Feedback: "
-          (a {href:"mailto:urbit@urbit.org"}, "urbit@ubrit.org")
+          (a {href:"mailto:urbit@urbit.org"}, "urbit@urbit.org")
           " "
           (a {href:"https://twitter.com/urbit_"}, "@urbit_")
         ])
