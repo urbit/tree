@@ -14,7 +14,7 @@ recl   = React.createClass
 rele   = React.createElement
 {div,p,h2,img,a,form,textarea,input,code}  = React.DOM
 
-DEFER_USER = no
+DEFER_USER = yes
 
 Comment = ({time,user,body,loading=false}) ->
   (div {className:(clas "comment", {loading})},

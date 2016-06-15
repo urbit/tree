@@ -12,6 +12,7 @@ Comments    = require './CommentsComponent.coffee'
 
 util        = require '../utils/util.coffee'
 
+name   = (displayName,component)-> _.extend component, {displayName}
 recl   = React.createClass
 rele   = React.createElement
 {div,h1,h3,p,img,a,input}  = React.DOM
@@ -19,9 +20,7 @@ rele   = React.createElement
 # named = (x,f)->  f.displayName = x; f
 
 extras =
-  spam: recl
-    displayName: "Spam"
-    render: ->
+  spam: name "Spam", ->
       if document.location.hostname isnt 'urbit.org'
         return (div {})
       (div {className:'spam'},
@@ -29,35 +28,22 @@ extras =
         " for our newsletter."
       )
 
-  logo: recl
-    displayName: "Logo"
-    render: ->
-      {color} = @props
+  logo: name "Logo", ({color})->
       if color is "white" or color is "black"  # else?
         src = "//media.urbit.org/logo/logo-#{color}-100x100.png"
       (a {href:"http://urbit.org",style:{border:"none"}},
        (img {src,className:"logo first"})
       )
 
-  date: recl
-    displayName: "Date"
-    render: -> (div {className:'date'}, @props.date)
+  date: name "Date", ({date})-> (div {className:'date'}, date)
 
-  title: recl
-    displayName: "Title"
-    render: -> (h1 {className:'title'}, @props.title)
+  title: name "Title", ({title})-> (h1 {className:'title'}, title)
 
-  image: recl
-    displayName: "Image"
-    render: -> (img {src:@props.image})
+  image: name "Image", ({image})-> (img {src:image})
 
-  preview: recl
-    displayName: "Preview"
-    render: -> (p {className:'preview'}, @props.preview)
+  preview: name "Preview", ({preview})-> (p {className:'preview'}, preview)
 
-  author: recl
-    displayName: "Author"
-    render: -> (h3 {className:'author'}, @props.author)
+  author: name "Author", ({author})-> (h3 {className:'author'}, author)
 
   # plan: Plan
 
@@ -68,35 +54,30 @@ extras =
       name:'t'
       head:'r'
       meta:'j'
-  }, recl
-    displayName: "Next"
-    render: ->
-      curr = @props.kids[@props.curr]
-      if curr?.meta?.next
-        keys = util.getKeys @props.kids
+  }, name "Next", ({curr,path,kids})->
+      if kids[curr]?.meta?.next
+        keys = util.getKeys kids
         if keys.length > 1
-          index = keys.indexOf(@props.curr)
+          index = keys.indexOf(curr)
           next = index+1
           if next is keys.length then next = 0
           next = keys[next]
-          next = @props.kids[next]
+          next = kids[next]
 
           if next
             return (div {className:"link-next"},
-              (a {href:"#{@props.path}/#{next.name}"}, "Next: #{next.meta.title}")
+              (a {href:"#{path}/#{next.name}"}, "Next: #{next.meta.title}")
             )
       return (div {},"")
 
   comments: Comments
 
-  footer: recl
-    displayName: "Footer"
-    render: ->
+  footer: name "Footer", ({container})->
       containerClas = clas
         footer: true
-        container: (@props.container is 'false')
+        container: (container is 'false')
       footerClas = clas
-        'col-md-12': (@props.container is 'false')
+        'col-md-12': (container is 'false')
       (div {className:containerClas,key:'footer-container'}, [
         (div {className:footerClas,key:'footer-inner'}, [
           "This page was made by Urbit. Feedback: "
