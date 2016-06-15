@@ -55,6 +55,11 @@
   border-left: 2px solid $gray-light;
 }
 
+.menu.depth-2 {
+  max-height: 100%;
+  overflow-y: scroll;
+}
+
 .menu.closed {
   animation-name: menu-close;
   animation-duration:.3s;
