@@ -83,6 +83,11 @@ ol > li:before {
     padding: 0;
   }
 
+  .col-md-12.head {
+    padding-left: 0;
+    padding-bottom: 4rem;
+  }
+
   .book {
     h2 { color: $gray-light; }
 
