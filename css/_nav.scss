@@ -112,9 +112,12 @@
   }
 }
 
+.ctrl.navbar {
+  max-width: none;
+}
+
 .ctrl.navbar.open,
 .ctrl.navbar:hover {
-  max-width: none;
   min-width: none;
 }
 
