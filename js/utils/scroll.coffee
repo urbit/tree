@@ -16,7 +16,9 @@ scroll =
 
   resize: -> if @w > 1170 then @clearNav()
 
-  scroll: -> 
+  scroll: ->
+    unless @$n? and @$d?
+      return
     @cs = $(window).scrollTop()
 
     if @w > 767 then @clearNav()
