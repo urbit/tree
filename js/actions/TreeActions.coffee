@@ -38,8 +38,8 @@ module.exports =
   setPlanInfo: ({who,loc})->
     TreePersistence.put {who,loc}, "write-plan-info", "hood"
   
-  setCurr: (path) ->
-    _initialLoad = false
+  setCurr: (path,init=true) ->
+    _initialLoad &= init
     TreeDispatcher.handleViewAction
       type:"setCurr"
       path:path

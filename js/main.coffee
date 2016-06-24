@@ -19,7 +19,7 @@ $ ->
   window.tree.actions.addVirtual require './components/Components.coffee'
 
   frag = util.fragpath window.location.pathname.replace /\.[^\/]*$/,''
-  window.tree.actions.setCurr frag
+  window.tree.actions.setCurr frag, true
   window.tree.actions.loadPath frag,window.tree.data
   if window.tree.sein?
     window.tree.actions.loadSein frag,window.tree.sein
