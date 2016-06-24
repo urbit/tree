@@ -16,6 +16,6 @@ module.exports = recl
 
   componentWillUnmount: ->
     # reset tree store state
-    TreeActions.clearNav()
+    setTimeout (-> TreeActions.clearNav()), 0
     
   render: ->  (div {className:"module"}, @props.children)
