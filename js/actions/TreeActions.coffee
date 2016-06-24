@@ -1,6 +1,8 @@
 TreeDispatcher    = require '../dispatcher/Dispatcher.coffee'
 TreePersistence   = require '../persistence/TreePersistence.coffee'
 
+_initialLoad = true # XX right place?
+
 module.exports =
   loadPath: (path,data) ->
     TreeDispatcher.handleServerAction {path,data,type:"loadPath"}
@@ -9,11 +11,14 @@ module.exports =
     TreeDispatcher.handleServerAction {path,data,type:"loadSein"}
 
   clearData: () ->
+    _initialLoad = false
     TreePersistence.refresh()  # XX right place?
     TreeDispatcher.handleServerAction {type:"clearData"}
 
   sendQuery: (path,query) ->
     return unless query?
+    if _initialLoad
+      console.warn "Requesting data druing initial page load", (JSON.stringify path), query
     if path.slice(-1) is "/" then path = path.slice(0,-1)
     TreePersistence.get path,query,(err,res) => 
       if err? then throw err
@@ -34,6 +39,7 @@ module.exports =
     TreePersistence.put {who,loc}, "write-plan-info", "hood"
   
   setCurr: (path) ->
+    _initialLoad = false
     TreeDispatcher.handleViewAction
       type:"setCurr"
       path:path
