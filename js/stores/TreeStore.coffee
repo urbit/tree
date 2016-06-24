@@ -168,10 +168,7 @@ TreeStore.dispatchToken = MessageDispatcher.register (p) ->
   a = p.action
 
   if TreeStore[a.type]
-    # Prevent dispatching in the middle of a dispatch
-    setTimeout ->
-      TreeStore[a.type] a
-      TreeStore.emitChange()
-    , 0
+    TreeStore[a.type] a
+    TreeStore.emitChange()
 
 module.exports = TreeStore
