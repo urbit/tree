@@ -162,6 +162,8 @@ module.exports = query {
       if href and not /^https?:\/\//i.test(href)
         e.preventDefault()
         url = new URL @.href
+        if not /http/.test url.protocol  # mailto: bitcoin: etc.
+          return
         if urb.util.basepath("",url.pathname) isnt
         urb.util.basepath("",document.location.pathname)
           document.location = @.href
