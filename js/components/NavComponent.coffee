@@ -160,12 +160,12 @@ module.exports = query {
       href = $(@).attr('href')
       if href?[0] is "#" then return true;
       if href and not /^https?:\/\//i.test(href)
-        e.preventDefault()
         url = new URL @.href
         if not /http/.test url.protocol  # mailto: bitcoin: etc.
           return
-        if urb.util.basepath("",url.pathname) isnt
-        urb.util.basepath("",document.location.pathname)
+        e.preventDefault()
+        {basepath} = urb.util
+        if basepath("",url.pathname) isnt basepath("",document.location.pathname)
           document.location = @.href
           return
         if url.pathname.substr(-1) isnt "/"
