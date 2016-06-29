@@ -1,3 +1,5 @@
+TreeActions = require '../actions/TreeActions.coffee'
+
 scroll =
   w:  null # width
   $d: null # continaer
@@ -52,7 +54,7 @@ scroll =
       if dy < 0
         if not @$n.hasClass 'm-up'
           @$n.removeClass('m-down m-fixed').addClass 'm-up'
-          @$d.removeClass 'open'
+          TreeActions.closeNav()
           $('.menu.open').removeClass 'open'
           top = if @cs < 0 then 0 else @cs
           ct = @$n.offset().top
@@ -62,7 +64,7 @@ scroll =
         if @$n.hasClass('m-up') and
         @$d.hasClass('open')
           if @cs > @$n.offset().top + @$n.height()
-            @$d.removeClass 'open'
+            TreeActions.closeNav()
 
     @ls = @cs
 
