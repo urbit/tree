@@ -7,6 +7,8 @@ scroll =
   nh: null # nav height cached
   cs: null # current scroll
   ls: null # last scroll
+  cwh: null # current window height
+  lwh: null # last window height
   
   track: ->
     @w = $(window).width()
@@ -22,6 +24,12 @@ scroll =
     unless @$n? and @$d?
       return
     @cs = $(window).scrollTop()
+    @cwh = window.innerHeight
+
+    if (@ls-@cs) < 0 and @cwh isnt @lwh
+      console.log 'current scroll: ' + @cs
+      console.log 'last scroll: ' + @ls
+      console.log 'window.innerHeight: ' + window.innerHeight
 
     if @w > 767 then @clearNav()
     if @w < 767
@@ -52,21 +60,23 @@ scroll =
 
       # scrolling down
       if dy < 0
-        if not @$n.hasClass 'm-up'
-          @$n.removeClass('m-down m-fixed').addClass 'm-up'
-          TreeActions.closeNav()
-          $('.menu.open').removeClass 'open'
-          top = if @cs < 0 then 0 else @cs
-          ct = @$n.offset().top
-          if top > ct and top < ct+@nh then top = ct
-          @$n.offset top:top
-        # close when gone if open
-        if @$n.hasClass('m-up') and
-        @$d.hasClass('open')
-          if @cs > @$n.offset().top + @$n.height()
+        if @cwh == @lwh
+          if not @$n.hasClass 'm-up'
+            @$n.removeClass('m-down m-fixed').addClass 'm-up'
             TreeActions.closeNav()
+            $('.menu.open').removeClass 'open'
+            top = if @cs < 0 then 0 else @cs
+            ct = @$n.offset().top
+            if top > ct and top < ct+@nh then top = ct
+            @$n.offset top:top
+          # close when gone if open
+          if @$n.hasClass('m-up') and
+          @$d.hasClass('open')
+            if @cs > @$n.offset().top + @$n.height()
+              TreeActions.closeNav()
 
     @ls = @cs
+    @lwh = @cwh
 
 
   init: ->
