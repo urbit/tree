@@ -28,7 +28,7 @@
   #head {
     top: 0;
     z-index: 10;
-    width: 100%;
+    width: calc(100% - 1.875rem);
     position: absolute;
   }
   #head.m-down,
