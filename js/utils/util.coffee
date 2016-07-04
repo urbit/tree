@@ -22,6 +22,8 @@ module.exports =
   shortShip: (ship=urb.user)->
     if ship.length <= 13
       ship
+    else if ship.length == 27
+      ship[14...20] + "^" + ship[-6...]
     else
       ship[0...6] + "_" + ship[-6...] # s/(.{6}).*(.{6})/\1_\2/
 
