@@ -14,6 +14,8 @@ recl   = React.createClass
 rele   = React.createElement
 {div,p,h2,img,a,form,textarea,input,code}  = React.DOM
 
+DEFER_USER = yes
+
 Comment = ({time,user,body,loading=false}) ->
   (div {className:(clas "comment", {loading})},
      "#{window.urb.util.toDate(new Date(time))}",
@@ -28,8 +30,13 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
       value:""
       user: urb.user ? ""
       
-    componentDidMount: -> urb.init => @setState user:urb.user
+    componentDidMount: ->
+      unless DEFER_USER
+        urb.init => @setState user:urb.user
+        
     componentDidUpdate: (_props)->
+      if urb.user and not @state.user
+        @setState user: urb.user ? ""
       if @props.comt.length > _props.comt.length
         @setState loading:null
 
