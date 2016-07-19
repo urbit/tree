@@ -157,7 +157,8 @@ module.exports = query {
 
     _this = @
     $('body').on 'click', 'a', (e) ->
-      if e.metaKey then return true # allow cmd+click
+      # allow cmd+click
+      if e.shiftKey or e.ctrlKey or e.metaKey then return true
       href = $(@).attr('href')
       if href?[0] is "#" then return true
       if href and not /^https?:\/\//i.test(href)
