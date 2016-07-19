@@ -157,8 +157,9 @@ module.exports = query {
 
     _this = @
     $('body').on 'click', 'a', (e) ->
+      if e.metaKey then return true # allow cmd+click
       href = $(@).attr('href')
-      if href?[0] is "#" then return true;
+      if href?[0] is "#" then return true
       if href and not /^https?:\/\//i.test(href)
         url = new URL @.href
         if not /http/.test url.protocol  # mailto: bitcoin: etc.
