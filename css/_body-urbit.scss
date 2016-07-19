@@ -310,9 +310,12 @@
   white-space: nowrap;
 }
 
+.ship span {
+  display: none;
+}
+
 .ship:before {
   content: attr(data-alias);
-  margin-right: 2rem;
   color: #000;
 }
 
@@ -322,6 +325,10 @@
   overflow: visible;
   white-space: normal;
   &:before { display: none; }
+}
+
+.ship:hover span {
+  display: inline;
 }
 
 @include media-breakpoint-down(sm) {
