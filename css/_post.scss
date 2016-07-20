@@ -49,6 +49,12 @@
   }
 }
 
+@include media-breakpoint-down(sm) {
+  .urbit .post h1.title,
+  .urbit .post img {
+    max-width: 100%;
+  }
+
 .urbit.post .person {
   margin-bottom: 2rem;
 
