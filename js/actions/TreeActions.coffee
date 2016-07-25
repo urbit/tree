@@ -35,8 +35,8 @@ module.exports =
       if !err?
         @clearData()
 
-  addPost: (pax,sup,txt)->
-    TreePersistence.put {pax,sup,txt}, "talk-post", "talk", (err,res)=>
+  addPost: (pax,sup,hed,txt)->
+    TreePersistence.put {pax,sup,hed,txt}, "talk-fora-post", "talk", (err,res)=>
       if !err?
         @clearData()
 

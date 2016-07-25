@@ -14,7 +14,7 @@ recl   = React.createClass
 rele   = React.createElement
 {div,p,h2,img,a,form,textarea,input,code}  = React.DOM
 
-DEFER_USER = yes
+DEFER_USER = no
 
 module.exports = query {comt:'j', path:'t', spur:'t'}, recl
     displayName: "Post"
@@ -34,8 +34,10 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
         @setState loading:null
 
     onSubmit: (e) ->
-      {value} = @refs.in.comment
-      TreeActions.addPost @props.path,@props.spur,value
+      title = @refs.in.title.value
+      comment = @refs.in.comment.value
+      path = @props.path or "/" # XX deal with root path
+      TreeActions.addPost path,@props.spur,title,comment
       e.preventDefault()
 
     onChange: (e) -> @setState {value:e.target.value}
@@ -43,13 +45,18 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
     render: ->
       _attr = {}
       if @state.loading is true then _attr.disabled = "true"
-      textareaAttr = _.create _attr, {
+      titleInput = input _.create _attr, {
+                           type: "text"
+                           name: "title"
+                           placeholder: "Title"
+                         }
+      bodyTextArea = textarea _.create _attr, {
                               type:"text"
                               name:"comment"
                               value:@state.value
                               @onChange
                             }
-      inputAttr = _.create _attr, {
+      postButton = input _.create _attr, {
                             type:"submit"
                             value:"Post"
                             className:"btn btn-primary"
@@ -59,8 +66,9 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
         (div {className:"add-post"},
           (form {ref:"in",@onSubmit},
             (rele Ship,{ship:@state.user})
-            (textarea textareaAttr)
-            (input inputAttr)
+            titleInput
+            bodyTextArea
+            postButton
           )
         )
       )
