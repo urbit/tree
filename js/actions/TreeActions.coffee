@@ -20,13 +20,13 @@ module.exports =
     if _initialLoad
       console.warn "Requesting data druing initial page load", (JSON.stringify path), query
     if path.slice(-1) is "/" then path = path.slice(0,-1)
-    TreePersistence.get path,query,(err,res) => 
+    TreePersistence.get path,query,(err,res) =>
       if err? then throw err
       @loadPath path,res
 
   registerComponent: (name,comp) -> @addVirtual "#{name}": comp
   registerScriptElement: (elem)-> TreePersistence.waspElem elem
-    
+
   addVirtual: (components) ->
     TreeDispatcher.handleViewAction {type:"addVirtual", components}
 
@@ -34,10 +34,17 @@ module.exports =
     TreePersistence.put {pax,sup,txt}, "talk-comment", "talk", (err,res)=>
       if !err?
         @clearData()
-    
+
+  addPost: (pax,sup,hed,txt)->
+    TreePersistence.put {pax,sup,hed,txt}, "talk-fora-post", "talk", (err,res)=>
+      if !err?
+        @clearData()
+        history.pushState {},"",pax
+        @setCurr pax
+
   setPlanInfo: ({who,loc})->
     TreePersistence.put {who,loc}, "write-plan-info", "hood"
-  
+
   setCurr: (path,init=true) ->
     _initialLoad &= init
     TreeDispatcher.handleViewAction

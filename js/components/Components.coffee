@@ -12,6 +12,7 @@ module.exports =
   script:     require './ScriptComponent.coffee'
   plan:       require './PlanComponent.coffee'
   panel:      require './PanelComponent.coffee'
+  post:       require './PostComponent.coffee'
   imagepanel: require './ImagepanelComponent.coffee'
   load:       require './LoadComponent.coffee'
   ship:       require './ShipComponent.coffee'
