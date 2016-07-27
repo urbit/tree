@@ -39,7 +39,7 @@ module.exports =
     TreePersistence.put {pax,sup,hed,txt}, "talk-fora-post", "talk", (err,res)=>
       if !err?
         @clearData()
-        history.pushState {},"",pax
+        history.pushState {},"",".."
         @setCurr pax
 
   setPlanInfo: ({who,loc})->
