@@ -7,7 +7,11 @@ module.exports = recl
   displayName: "Dpad"
 
   renderUp: -> 
-    if @props.sein then @renderArrow "up",@props.sein
+    {sein} = @props
+    if sein
+      if @props.meta.navuptwo
+        sein = sein.replace /\/[^\/]*$/, "" # strip last path element
+      @renderArrow "up",sein
 
   renderArrow: (name, path) ->
     href = util.basepath path
