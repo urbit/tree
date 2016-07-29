@@ -23,7 +23,7 @@ Comment = ({time,user,body,loading=false}) ->
      (reactify body,"comt",{components:{}})
   )
 
-module.exports = query {comt:'j', path:'t', spur:'t'}, recl
+module.exports = query {comt:'j', path:'t', spur:'t', meta:'j'}, recl
     displayName: "Comments"
     getInitialState: ->
       loading:null
@@ -64,20 +64,31 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
                             value:"Add comment"
                             className:"btn btn-primary"
                           }
-
-      (div {},
-        (div {className:"add-comment"},
+      
+      addComment = 
+        (div {key:'add-comment',className:"add-comment"},
           (form {ref:"in",@onSubmit},
             (rele Ship,{ship:@state.user})
             (textarea textareaAttr)
             (input inputAttr)
           )
         )
-        (div {className:"comments"},
-          (if @state.loading?
-            rele Comment, _.extend {}, @state.loading, user: @state.user
-          )
-          @props.comt.map (props,key)->
-            rele Comment, _.extend {key}, props
-        )
+
+      comments = @props.comt.map (props,key)->
+        rele Comment, _.extend {key}, props
+      
+      comments.unshift (if @state.loading?
+        rele Comment, _.extend {key:'loading'}, @state.loading, user: @state.user
       )
+
+      if "reverse" in (@props.meta.comments?.split(" ") ? [])
+        comments = comments.reverse()
+        (div {}, [
+          (div {key:'comments',className:"comments"}, comments)
+          addComment
+        ])
+      else
+        (div {}, [
+          addComment
+          (div {key:'comments',className:"comments"}, comments)
+        ])
