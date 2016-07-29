@@ -14,6 +14,7 @@ module.exports = query {
       snip:'r'
       head:'r'
       meta:'j'
+      name:'t'
   }, recl
   displayName: "List"
 
@@ -23,7 +24,7 @@ module.exports = query {
       @props.dataType
       default: @props['data-source'] is 'default'
       @props.className
-    kids = @renderList()
+    kids = @renderList @sortedKids()
     unless kids.length is 0 and @props.is404?
       return (ul {className:k}, kids)
 
@@ -33,25 +34,28 @@ module.exports = query {
         pre  {}, @props.path
         span {}, 'is either empty or does not exist.'
 
-  renderList: ->
+  sortedKids: ->
     # check if kids all have a sort meta tag
     sorted = true
     _keys = []
     for k,v of @props.kids
       if @props.sortBy
         if @props.sortBy is 'date'
-          if not v.meta?.date? then sorted = false
+          if not v.meta?.date?
+            return _.keys(@props.kids).sort()
           _k = Number v.meta.date.slice(1).replace /\./g,""
           _keys[_k] = k
       else
-        if not v.meta?.sort? then sorted = false
+        if not v.meta?.sort?
+          return _.keys(@props.kids).sort()
         _keys[Number(v.meta?.sort)] = k
     if @props.sortBy is 'date' then _keys.reverse()
-    if sorted isnt true
-      _keys = _.keys(@props.kids).sort()
-    for item in _.values _keys
+    _.values _keys
+      
+  renderList: (elems)->
+    for elem in elems
+      item = elem.name
       path = @props.path+"/"+item
-      elem = @props.kids[item]
       if elem.meta.hide? then continue
       href = util.basepath path
       if @props.linkToFragments? then href="#"+item
