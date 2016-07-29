@@ -14,6 +14,7 @@ module.exports = query {
       snip:'r'
       head:'r'
       meta:'j'
+      bump:'t'
       name:'t'
   }, recl
   displayName: "List"
@@ -36,6 +37,11 @@ module.exports = query {
 
   sortedKids: ->
     # check if kids all have a sort meta tag
+    if @props.sortBy is 'bump'
+      return _.sortBy(@props.kids,
+        ({bump,name})-> bump || name
+      ).reverse()
+
     sorted = true
     _keys = []
     for k,v of @props.kids
