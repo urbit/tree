@@ -3,6 +3,8 @@ rele = React.createElement
 {nav,ul,li,a} = React.DOM
 
 module.exports = recl
+  getInitialState: -> loaded:urb.ship?
+  componentDidMount: -> urb.init => @setState {'loaded'}
   render: ->
     if !urb.user? or urb.user isnt urb.ship
       (nav {className:"navbar panel"}, [
