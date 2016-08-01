@@ -43,20 +43,21 @@ module.exports = query {
       ).reverse()
 
     sorted = true
-    _keys = []
-    for k,v of @props.kids
+    _kids = []
+    for k,elem of @props.kids
+      meta = elem.meta ? {}
       if @props.sortBy
         if @props.sortBy is 'date'
-          if not v.meta?.date?
-            return _.keys(@props.kids).sort()
-          _k = Number v.meta.date.slice(1).replace /\./g,""
-          _keys[_k] = k
+          if not meta.date?
+            return _.sortBy(@props.kids,'name')
+          _k = Number meta.date.slice(1).replace /\./g,""
+          _kids[_k] = elem
       else
-        if not v.meta?.sort?
-          return _.keys(@props.kids).sort()
-        _keys[Number(v.meta?.sort)] = k
-    if @props.sortBy is 'date' then _keys.reverse()
-    _.values _keys
+        if not meta.sort?
+          return _.sortBy(@props.kids,'name')
+        _kids[Number(meta.sort)] = elem
+    if @props.sortBy is 'date' then _kids.reverse()
+    _.values _kids
       
   renderList: (elems)->
     for elem in elems
