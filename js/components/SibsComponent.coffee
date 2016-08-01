@@ -7,10 +7,11 @@ recl = React.createClass
 {ul,li,a} = React.DOM
 
 module.exports = query {
-    path:'t'
     kids:
       head:'r'
       meta:'j'
+      name:'t'
+      path:'t'
   }, recl
   displayName:"Siblings"
   toText: (elem)-> reactify.walk elem,
@@ -18,7 +19,7 @@ module.exports = query {
                              (s)->s
                              ({c})->(c ? []).join ''
   render: ->
-    keys = util.getKeys @props.kids
+    kids = util.sortKids @props.kids
 
     navClas =
       nav: true
@@ -26,19 +27,18 @@ module.exports = query {
     if @props.className then navClas[@props.className] = true
     navClas = clas navClas
 
-    ul {className:navClas}, keys.map (key) =>
-      selected = key is @props.curr
+    ul {className:navClas}, kids.map ({head,meta={},name,path}) =>
+      selected = name is @props.curr
       if @props.meta.navselect
-        selected = key is @props.meta.navselect
-      href = util.basepath @props.path+"/"+key
-      data = @props.kids[key]
-      head = data.meta.title if data.meta
-      head ?= @toText data.head
-      head ||= key
+        selected = name is @props.meta.navselect
+      href = util.basepath path
+      head = meta.title
+      head ?= @toText head
+      head ||= name
       className = clas
         "nav-item": true
         selected: selected
-      if data.meta.sibsclass
-        className += " "+clas(data.meta.sibsclass.split(","))
-      (li {className,key},
+      if meta.sibsclass
+        className += " "+clas(meta.sibsclass.split(","))
+      (li {className,key:name},
         (a {className:"nav-link",href,onClick:@props.closeNav}, head))
