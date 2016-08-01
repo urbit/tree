@@ -61,16 +61,17 @@ module.exports = query {
   renderList: (elems)->
     for elem in elems
       item = elem.name
+      meta = elem.meta ? {}
       path = @props.path+"/"+item
-      if elem.meta.hide? then continue
+      if meta.hide? then continue
       href = util.basepath path
       if @props.linkToFragments? then href="#"+item
       if @props.childIsFragment? then href=(util.basepath @props.path)+"#"+item
-      if elem.meta.link then href = elem.meta.link
+      if meta.link then href = meta.link
       parts = []
       title = null
 
-      if elem.meta?.title
+      if meta.title
         if @props.dataType is 'post'
           title =
             gn: 'a'
@@ -78,13 +79,13 @@ module.exports = query {
             c: [
               gn: 'h1'
               ga: {className:'title'}
-              c: [elem.meta.title]
+              c: [meta.title]
             ]
         else
           title =
             gn: 'h1'
             ga: {className:'title'}
-            c: [elem.meta.title]
+            c: [meta.title]
       if not title && elem.head.c.length > 0
         title = elem.head
       if not title
@@ -94,7 +95,7 @@ module.exports = query {
           c: [item]
 
       unless @props.titlesOnly        # date
-        _date = elem.meta.date
+        _date = meta.date
         if not _date or _date.length is 0 then _date = ""
         date =
           gn: 'div'
@@ -106,34 +107,34 @@ module.exports = query {
 
       unless @props.titlesOnly         # metadata
         if @props.dataType is 'post'
-          if elem.meta.image           # image
+          if meta.image           # image
             image =
               gn: 'a'
               ga: {href}
               c: [
                 gn: 'img'
                 ga:
-                  src: elem.meta.image
+                  src: meta.image
               ]
             parts.push image
         if @props.dataPreview         # preview
-          if not elem.meta.preview
+          if not meta.preview
             parts.push (elem.snip.c.slice 0,2)...
           else
-            if elem.meta.preview
+            if meta.preview
               preview =
                 gn: 'p'
                 ga: {className:'preview'}
-                c: [elem.meta.preview]
+                c: [meta.preview]
             else
               preview = elem.snip
             parts.push preview
         if @props.dataType is 'post'
-          if elem.meta.author          # author
+          if meta.author          # author
               author =
                 gn: 'h3'
                 ga: {className:'author'}
-                c: [elem.meta.author]
+                c: [meta.author]
               parts.push author
           cont =
             gn: 'a'
