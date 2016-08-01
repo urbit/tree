@@ -25,7 +25,7 @@ module.exports = query {
       @props.dataType
       default: @props['data-source'] is 'default'
       @props.className
-    kids = @renderList @sortedKids()
+    kids = @renderList (util.sortKids @props.kids, @props.sortBy)
     unless kids.length is 0 and @props.is404?
       return (ul {className:k}, kids)
 
@@ -34,30 +34,6 @@ module.exports = query {
       div {},
         pre  {}, @props.path
         span {}, 'is either empty or does not exist.'
-
-  sortedKids: ->
-    # check if kids all have a sort meta tag
-    if @props.sortBy is 'bump'
-      return _.sortBy(@props.kids,
-        ({bump,name})-> bump || name
-      ).reverse()
-
-    sorted = true
-    _kids = []
-    for k,elem of @props.kids
-      meta = elem.meta ? {}
-      if @props.sortBy
-        if @props.sortBy is 'date'
-          if not meta.date?
-            return _.sortBy(@props.kids,'name')
-          _k = Number meta.date.slice(1).replace /\./g,""
-          _kids[_k] = elem
-      else
-        if not meta.sort?
-          return _.sortBy(@props.kids,'name')
-        _kids[Number(meta.sort)] = elem
-    if @props.sortBy is 'date' then _kids.reverse()
-    _.values _kids
       
   renderList: (elems)->
     for elem in elems

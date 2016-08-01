@@ -27,23 +27,26 @@ module.exports =
     else
       ship[0...6] + "_" + ship[-6...] # s/(.{6}).*(.{6})/\1_\2/
 
-  getKeys: (kids) -> # child node keys, respecting metadata
-    # kids = _.filter(kids,({meta})-> !(meta?.hide))
-    # unless _.all(kids, ({meta})-> meta?.sort?)
-    #   _.keys(kids).sort()
-    # else
-    #   order = []
-    #   for k,{meta} of kids
-    #     order[meta.sort] = k
-    #   _.values order
-    # # XX test!
-    sorted = true
-    keys = []
-    for k,v of kids
-      continue if v.meta?.hide
-      if not v.meta?.sort? then sorted = false
-      keys[Number(v.meta?.sort)] = k
-    if sorted isnt true
-      keys = _.keys(kids).sort()
-    else
-      keys = _.values keys
+  getKeys: (kids) -> _.map (@sortKids kids), 'name'
+  sortKids: (kids,sortBy)->
+    if sortBy is 'bump'
+      return _.sortBy(kids,
+        ({bump,name})-> bump || name
+      ).reverse()
+
+    _kids = []
+    for k,elem of kids
+      meta = elem.meta ? {}
+      if sortBy
+        if sortBy is 'date'
+          if not meta.date? # XX throw?
+            return _.sortBy(kids,'name')
+          _k = Number meta.date.slice(1).replace /\./g,""
+          _kids[_k] = elem
+      else
+        if not meta.sort? # XX throw if inconsistent?
+          return _.sortBy(kids,'name')
+        _kids[Number(meta.sort)] = elem
+    if sortBy is 'date' then _kids.reverse()
+    _.values _kids
+
