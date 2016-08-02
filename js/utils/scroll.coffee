@@ -26,11 +26,6 @@ scroll =
     @cs = $(window).scrollTop()
     @cwh = window.innerHeight
 
-    if (@ls-@cs) < 0 and @cwh isnt @lwh
-      console.log 'current scroll: ' + @cs
-      console.log 'last scroll: ' + @ls
-      console.log 'window.innerHeight: ' + window.innerHeight
-
     if @w > 767 then @clearNav()
     if @w < 767
       dy = @ls-@cs
