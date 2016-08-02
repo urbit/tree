@@ -1,40 +1,18 @@
 clas        = require 'classnames'
 
+util        = require '../utils/util.coffee'
+
 reactify    = require './Reactify.coffee'
 query       = require './Async.coffee'
 
 recl = React.createClass
 {div,a,ul,li,hr} = React.DOM
 
-module.exports = query {kids: {body:'r', meta:'j', path:'t'}}, recl
+module.exports = query {kids: {name:'t', bump:'t', body:'r', meta:'j', path:'t'}}, recl
   displayName: "Kids"
   render: ->
-    sorted = true
-    keyed = {}
-    for k,v of @props.kids
-      if @props.sortBy
-        if @props.sortBy is 'date'
-          if not v.meta?.date?
-            sorted = false
-            continue
-          d = v.meta.date.slice(1).split "."
-          if d.length < 3
-            sorted = false
-            continue
-          str = "#{d[0]}-#{d[1]}-#{d[2]}"
-          if d.length > 3
-            str += " #{d[3]}:#{d[4]}:#{d[5]}"
-          _k = Number(new Date(str))
-          keyed[_k] = k
-      else
-        if not v.meta?.sort? then sorted = false
-        keyed[Number(v.meta?.sort)] = k
-
-    if sorted is false then keyed = _.keys this.props.kids
-
-    keys = _.keys(keyed).sort()
-    if @props.sortBy is 'date' then keys.reverse()
-
+    kids = util.sortKids @props.kids, @props.sortBy
+    
     kidsClas = clas
       kids:true
       @props.className
@@ -43,7 +21,6 @@ module.exports = query {kids: {body:'r', meta:'j', path:'t'}}, recl
       "col-md-4":(@props.grid is 'true')
 
     div {className:kidsClas,key:"kids"},
-      for k in keys
-        elem = @props.kids[keyed[k]] ? ""
-        body = reactify elem.body, k, {basePath:elem.path}
-        [(div {key:keyed[k],id:keyed[k],className:kidClas}, body), (hr {})]
+      for elem in kids
+        body = reactify elem.body, null, {basePath:elem.path}
+        [(div {key:elem.name,id:elem.name,className:kidClas}, body), (hr {})]

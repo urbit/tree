@@ -28,7 +28,7 @@ module.exports =
       ship[0...6] + "_" + ship[-6...] # s/(.{6}).*(.{6})/\1_\2/
 
   getKeys: (kids) -> _.map (@sortKids kids), 'name'
-  sortKids: (kids,sortBy=null)->
+  sortKids: (kids,sortBy=null)-> # kids: {name:'t', bump:'t', meta:'j'}
     kids = _.filter(kids,({meta})-> !(meta?.hide))
     switch sortBy
       when 'bump'
@@ -41,7 +41,14 @@ module.exports =
         for k,v of kids
           if not v.meta?.date? # XX throw?
             return _.sortBy(kids,'name')
-          _k = Number v.meta.date.slice(1).replace /\./g,""
+          [yer,mon,day,__,hor,min,sec] = # ~y.m.d..h.m.s
+            v.meta.date.slice(1).split "."
+          unless day? # XX throw
+            return _.sortBy(kids,'name')
+          str = "#{yer}-#{mon}-#{day}"
+          if hor?
+            str += " #{hor}:#{min}:#{sec}"
+          _k = Number(new Date(str))
           _kids[_k] = v
         _.values(_kids).reverse()
       #
@@ -53,4 +60,6 @@ module.exports =
           _kids[Number(v.meta.sort)] = v
         _.values _kids
       #
-      else throw new Error "Unknwon sort: #{sortBy}"
+      else throw new Error "Unknown sort: #{sortBy}"
+        
+        
