@@ -27,6 +27,15 @@ module.exports =
     else
       ship[0...6] + "_" + ship[-6...] # s/(.{6}).*(.{6})/\1_\2/
 
+  dateFromAtom: (date)->
+    [yer,mon,day,__,hor,min,sec] = # ~y.m.d..h.m.s
+      date.slice(1).split "."
+    if day?
+      str = "#{yer}-#{mon}-#{day}"
+      if hor?
+        str += " #{hor}:#{min}:#{sec}"
+      new Date(str)
+
   getKeys: (kids) -> _.map (@sortKids kids), 'name'
   sortKids: (kids,sortBy=null)-> # kids: {name:'t', bump:'t', meta:'j'}
     kids = _.filter(kids,({meta})-> !(meta?.hide))
@@ -41,14 +50,10 @@ module.exports =
         for k,v of kids
           if not v.meta?.date? # XX throw?
             return _.sortBy(kids,'name')
-          [yer,mon,day,__,hor,min,sec] = # ~y.m.d..h.m.s
-            v.meta.date.slice(1).split "."
-          unless day? # XX throw
+          date = @dateFromAtom v.meta.date
+          unless date? # XX throw
             return _.sortBy(kids,'name')
-          str = "#{yer}-#{mon}-#{day}"
-          if hor?
-            str += " #{hor}:#{min}:#{sec}"
-          _k = Number(new Date(str))
+          _k = Number(new Date(date))
           _kids[_k] = v
         _.values(_kids).reverse()
       #
@@ -61,5 +66,3 @@ module.exports =
         _.values _kids
       #
       else throw new Error "Unknown sort: #{sortBy}"
-        
-        
