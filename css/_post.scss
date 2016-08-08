@@ -77,8 +77,13 @@
   line-height: 3rem;
 }
 
-.urbit .post img {
-  max-width: 32rem;
+.urbit .post img { max-width: 32rem; }
+
+@include media-breakpoint-down(sm) {
+  .urbit .post img {
+    max-width: 100%;
+    border-width: 6px;
+  }
 }
 
 .urbit.post {
