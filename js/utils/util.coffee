@@ -42,7 +42,7 @@ module.exports =
     switch sortBy
       when 'bump'
         _.sortBy(kids,
-          ({bump,name})-> bump || name
+          ({bump,meta,name})=> @dateFromAtom bump || meta?.date || name
         ).reverse()
       #
       when 'date'
