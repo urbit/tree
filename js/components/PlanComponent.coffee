@@ -74,7 +74,7 @@ module.exports = query {
        (h6 {}, editable 'who', who, "Sun Tzu") if who? or @state.edit
        (Grid {className:"grid"},
          ["Location:",       (editable 'loc', loc, "Unknown")]
-         ["Issued by:",      issuedBy],
+         ["Issued by:",      (a {href:"//"+urb.sein+".urbit.org"}, issuedBy)],
          ["Immutable link:", (a {href:beak+"/web"+path}, beak)],
          ["Connected to:",   div {},
             for key,{usr,url} of acc
