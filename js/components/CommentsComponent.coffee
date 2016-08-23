@@ -12,9 +12,12 @@ Ship        = require './ShipComponent.coffee'
 
 recl   = React.createClass
 rele   = React.createElement
-{div,p,h2,img,a,form,textarea,input,code}  = React.DOM
+{div,p,h2,img,a,form,textarea,input,code,pre}  = React.DOM
 
 DEFER_USER = yes
+
+Source = query {down:'t'}, ({down})->
+  pre {}, down.replace(util.FRONTMATTER,'')
 
 Comment = ({time,user,body,loading=false}) ->
   (div {className:(clas "comment", {loading})},
@@ -84,6 +87,7 @@ module.exports = query {comt:'j', path:'t', spur:'t', meta:'j'}, recl
       if "reverse" in (@props.meta.comments?.split(" ") ? [])
         comments = comments.reverse()
         (div {}, [
+          rele Source
           (div {key:'comments',className:"comments"}, comments)
           addComment
         ])

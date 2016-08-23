@@ -17,6 +17,7 @@ QUERIES = {
   meta:'j'
   comt:'j'
   plan:'j'
+  down:'t'
   beak:'t'
   spur:'t'
   bump:'t'

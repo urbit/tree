@@ -66,3 +66,11 @@ module.exports =
         _.values _kids
       #
       else throw new Error "Unknown sort: #{sortBy}"
+
+  FRONTMATTER: ///
+    ^---\n       # starts with hr
+    (  
+      .*:.*\n    # and followed by lines with : in them
+    )*           # repeating any number of times
+    ---\n\n      # with a final terminating hr
+  ///
