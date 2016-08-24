@@ -23,71 +23,71 @@ Comment = ({time,user,body,loading=false}) ->
   )
 
 module.exports = query {comt:'j', path:'t', spur:'t', meta:'j'}, recl
-    displayName: "Comments"
-    getInitialState: ->
-      loading:null
+  displayName: "Comments"
+  getInitialState: ->
+    loading:null
+    value:""
+    user: urb.user ? ""
+
+  componentDidMount: ->
+    unless DEFER_USER
+      urb.init => @setState user:urb.user
+
+  componentDidUpdate: (_props)->
+    if urb.user and not @state.user
+      @setState user: urb.user ? ""
+    if @props.comt.length > _props.comt.length
+      @setState loading:null
+
+  onSubmit: (e) ->
+    {value} = @refs.in.comment
+    TreeActions.addComment @props.path, @props.spur, value
+    @setState
       value:""
-      user: urb.user ? ""
-      
-    componentDidMount: ->
-      unless DEFER_USER
-        urb.init => @setState user:urb.user
-        
-    componentDidUpdate: (_props)->
-      if urb.user and not @state.user
-        @setState user: urb.user ? ""
-      if @props.comt.length > _props.comt.length
-        @setState loading:null
+      loading:{'loading', body:{gn:'p',c:[value]}, time:Date.now()}
+    e.preventDefault()
 
-    onSubmit: (e) ->
-      {value} = @refs.in.comment
-      TreeActions.addComment @props.path, @props.spur, value
-      @setState
-        value:""
-        loading:{'loading', body:{gn:'p',c:[value]}, time:Date.now()}
-      e.preventDefault()
+  onChange: (e) -> @setState {value:e.target.value}
 
-    onChange: (e) -> @setState {value:e.target.value}
-
-    render: ->
-      _attr = {}
-      if @state.loading is true then _attr.disabled = "true"
-      textareaAttr = _.create _attr, {
-                              type:"text"
-                              name:"comment"
-                              value:@state.value
-                              @onChange
-                            }
-      inputAttr = _.create _attr, {
-                            type:"submit"
-                            value:"Add comment"
-                            className:"btn btn-primary"
+  render: ->
+    _attr = {}
+    if @state.loading is true then _attr.disabled = "true"
+    textareaAttr = _.create _attr, {
+                            type:"text"
+                            name:"comment"
+                            value:@state.value
+                            @onChange
                           }
-      
-      addComment = 
-        (div {key:'add-comment',className:"add-comment"},
-          (form {ref:"in",@onSubmit},
-            (rele Ship,{ship:@state.user})
-            (textarea textareaAttr)
-            (input inputAttr)
-          )
-        )
+    inputAttr = _.create _attr, {
+                          type:"submit"
+                          value:"Add comment"
+                          className:"btn btn-primary"
+                        }
 
-      comments = @props.comt.map (props,key)->
-        rele Comment, _.extend {key}, props
-      
-      comments.unshift (if @state.loading?
-        rele Comment, _.extend {key:'loading'}, @state.loading, user: @state.user
+    addComment = 
+      (div {key:'add-comment',className:"add-comment"},
+        (form {ref:"in",@onSubmit},
+          (rele Ship,{ship:@state.user})
+          (textarea textareaAttr)
+          (input inputAttr)
+        )
       )
 
-      if "reverse" in (@props.meta.comments?.split(" ") ? [])
-        comments = comments.reverse()
-        (div {}, [
-          (div {key:'comments',className:"comments"}, comments)
-          addComment
-        ])
-      else
-        (div {}, [
-          addComment
-          (div {key:'comments',className:"comments"}, comments)
-        ])
+    comments = @props.comt.map (props,key)->
+      rele Comment, _.extend {key}, props
+
+    comments.unshift (if @state.loading?
+      rele Comment, _.extend {key:'loading'}, @state.loading, user: @state.user
+    )
+
+    if "reverse" in (@props.meta.comments?.split(" ") ? [])
+      comments = comments.reverse()
+      (div {}, [
+        (div {key:'comments',className:"comments"}, comments)
+        addComment
+      ])
+    else
+      (div {}, [
+        addComment
+        (div {key:'comments',className:"comments"}, comments)
+      ])
