@@ -1,12 +1,6 @@
-clas    = require 'classnames'
-
-load       = require './LoadComponent.coffee'
 query      = require './Async.coffee'
-reactify   = require './Reactify.coffee'
 
 TreeActions = require '../actions/TreeActions.coffee'
-
-util        = require '../utils/util.coffee'
 
 Ship        = require './ShipComponent.coffee'
 
@@ -16,11 +10,9 @@ rele   = React.createElement
 
 DEFER_USER = no
 
-module.exports = query {comt:'j', path:'t', spur:'t'}, recl
+module.exports = query {path:'t', spur:'t'}, recl
     displayName: "Post"
     getInitialState: ->
-      loading:null
-      value:""
       user: urb.user ? ""
 
     componentDidMount: ->
@@ -30,21 +22,17 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
     componentDidUpdate: (_props)->
       if urb.user and not @state.user
         @setState user: urb.user ? ""
-      if @props.comt.length > _props.comt.length
-        @setState loading:null
 
     onSubmit: (e) ->
       title = @refs.in.title.value
-      comment = @refs.in.comment.value
+      body = @refs.in.body.value
       path = @props.path or "/" # XX deal with root path
-      TreeActions.addPost path,@props.spur,title,comment
+      TreeActions.addPost path,@props.spur,title,body
       e.preventDefault()
 
-    onChange: (e) -> @setState {value:e.target.value}
 
     render: ->
       _attr = {}
-      if @state.loading is true then _attr.disabled = "true"
       titleInput = input _.create _attr, {
                            type: "text"
                            name: "title"
@@ -52,9 +40,7 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
                          }
       bodyTextArea = textarea _.create _attr, {
                               type:"text"
-                              name:"comment"
-                              value:@state.value
-                              @onChange
+                              name:"body"
                             }
       postButton = input _.create _attr, {
                             type:"submit"

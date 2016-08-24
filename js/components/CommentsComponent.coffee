@@ -1,6 +1,5 @@
 clas    = require 'classnames'
 
-load       = require './LoadComponent.coffee'
 query      = require './Async.coffee'
 reactify   = require './Reactify.coffee'
 
