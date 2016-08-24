@@ -3,26 +3,14 @@ query      = require './Async.coffee'
 TreeActions = require '../actions/TreeActions.coffee'
 
 Ship        = require './ShipComponent.coffee'
+LoadUser    = require './LoadUserWrapper.coffee'
 
 recl   = React.createClass
 rele   = React.createElement
 {div,p,h2,img,a,form,textarea,input,code}  = React.DOM
-
-DEFER_USER = no
-
-module.exports = query {path:'t', spur:'t'}, recl
+    
+module.exports = query {path:'t', spur:'t'}, LoadUser true, recl
   displayName: "Post"
-  getInitialState: ->
-    user: urb.user ? ""
-
-  componentDidMount: ->
-    unless DEFER_USER
-      urb.init => @setState user:urb.user
-
-  componentDidUpdate: (_props)->
-    if urb.user and not @state.user
-      @setState user: urb.user ? ""
-
   onSubmit: (e) ->
     title = @refs.in.title.value
     body = @refs.in.body.value
@@ -51,7 +39,7 @@ module.exports = query {path:'t', spur:'t'}, recl
     (div {},
       (div {className:"add-post"},
         (form {ref:"in",@onSubmit},
-          (rele Ship,{ship:@state.user})
+          (rele Ship,{ship:@props.user})
           titleInput
           bodyTextArea
           postButton

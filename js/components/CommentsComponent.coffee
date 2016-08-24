@@ -8,12 +8,11 @@ TreeActions = require '../actions/TreeActions.coffee'
 util        = require '../utils/util.coffee'
 
 Ship        = require './ShipComponent.coffee'
+LoadUser    = require './LoadUserWrapper.coffee'
 
 recl   = React.createClass
 rele   = React.createElement
 {div,p,h2,img,a,form,textarea,input,code}  = React.DOM
-
-DEFER_USER = yes
 
 Comment = ({time,user,body,loading=false}) ->
   (div {className:(clas "comment", {loading})},
@@ -22,20 +21,13 @@ Comment = ({time,user,body,loading=false}) ->
      (reactify body,"comt",{components:{}})
   )
 
-module.exports = query {comt:'j', path:'t', spur:'t', meta:'j'}, recl
+module.exports = query {comt:'j', path:'t', spur:'t', meta:'j'}, LoadUser false, recl
   displayName: "Comments"
   getInitialState: ->
     loading:null
     value:""
-    user: urb.user ? ""
-
-  componentDidMount: ->
-    unless DEFER_USER
-      urb.init => @setState user:urb.user
 
   componentDidUpdate: (_props)->
-    if urb.user and not @state.user
-      @setState user: urb.user ? ""
     if @props.comt.length > _props.comt.length
       @setState loading:null
 
@@ -67,7 +59,7 @@ module.exports = query {comt:'j', path:'t', spur:'t', meta:'j'}, recl
     addComment = 
       (div {key:'add-comment',className:"add-comment"},
         (form {ref:"in",@onSubmit},
-          (rele Ship,{ship:@state.user})
+          (rele Ship,{ship:@props.user})
           (textarea textareaAttr)
           (input inputAttr)
         )
@@ -77,7 +69,7 @@ module.exports = query {comt:'j', path:'t', spur:'t', meta:'j'}, recl
       rele Comment, _.extend {key}, props
 
     comments.unshift (if @state.loading?
-      rele Comment, _.extend {key:'loading'}, @state.loading, user: @state.user
+      rele Comment, _.extend {key:'loading'}, @state.loading, user: @props.user
     )
 
     if "reverse" in (@props.meta.comments?.split(" ") ? [])
