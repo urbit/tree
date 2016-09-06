@@ -15,9 +15,12 @@ util        = require '../utils/util.coffee'
 name   = (displayName,component)-> _.extend component, {displayName}
 recl   = React.createClass
 rele   = React.createElement
-{div,h1,h3,p,img,a,input}  = React.DOM
+{div,h1,h3,p,img,a,input,button,textarea}  = React.DOM
 
 # named = (x,f)->  f.displayName = x; f
+
+Editor = query {down:'t'}, ({down})->
+  textarea {}, down.replace(util.FRONTMATTER,'')
 
 extras =
   spam: name "Spam", ->
@@ -70,6 +73,7 @@ extras =
             )
       return (div {},"")
 
+  editable: ({toggleEdit})-> button {onClick:toggleEdit}, "Edit"
   comments: Comments
 
   footer: name "Footer", ({container})->
@@ -96,10 +100,11 @@ module.exports = query {
 }, (recl
   displayName: "Body"
   stateFromStore: -> {curr:TreeStore.getCurr()}
-  getInitialState: -> @stateFromStore()
+  getInitialState: -> _.extend {edit:no}, @stateFromStore()
   _onChangeStore: -> if @isMounted() then @setState @stateFromStore()
   componentDidMount: -> TreeStore.addChangeListener @_onChangeStore
 
+  toggleEdit: -> @setState edit: !@state.edit
   render: ->
     extra = (name,props={})=>
       if @props.meta[name]?
@@ -121,12 +126,18 @@ module.exports = query {
     if @props.meta.type && bodyClas.indexOf(@props.meta.type) is -1
       bodyClas += " #{@props.meta.type}"
 
+    if @state.edit
+      body = rele Editor, {key:'editor'}
+    else
+      body = reactify @props.body, 'body'
+      
     parts = [
       extra 'spam'
       extra 'logo', color: @props.meta.logo
       # extra 'plan'
-      reactify @props.body, 'body'
+      body
       extra 'next', {dataPath:@props.sein,curr:@props.name}
+      extra 'editable', {@toggleEdit}
       extra 'comments'
       extra 'footer', {container:@props.meta.container}
     ]

@@ -13,14 +13,14 @@ LoadUser    = require './LoadUserWrapper.coffee'
 recl   = React.createClass
 rele   = React.createElement
 {div,p,h2,img,a,form,textarea,input,code,pre}  = React.DOM
- 
-Source = query {down:'t'}, ({down})->
-  pre {}, down.replace(util.FRONTMATTER,'')
 
+Editor = query {down:'t'}, ({down})->
+  logThing
+  textarea {}, down.replace(util.FRONTMATTER,'')
 
-Comment = ({time,user,body,loading=false}) ->
+Comment = ({time,name,user,body,loading=false}) ->
   (div {className:(clas "comment", {loading})},
-     "#{window.urb.util.toDate(new Date(time))}",
+     name ? window.urb.util.toDate(new Date(time))
      (h2 {}, (rele Ship, ship:user))
      (reactify body,"comt",{components:{}})
   )
@@ -79,7 +79,6 @@ module.exports = query {comt:'j', path:'t', spur:'t', meta:'j'}, LoadUser false,
     if "reverse" in (@props.meta.comments?.split(" ") ? [])
       comments = comments.reverse()
       (div {}, [
-        rele Source
         (div {key:'comments',className:"comments"}, comments)
         addComment
       ])
@@ -87,5 +86,4 @@ module.exports = query {comt:'j', path:'t', spur:'t', meta:'j'}, LoadUser false,
       (div {}, [
         addComment
         (div {key:'comments',className:"comments"}, comments)
-        rele Source
       ])
