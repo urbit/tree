@@ -54,9 +54,10 @@ extras =
       name:'t'
       head:'r'
       meta:'j'
-  }, name "Next", ({curr,path,kids})->
+      bump:'t'
+  }, name "Next", ({curr,meta,path,kids})->
       if kids[curr]?.meta?.next
-        keys = util.getKeys kids
+        keys = util.getKeys kids, meta.navsort
         if keys.length > 1
           index = keys.indexOf(curr)
           next = index+1
@@ -126,7 +127,7 @@ module.exports = query {
       extra 'logo', color: @props.meta.logo
       # extra 'plan'
       reactify @props.body, 'body'
-      extra 'next', {dataPath:@props.sein,curr:@props.name}
+      extra 'next', {dataPath:@props.sein,curr:@props.name,meta:@props.meta}
       extra 'comments'
       extra 'footer', {container:@props.meta.container}
     ]

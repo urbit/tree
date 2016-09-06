@@ -12,6 +12,7 @@ module.exports = query {
       meta:'j'
       name:'t'
       path:'t'
+      bump:'t'
   }, recl
   displayName:"Siblings"
   toText: (elem)-> reactify.walk elem,
@@ -19,7 +20,7 @@ module.exports = query {
                              (s)->s
                              ({c})->(c ? []).join ''
   render: ->
-    kids = util.sortKids @props.kids
+    kids = util.sortKids @props.kids, @props.meta.navsort
 
     navClas =
       nav: true

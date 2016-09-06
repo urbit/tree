@@ -36,7 +36,7 @@ module.exports =
         str += " #{hor}:#{min}:#{sec}"
       new Date(str)
 
-  getKeys: (kids) -> _.map (@sortKids kids), 'name'
+  getKeys: (kids,sortBy) -> _.map (@sortKids kids,sortBy), 'name'
   sortKids: (kids,sortBy=null)-> # kids: {name:'t', bump:'t', meta:'j'}
     kids = _.filter(kids,({meta})-> !(meta?.hide))
     switch sortBy

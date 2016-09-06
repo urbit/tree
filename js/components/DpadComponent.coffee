@@ -16,7 +16,7 @@ module.exports = Dpad = ({sein,curr,kids,meta})->
         Arrow "up", sein
 
   arrowSibs = (
-    keys = util.getKeys kids
+    keys = util.getKeys kids, meta.navsort
     if keys.length > 1
       index = keys.indexOf(curr)
       prev = index-1
