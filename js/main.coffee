@@ -1,6 +1,6 @@
-rend = ReactDOM.render
 
 $ ->
+  rend = ReactDOM.render
   util = require './utils/util.coffee'
   window.tree.util = util
   require './utils/scroll.coffee'
