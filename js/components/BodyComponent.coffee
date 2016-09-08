@@ -40,7 +40,12 @@ extras =
 
   date: name "Date", ({date})-> (div {className:'date'}, date)
 
-  title: name "Title", ({title})-> (h1 {className:'title'}, title)
+  title: name "Title", ({title,edit})->
+    div {},
+      if !edit
+        (h1 {className:'title'}, title)
+      else
+        (input {className:'edit title', defaultValue:title})
 
   image: name "Image", ({image})-> (img {src:image})
 
@@ -151,7 +156,7 @@ module.exports = query {
         1
         0
         extra 'date'
-        extra 'title'
+        extra 'title', {edit:@state.edit}
         extra 'image'
         extra 'preview'
         extra 'author'
