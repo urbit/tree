@@ -3,7 +3,7 @@ clas    = require 'classnames'
 query      = require './Async.coffee'
 reactify   = require './Reactify.coffee'
 
-TreeActions = require '../actions/TreeActions.coffee'
+ForaActions = require '../actions/ForaActions.coffee'
 
 util        = require '../utils/util.coffee'
 
@@ -36,7 +36,7 @@ module.exports = query {comt:'j', path:'t', spur:'t', meta:'j'}, LoadUser false,
 
   onSubmit: (e) ->
     {value} = @refs.in.comment
-    TreeActions.addComment @props.path, @props.spur, value
+    ForaActions.addComment @props.path, @props.spur, value
     @setState
       value:""
       loading:{'loading', body:{gn:'p',c:[value]}, time:Date.now()}

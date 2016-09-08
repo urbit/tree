@@ -1,6 +1,6 @@
 query      = require './Async.coffee'
 
-TreeActions = require '../actions/TreeActions.coffee'
+ForaActions = require '../actions/ForaActions.coffee'
 
 Ship        = require './ShipComponent.coffee'
 LoadUser    = require './LoadUserWrapper.coffee'
@@ -15,7 +15,7 @@ module.exports = query {path:'t', spur:'t'}, LoadUser true, recl
     title = @refs.in.title.value
     body = @refs.in.body.value
     path = @props.path or "/" # XX deal with root path
-    TreeActions.addPost path,@props.spur,title,body
+    ForaActions.addPost path,@props.spur,title,body
     e.preventDefault()
 
 
