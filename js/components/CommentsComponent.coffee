@@ -15,7 +15,6 @@ rele   = React.createElement
 {div,p,h2,img,a,form,textarea,input,code,pre}  = React.DOM
 
 Editor = query {down:'t'}, ({down})->
-  logThing
   textarea {}, down.replace(util.FRONTMATTER,'')
 
 Comment = ({time,name,user,body,loading=false}) ->

@@ -73,7 +73,11 @@ extras =
             )
       return (div {},"")
 
-  editable: ({toggleEdit})-> button {onClick:toggleEdit}, "Edit"
+  editable: ({toggleEdit,meta})->
+    if !urb.user then return div {} # XX non-logged-in
+    if ("~" + urb.user) != meta.author # not our post
+      div {}
+    else div {}, button {onClick:toggleEdit}, "Edit"
   comments: Comments
 
   footer: name "Footer", ({container})->
@@ -137,7 +141,7 @@ module.exports = query {
       # extra 'plan'
       body
       extra 'next', {dataPath:@props.sein,curr:@props.name}
-      extra 'editable', {@toggleEdit}
+      extra 'editable', {@toggleEdit,meta:@props.meta}
       extra 'comments'
       extra 'footer', {container:@props.meta.container}
     ]
