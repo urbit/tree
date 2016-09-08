@@ -78,11 +78,14 @@ extras =
             )
       return (div {},"")
 
-  editable: ({toggleEdit,meta})->
+  editable: ({setEdit,runEdit,edit,meta})->
     if !urb.user then return div {} # XX non-logged-in
     if ("~" + urb.user) != meta.author # not our post
-      div {}
-    else div {}, button {onClick:toggleEdit}, "Edit"
+      return div {}
+    if edit
+      div {}, button {onClick:setEdit}, "Edit"
+    else
+      div {}, button {onClick:runEdit}, "Save"
   comments: Comments
 
   footer: name "Footer", ({container})->
@@ -113,7 +116,10 @@ module.exports = query {
   _onChangeStore: -> if @isMounted() then @setState @stateFromStore()
   componentDidMount: -> TreeStore.addChangeListener @_onChangeStore
 
-  toggleEdit: -> @setState edit: !@state.edit
+  setEdit: -> @setState {'edit'}
+  runEdit: ->
+    console.log "Send to server", @refs.title, @refs.body
+    @setState {edit: false}
   render: ->
     extra = (name,props={})=>
       if @props.meta[name]?
@@ -136,7 +142,7 @@ module.exports = query {
       bodyClas += " #{@props.meta.type}"
 
     if @state.edit
-      body = rele Editor, {key:'editor'}
+      body = rele Editor, {key:'editor', ref:'body'}
     else
       body = reactify @props.body, 'body'
       
@@ -146,7 +152,7 @@ module.exports = query {
       # extra 'plan'
       body
       extra 'next', {dataPath:@props.sein,curr:@props.name}
-      extra 'editable', {@toggleEdit,meta:@props.meta}
+      extra 'editable', {@setEdit,@runEdit,meta:@props.meta}
       extra 'comments'
       extra 'footer', {container:@props.meta.container}
     ]
@@ -156,7 +162,7 @@ module.exports = query {
         1
         0
         extra 'date'
-        extra 'title', {edit:@state.edit}
+        extra 'title', {edit:@state.edit, ref:'title'}
         extra 'image'
         extra 'preview'
         extra 'author'
