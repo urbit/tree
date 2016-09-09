@@ -13,3 +13,8 @@ module.exports =
         TreeActions.clearData()
         history.pushState {},"",".."
         TreeActions.setCurr pax
+
+  editPost: (sup,hed,txt)->
+    TreePersistence.put {sup,hed,txt}, "talk-fora-post-edit", "talk", (err,res)=>
+      if !err?
+        TreeActions.clearData()

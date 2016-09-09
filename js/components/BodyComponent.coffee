@@ -21,7 +21,7 @@ rele   = React.createElement
 # named = (x,f)->  f.displayName = x; f
 
 Editor = query {down:'t'}, ({down})->
-  textarea {}, down.replace(util.FRONTMATTER,'')
+  textarea defaultValue: down.replace(util.FRONTMATTER,'')
 
 extras =
   spam: name "Spam", ->
@@ -41,12 +41,15 @@ extras =
 
   date: name "Date", ({date})-> (div {className:'date'}, date)
 
-  title: name "Title", ({title,edit})->
-    div {},
-      if !edit
-        (h1 {className:'title'}, title)
-      else
-        (input {className:'edit title', defaultValue:title})
+  title: recl
+    displayName: "Title"
+    render: ->
+      {title,edit} = @props
+      div {},
+        if !edit
+          (h1 {className:'title'}, title)
+        else
+          (input {className:'title', defaultValue:title})
 
   image: name "Image", ({image})-> (img {src:image})
 
@@ -110,6 +113,7 @@ module.exports = query {
   path:'t'
   meta:'j'
   sein:'t'
+  spur:'t'
 }, (recl
   displayName: "Body"
   stateFromStore: -> {curr:TreeStore.getCurr()}
@@ -119,7 +123,9 @@ module.exports = query {
 
   setEdit: -> @setState {'edit'}
   runEdit: ->
-    console.log "Send to server", @refs.title, @refs.body
+    ForaActions.editPost @props.spur,
+      $(ReactDOM.findDOMNode @refs.title).find('input').val()
+      $(ReactDOM.findDOMNode @refs.body).find('textarea').val()
     @setState {edit: false}
   render: ->
     extra = (name,props={})=>
