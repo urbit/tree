@@ -4,6 +4,7 @@ load       = require './LoadComponent.coffee'
 query      = require './Async.coffee'
 reactify   = require './Reactify.coffee'
 
+ForaActions = require '../actions/ForaActions.coffee'
 TreeActions = require '../actions/TreeActions.coffee'
 TreeStore   = require '../stores/TreeStore.coffee'
 
@@ -82,7 +83,7 @@ extras =
     if !urb.user then return div {} # XX non-logged-in
     if ("~" + urb.user) != meta.author # not our post
       return div {}
-    if edit
+    if !edit
       div {}, button {onClick:setEdit}, "Edit"
     else
       div {}, button {onClick:runEdit}, "Save"
@@ -123,8 +124,7 @@ module.exports = query {
   render: ->
     extra = (name,props={})=>
       if @props.meta[name]?
-        if (_.keys props).length is 0
-          props[name] = @props.meta[name]
+        props[name] = @props.meta[name]
         props.key = name
         React.createElement extras[name], props
 
@@ -152,7 +152,7 @@ module.exports = query {
       # extra 'plan'
       body
       extra 'next', {dataPath:@props.sein,curr:@props.name}
-      extra 'editable', {@setEdit,@runEdit,meta:@props.meta}
+      extra 'editable', {@setEdit,@runEdit,meta:@props.meta,edit:@state.edit}
       extra 'comments'
       extra 'footer', {container:@props.meta.container}
     ]
