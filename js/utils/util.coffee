@@ -19,7 +19,7 @@ module.exports =
     path.replace(/\/$/,'')
         .replace(_basepath,"")
 
-  shortShip: (ship=urb.user)->
+  shortShip: (ship= urb.user ? "")->
     if ship.length <= 13
       ship
     else if ship.length == 27
