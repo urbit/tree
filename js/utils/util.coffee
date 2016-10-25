@@ -55,7 +55,8 @@ module.exports =
             return _.sortBy(kids,'name')
           _k = Number(new Date(date))
           _kids[_k] = v
-        _.values(_kids).reverse()
+        for k in _.keys(_kids).sort().reverse()
+          _kids[k]
       #
       when null
         _kids = []
@@ -63,6 +64,7 @@ module.exports =
           if not v.meta?.sort? # XX throw if inconsistent?
             return _.sortBy(kids,'name')
           _kids[Number(v.meta.sort)] = v
-        _.values _kids
+        for k in _.keys(_kids).sort()
+          _kids[k]
       #
       else throw new Error "Unknown sort: #{sortBy}"
