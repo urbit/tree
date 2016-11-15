@@ -5,7 +5,7 @@ _basepath +=
 module.exports =
   components:
     ship: require '../components/ShipComponent.coffee'
-    
+
   basepath: (path) ->
     prefix = _basepath
     if prefix is "/" then prefix = ""
@@ -31,10 +31,14 @@ module.exports =
     [yer,mon,day,__,hor,min,sec] = # ~y.m.d..h.m.s
       date.slice(1).split "."
     if day?
-      str = "#{yer}-#{mon}-#{day}"
-      if hor?
-        str += " #{hor}:#{min}:#{sec}"
-      new Date(str)
+      d = new Date()
+      d.setYear yer
+      d.setMonth mon-1
+      d.setDate day
+    if hor?
+      d.setHours hor
+      d.setMinutes min
+      d.setSeconds sec
 
   getKeys: (kids,sortBy) -> _.map (@sortKids kids,sortBy), 'name'
   sortKids: (kids,sortBy=null)-> # kids: {name:'t', bump:'t', meta:'j'}
