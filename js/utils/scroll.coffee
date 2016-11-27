@@ -2,14 +2,14 @@ TreeActions = require '../actions/TreeActions.coffee'
 
 scroll =
   w:  null # width
-  $d: null # continaer
+  $d: null # container
   $n: null # nav
   nh: null # nav height cached
   cs: null # current scroll
   ls: null # last scroll
   cwh: null # current window height
   lwh: null # last window height
-  
+
   track: ->
     @w = $(window).width()
     @$n = $('#head')
@@ -47,8 +47,8 @@ scroll =
           # if top < 0 then top = 0
           @$n.offset top:top
         # set fixed when at top
-        if @$n.hasClass('m-down') and 
-        not @$n.hasClass('m-fixed') and 
+        if @$n.hasClass('m-down') and
+        not @$n.hasClass('m-fixed') and
         @$n.offset().top >= @cs
           @$n.addClass 'm-fixed'
           @$n.attr {style:''}
