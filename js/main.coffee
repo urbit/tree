@@ -1,9 +1,9 @@
 rend = ReactDOM.render
 
 $ ->
-  util = require './utils/util.coffee'
+  util = require './utils/util.js'
   window.tree.util = util
-  require './utils/scroll.coffee'
+  require './utils/scroll.js'
 
   if document.location.pathname.substr(-1) isnt "/"
     history.replaceState {}, "",document.location.pathname+"/"+
@@ -12,11 +12,11 @@ $ ->
 
   # we load modules that may need to send actions up, so we attach
   # the actions to window here.
-  window.tree.actions = require './actions/TreeActions.coffee'
+  window.tree.actions = require './actions/TreeActions.js'
 
   # reactify has virtual components which themselves need to call
   # reactify.  to do this, we register the components after the fact
-  window.tree.actions.addVirtual require './components/Components.coffee'
+  window.tree.actions.addVirtual require './components/Components.js'
 
   frag = util.fragpath window.location.pathname.replace /\.[^\/]*$/,''
   window.tree.actions.setCurr frag, true
@@ -28,5 +28,5 @@ $ ->
       window.urb.dewasp(dat)
     window.tree.actions.clearData()
 
-  main = React.createFactory require './components/TreeComponent.coffee'
+  main = React.createFactory require './components/TreeComponent.js'
   rend (main {}, ""),document.getElementById('tree')
