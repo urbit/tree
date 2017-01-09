@@ -18,7 +18,7 @@ const Dpad = React.createFactory(DpadComponent);
 
 let recl = React.createClass;
 let rend = ReactDOM.render;
-let {div,a,ul,li,button} = React.DOM;
+const { div, a, ul, li, button } = React.DOM;
 
 let Nav = React.createFactory(query({
     path:'t',
