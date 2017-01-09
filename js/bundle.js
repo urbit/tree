@@ -1415,17 +1415,14 @@ var extras = {
     var title = _ref3.title;
     return h1({ className: 'title' }, title);
   }),
-
   image: name("Image", function (_ref4) {
     var image = _ref4.image;
     return img({ src: image });
   }),
-
   preview: name("Preview", function (_ref5) {
     var preview = _ref5.preview;
     return p({ className: 'preview' }, preview);
   }),
-
   author: name("Author", function (_ref6) {
     var author = _ref6.author;
     return h3({ className: 'author' }, author);
@@ -2378,6 +2375,10 @@ var _classnames = __webpack_require__(4);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
 var _Async = __webpack_require__(1);
 
 var _Async2 = _interopRequireDefault(_Async);
@@ -2394,17 +2395,21 @@ var _TreeActions = __webpack_require__(2);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
-var _util = __webpack_require__(0);
+var _SibsComponent = __webpack_require__(27);
 
-var _util2 = _interopRequireDefault(_util);
+var _SibsComponent2 = _interopRequireDefault(_SibsComponent);
+
+var _DpadComponent = __webpack_require__(15);
+
+var _DpadComponent2 = _interopRequireDefault(_DpadComponent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var BodyComponent = React.createFactory(__webpack_require__(9));
+// unused
+// let BodyComponent = React.createFactory(require('./BodyComponent'));
 
-
-var Sibs = React.createFactory(__webpack_require__(27));
-var Dpad = React.createFactory(__webpack_require__(15));
+var Sibs = React.createFactory(_SibsComponent2.default);
+var Dpad = React.createFactory(_DpadComponent2.default);
 
 var recl = React.createClass;
 var rend = ReactDOM.render;

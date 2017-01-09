@@ -43,21 +43,18 @@ let extras = {
   date: name("Date", ({date})=> div({className:'date'}, date)),
 
   title: name("Title", ({title})=> h1({className:'title'}, title)),
-
   image: name("Image", ({image})=> img({src:image})),
-
   preview: name("Preview", ({preview})=> p({className:'preview'}, preview)),
-
   author: name("Author", ({author})=> h3({className:'author'}, author)),
 
   // plan: Plan
 
 
   next: query({
-    path:'t',
+    path: 't',
     kids: {
-      name:'t',
-      head:'r',
+      name: 't',
+      head: 'r',
       meta:'j',
       bump:'t'
     }

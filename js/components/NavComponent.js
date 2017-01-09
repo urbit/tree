@@ -1,16 +1,20 @@
 import clas from 'classnames';
 
-let BodyComponent = React.createFactory(require('./BodyComponent.js'));
-import query from './Async.js';
-import reactify from './Reactify.js';
+import util from '../utils/util';
+import query from './Async';
+import reactify from './Reactify';
 
-import TreeStore from '../stores/TreeStore.js';
-import TreeActions from '../actions/TreeActions.js';
+import TreeStore from '../stores/TreeStore';
+import TreeActions from '../actions/TreeActions';
 
-let Sibs        = React.createFactory(require('./SibsComponent.js'));
-let Dpad        = React.createFactory(require('./DpadComponent.js'));
+// unused
+// let BodyComponent = React.createFactory(require('./BodyComponent'));
 
-import util from '../utils/util.js';
+import SibsComponent from './SibsComponent'
+import DpadComponent from './DpadComponent'
+
+const Sibs = React.createFactory(SibsComponent);
+const Dpad = React.createFactory(DpadComponent);
 
 let recl = React.createClass;
 let rend = ReactDOM.render;
