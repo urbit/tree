@@ -1,18 +1,18 @@
+import clas from 'classnames';
+
 // top level tree component should get rendered to document.body
 // and only render two components, head and nav
 // each one can determine whether or not it's a container.
 
-import query from './Async.js';
+import query from './Async';
 
-import clas from 'classnames';
+import Nav from './NavComponent';
+import Body from './BodyComponent';
 
-let recf = React.createFactory;
-let recl = React.createClass;
+const head = React.createFactory(Nav);
+const body = React.createFactory(Body);
 
-let head = recf(require('./NavComponent.js'));
-let body = recf(require('./BodyComponent.js'));
-
-let {div} = React.DOM;
+const { div } = React.DOM;
 
 export default query({
   body:'r',
@@ -20,14 +20,14 @@ export default query({
   path:'t',
   meta:'j',
   sein:'t'
-}, (recl({
+}, (React.createClass({
   displayName: "Tree",
 
   render() {
-    let treeClas = clas({
-      container: this.props.meta.container !== 'false'});
+    const treeClas = clas({
+      container: this.props.meta.container !== 'false' });
 
-    return (div({className:treeClas},[
+    return (div({ className: treeClas }, [
       (head({key:'head-container'}, "")),
       (body({key:'body-container'}, ""))
     ]));

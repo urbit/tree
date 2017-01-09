@@ -81,10 +81,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _basepath = window.urb.util.basepath("/");
-_basepath += window.location.pathname.replace(window.tree._basepath, "").split("/")[0];
+var _basepath = "";
 
 exports.default = {
+  init: function init() {
+    _basepath = window.urb.util.basepath("/");
+    _basepath += window.location.pathname.replace(window.tree._basepath, "").split("/")[0];
+  },
+
+
   components: {
     ship: __webpack_require__(6)
   },
@@ -510,7 +515,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Dispatcher = __webpack_require__(9);
+var _Dispatcher = __webpack_require__(10);
 
 var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
 
@@ -884,7 +889,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Dispatcher = __webpack_require__(9);
+var _Dispatcher = __webpack_require__(10);
 
 var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
 
@@ -1207,6 +1212,129 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _TreeActions = __webpack_require__(2);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var scroll = {
+  w: null, // width
+  $d: null, // container
+  $n: null, // nav
+  nh: null, // nav height cached
+  cs: null, // current scroll
+  ls: null, // last scroll
+  cwh: null, // current window height
+  lwh: null, // last window height
+
+  track: function track() {
+    this.w = $(window).width();
+    this.$n = $('#head');
+    this.$d = $('#head .ctrl');
+    return this.nh = $('#head .ctrl').outerHeight(true);
+  },
+  clearNav: function clearNav() {
+    return this.$n.removeClass('m-up m-down m-fixed');
+  },
+  resize: function resize() {
+    if (this.w > 1170) {
+      return this.clearNav();
+    }
+  },
+  scroll: function scroll() {
+    if (this.$n == null || this.$d == null) {
+      return;
+    }
+    this.cs = $(window).scrollTop();
+    this.cwh = window.innerHeight;
+
+    if (this.w > 767) {
+      this.clearNav();
+    }
+    if (this.w < 767) {
+      var ct = void 0,
+          top = void 0;
+      var dy = this.ls - this.cs;
+
+      this.$d.removeClass('focus');
+
+      if (this.cs <= 0) {
+        this.$n.removeClass('m-up');
+        this.$n.addClass('m-down m-fixed');
+        return;
+      }
+
+      // scrolling up
+      if (dy > 0) {
+        if (!this.$n.hasClass('m-down')) {
+          this.$n.removeClass('m-up').addClass('m-down');
+          ct = this.$n.offset().top;
+          top = this.cs - this.nh;
+          if (this.cs > ct && this.cs < ct + this.nh) {
+            top = ct;
+          }
+          // if top < 0 then top = 0
+          this.$n.offset({ top: top });
+        }
+        // set fixed when at top
+        if (this.$n.hasClass('m-down') && !this.$n.hasClass('m-fixed') && this.$n.offset().top >= this.cs) {
+          this.$n.addClass('m-fixed');
+          this.$n.attr({ style: '' });
+        }
+      }
+
+      // scrolling down
+      if (dy < 0) {
+        if (this.cwh === this.lwh) {
+          if (!this.$n.hasClass('m-up')) {
+            this.$n.removeClass('m-down m-fixed').addClass('m-up');
+            _TreeActions2.default.closeNav();
+            $('.menu.open').removeClass('open');
+            top = this.cs < 0 ? 0 : this.cs;
+            ct = this.$n.offset().top;
+            if (top > ct && top < ct + this.nh) {
+              top = ct;
+            }
+            this.$n.offset({ top: top });
+          }
+          // close when gone if open
+          if (this.$n.hasClass('m-up') && this.$d.hasClass('open')) {
+            if (this.cs > this.$n.offset().top + this.$n.height()) {
+              _TreeActions2.default.closeNav();
+            }
+          }
+        }
+      }
+    }
+
+    this.ls = this.cs;
+    return this.lwh = this.cwh;
+  },
+  init: function init() {
+    setInterval(this.track.bind(this), 200);
+
+    this.ls = $(window).scrollTop();
+    this.cs = $(window).scrollTop();
+
+    $(window).on('resize', this.resize.bind(this));
+    return $(window).on('scroll', this.scroll.bind(this));
+  }
+};
+
+exports.default = scroll;
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _classnames = __webpack_require__(4);
 
 var _classnames2 = _interopRequireDefault(_classnames);
@@ -1440,7 +1568,7 @@ function __guard__(value, transform) {
 }
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1465,7 +1593,7 @@ exports.default = _.extend(new Flux.Dispatcher(), {
 });
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1499,55 +1627,6 @@ exports.default = {
 };
 
 /***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _Async = __webpack_require__(1);
-
-var _Async2 = _interopRequireDefault(_Async);
-
-var _classnames = __webpack_require__(4);
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// top level tree component should get rendered to document.body
-// and only render two components, head and nav
-// each one can determine whether or not it's a container.
-
-var recf = React.createFactory;
-var recl = React.createClass;
-
-var head = recf(__webpack_require__(21));
-var body = recf(__webpack_require__(8));
-
-var div = React.DOM.div;
-exports.default = (0, _Async2.default)({
-  body: 'r',
-  name: 't',
-  path: 't',
-  meta: 'j',
-  sein: 't'
-}, recl({
-  displayName: "Tree",
-
-  render: function render() {
-    var treeClas = (0, _classnames2.default)({
-      container: this.props.meta.container !== 'false' });
-
-    return div({ className: treeClas }, [head({ key: 'head-container' }, ""), body({ key: 'body-container' }, "")]);
-  }
-}));
-
-/***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1558,119 +1637,49 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _TreeActions = __webpack_require__(2);
+var _classnames = __webpack_require__(4);
 
-var _TreeActions2 = _interopRequireDefault(_TreeActions);
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _Async = __webpack_require__(1);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+var _NavComponent = __webpack_require__(21);
+
+var _NavComponent2 = _interopRequireDefault(_NavComponent);
+
+var _BodyComponent = __webpack_require__(9);
+
+var _BodyComponent2 = _interopRequireDefault(_BodyComponent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var scroll = {
-  w: null, // width
-  $d: null, // container
-  $n: null, // nav
-  nh: null, // nav height cached
-  cs: null, // current scroll
-  ls: null, // last scroll
-  cwh: null, // current window height
-  lwh: null, // last window height
+var head = React.createFactory(_NavComponent2.default);
 
-  track: function track() {
-    this.w = $(window).width();
-    this.$n = $('#head');
-    this.$d = $('#head .ctrl');
-    return this.nh = $('#head .ctrl').outerHeight(true);
-  },
-  clearNav: function clearNav() {
-    return this.$n.removeClass('m-up m-down m-fixed');
-  },
-  resize: function resize() {
-    if (this.w > 1170) {
-      return this.clearNav();
-    }
-  },
-  scroll: function scroll() {
-    if (this.$n == null || this.$d == null) {
-      return;
-    }
-    this.cs = $(window).scrollTop();
-    this.cwh = window.innerHeight;
+// top level tree component should get rendered to document.body
+// and only render two components, head and nav
+// each one can determine whether or not it's a container.
 
-    if (this.w > 767) {
-      this.clearNav();
-    }
-    if (this.w < 767) {
-      var ct = void 0,
-          top = void 0;
-      var dy = this.ls - this.cs;
+var body = React.createFactory(_BodyComponent2.default);
 
-      this.$d.removeClass('focus');
+var div = React.DOM.div;
+exports.default = (0, _Async2.default)({
+  body: 'r',
+  name: 't',
+  path: 't',
+  meta: 'j',
+  sein: 't'
+}, React.createClass({
+  displayName: "Tree",
 
-      if (this.cs <= 0) {
-        this.$n.removeClass('m-up');
-        this.$n.addClass('m-down m-fixed');
-        return;
-      }
+  render: function render() {
+    var treeClas = (0, _classnames2.default)({
+      container: this.props.meta.container !== 'false' });
 
-      // scrolling up
-      if (dy > 0) {
-        if (!this.$n.hasClass('m-down')) {
-          this.$n.removeClass('m-up').addClass('m-down');
-          ct = this.$n.offset().top;
-          top = this.cs - this.nh;
-          if (this.cs > ct && this.cs < ct + this.nh) {
-            top = ct;
-          }
-          // if top < 0 then top = 0
-          this.$n.offset({ top: top });
-        }
-        // set fixed when at top
-        if (this.$n.hasClass('m-down') && !this.$n.hasClass('m-fixed') && this.$n.offset().top >= this.cs) {
-          this.$n.addClass('m-fixed');
-          this.$n.attr({ style: '' });
-        }
-      }
-
-      // scrolling down
-      if (dy < 0) {
-        if (this.cwh === this.lwh) {
-          if (!this.$n.hasClass('m-up')) {
-            this.$n.removeClass('m-down m-fixed').addClass('m-up');
-            _TreeActions2.default.closeNav();
-            $('.menu.open').removeClass('open');
-            top = this.cs < 0 ? 0 : this.cs;
-            ct = this.$n.offset().top;
-            if (top > ct && top < ct + this.nh) {
-              top = ct;
-            }
-            this.$n.offset({ top: top });
-          }
-          // close when gone if open
-          if (this.$n.hasClass('m-up') && this.$d.hasClass('open')) {
-            if (this.cs > this.$n.offset().top + this.$n.height()) {
-              _TreeActions2.default.closeNav();
-            }
-          }
-        }
-      }
-    }
-
-    this.ls = this.cs;
-    return this.lwh = this.cwh;
-  },
-  init: function init() {
-    setInterval(this.track.bind(this), 200);
-
-    this.ls = $(window).scrollTop();
-    this.cs = $(window).scrollTop();
-
-    $(window).on('resize', this.resize.bind(this));
-    return $(window).on('scroll', this.scroll.bind(this));
+    return div({ className: treeClas }, [head({ key: 'head-container' }, ""), body({ key: 'body-container' }, "")]);
   }
-};
-
-scroll.init();
-
-exports.default = scroll;
+}));
 
 /***/ },
 /* 13 */
@@ -2391,7 +2400,7 @@ var _util2 = _interopRequireDefault(_util);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var BodyComponent = React.createFactory(__webpack_require__(8));
+var BodyComponent = React.createFactory(__webpack_require__(9));
 
 
 var Sibs = React.createFactory(__webpack_require__(27));
@@ -4037,12 +4046,28 @@ function isUndefined(arg) {
 "use strict";
 
 
-var rend = ReactDOM.render;
+var _TreeActions = __webpack_require__(2);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _scroll = __webpack_require__(8);
+
+var _scroll2 = _interopRequireDefault(_scroll);
+
+var _TreeComponent = __webpack_require__(12);
+
+var _TreeComponent2 = _interopRequireDefault(_TreeComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 $(function () {
-  var util = __webpack_require__(0);
-  window.tree.util = util;
-  __webpack_require__(12);
+  window.tree.util = _util2.default;
+  _scroll2.default.init();
+  __webpack_require__(8);
 
   if (document.location.pathname.substr(-1) !== "/") {
     history.replaceState({}, "", document.location.pathname + "/" + document.location.search + document.location.hash);
@@ -4050,13 +4075,13 @@ $(function () {
 
   // we load modules that may need to send actions up, so we attach
   // the actions to window here.
-  window.tree.actions = __webpack_require__(2);
+  window.tree.actions = _TreeActions2.default;
 
   // reactify has virtual components which themselves need to call
   // reactify.  to do this, we register the components after the fact
-  window.tree.actions.addVirtual(__webpack_require__(10));
+  window.tree.actions.addVirtual(__webpack_require__(11));
 
-  var frag = util.fragpath(window.location.pathname.replace(/\.[^\/]*$/, ''));
+  var frag = _util2.default.fragpath(window.location.pathname.replace(/\.[^\/]*$/, ''));
   window.tree.actions.setCurr(frag, true);
   window.tree.actions.loadPath(frag, window.tree.data);
 
@@ -4071,8 +4096,8 @@ $(function () {
     return window.tree.actions.clearData();
   };
 
-  var main = React.createFactory(__webpack_require__(11));
-  return rend(main({}, ""), document.getElementById('tree'));
+  var main = React.createFactory(_TreeComponent2.default);
+  return ReactDOM.render(main({}, ""), document.getElementById('tree'));
 });
 
 /***/ }

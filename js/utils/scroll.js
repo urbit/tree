@@ -99,6 +99,4 @@ let scroll = {
   }
 };
 
-scroll.init();
-
 export default scroll;

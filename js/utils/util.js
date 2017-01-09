@@ -1,8 +1,12 @@
-let _basepath = window.urb.util.basepath("/");
-_basepath +=
-  (window.location.pathname.replace(window.tree._basepath, "")).split("/")[0];
+let _basepath = ""
 
 export default {
+  init() {
+    _basepath = window.urb.util.basepath("/");
+    _basepath +=
+      (window.location.pathname.replace(window.tree._basepath, "")).split("/")[0];
+  },
+
   components: {
     ship: require('../components/ShipComponent.js')
   },
