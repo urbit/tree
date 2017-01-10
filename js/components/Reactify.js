@@ -1,7 +1,7 @@
-let recl       = React.createClass;
-let rele       = React.createElement;
-let {div,span} = React.DOM;
-let load       = React.createFactory(require('./LoadComponent.js'));
+const recl = React.createClass;
+const rele = React.createElement;
+const { div, span } = React.DOM;
+const load = React.createFactory(require('./LoadComponent.js'));
 
 import TreeStore from '../stores/TreeStore.js';
 
@@ -25,15 +25,32 @@ let walk = function(root,_nil,_str,_comp){
 let DynamicVirtual = recl({
   displayName: "DynamicVirtual",
   getInitialState() { return this.stateFromStore(); },
+
   stateFromStore() { return {components: TreeStore.getVirtualComponents()}; },
 
-  _onChangeStore() {  if (this.isMounted()) { return this.setState(this.stateFromStore()); } },
-  componentDidMount() { return TreeStore.addChangeListener(this._onChangeStore); },
-  componentWillUnmount() {  return TreeStore.removeChangeListener(this._onChangeStore); },
-  
-  render() { return (Virtual(_.extend({}, this.props, {components: this.state.components}))); }
+  _onChangeStore() {
+    if (this.isMounted()) {
+      return this.setState(this.stateFromStore());
+    }
+  },
+
+  componentDidMount() {
+    return TreeStore.addChangeListener(this._onChangeStore);
+  },
+
+  componentWillUnmount() {
+    return TreeStore.removeChangeListener(this._onChangeStore);
+  },
+
+  render() {
+    return (Virtual(
+      _.extend({}, this.props,
+        { components: this.state.components })
+      )
+    );
+  }
 });
-  
+
 var Virtual = name("Virtual", ({manx,components,basePath})=>
     walk(manx,
       ()=> load({},""),

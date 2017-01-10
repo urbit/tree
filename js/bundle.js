@@ -515,7 +515,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Dispatcher = __webpack_require__(10);
+var _Dispatcher = __webpack_require__(8);
 
 var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
 
@@ -889,7 +889,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Dispatcher = __webpack_require__(10);
+var _Dispatcher = __webpack_require__(8);
 
 var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
 
@@ -1211,6 +1211,179 @@ function __guard__(value, transform) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = _.extend(new Flux.Dispatcher(), {
+  handleServerAction: function handleServerAction(action) {
+    return this.dispatch({
+      source: 'server',
+      action: action
+    });
+  },
+  handleViewAction: function handleViewAction(action) {
+    return this.dispatch({
+      source: 'view',
+      action: action
+    });
+  }
+});
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _CodeMirror = __webpack_require__(13);
+
+var _CodeMirror2 = _interopRequireDefault(_CodeMirror);
+
+var _SearchComponent = __webpack_require__(26);
+
+var _SearchComponent2 = _interopRequireDefault(_SearchComponent);
+
+var _ListComponent = __webpack_require__(19);
+
+var _ListComponent2 = _interopRequireDefault(_ListComponent);
+
+var _KidsComponent = __webpack_require__(18);
+
+var _KidsComponent2 = _interopRequireDefault(_KidsComponent);
+
+var _TocComponent = __webpack_require__(28);
+
+var _TocComponent2 = _interopRequireDefault(_TocComponent);
+
+var _EmailComponent = __webpack_require__(16);
+
+var _EmailComponent2 = _interopRequireDefault(_EmailComponent);
+
+var _ModuleComponent = __webpack_require__(20);
+
+var _ModuleComponent2 = _interopRequireDefault(_ModuleComponent);
+
+var _ScriptComponent = __webpack_require__(25);
+
+var _ScriptComponent2 = _interopRequireDefault(_ScriptComponent);
+
+var _PlanComponent = __webpack_require__(23);
+
+var _PlanComponent2 = _interopRequireDefault(_PlanComponent);
+
+var _PanelComponent = __webpack_require__(22);
+
+var _PanelComponent2 = _interopRequireDefault(_PanelComponent);
+
+var _PostComponent = __webpack_require__(24);
+
+var _PostComponent2 = _interopRequireDefault(_PostComponent);
+
+var _ImagepanelComponent = __webpack_require__(17);
+
+var _ImagepanelComponent2 = _interopRequireDefault(_ImagepanelComponent);
+
+var _LoadComponent = __webpack_require__(5);
+
+var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
+
+var _ShipComponent = __webpack_require__(6);
+
+var _ShipComponent2 = _interopRequireDefault(_ShipComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var recl = React.createClass;
+var div = React.DOM.div;
+exports.default = {
+  codemirror: _CodeMirror2.default,
+  search: _SearchComponent2.default,
+  list: _ListComponent2.default,
+  kids: _KidsComponent2.default,
+  toc: _TocComponent2.default,
+  email: _EmailComponent2.default,
+  module: _ModuleComponent2.default,
+  script: _ScriptComponent2.default,
+  plan: _PlanComponent2.default,
+  panel: _PanelComponent2.default,
+  post: _PostComponent2.default,
+  imagepanel: _ImagepanelComponent2.default,
+  load: _LoadComponent2.default,
+  ship: _ShipComponent2.default,
+  lost: recl({
+    render: function render() {
+      return div({}, "<lost(", this.props.children, ")>");
+    }
+  })
+};
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classnames = __webpack_require__(4);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _Async = __webpack_require__(1);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+var _NavComponent = __webpack_require__(21);
+
+var _NavComponent2 = _interopRequireDefault(_NavComponent);
+
+var _BodyComponent = __webpack_require__(12);
+
+var _BodyComponent2 = _interopRequireDefault(_BodyComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var head = React.createFactory(_NavComponent2.default);
+
+// top level tree component should get rendered to document.body
+// and only render two components, head and nav
+// each one can determine whether or not it's a container.
+
+var body = React.createFactory(_BodyComponent2.default);
+
+var div = React.DOM.div;
+exports.default = (0, _Async2.default)({
+  body: 'r',
+  name: 't',
+  path: 't',
+  meta: 'j',
+  sein: 't'
+}, React.createClass({
+  displayName: "Tree",
+
+  render: function render() {
+    var treeClas = (0, _classnames2.default)({
+      container: this.props.meta.container !== 'false' });
+
+    return div({ className: treeClas }, [head({ key: 'head-container' }, ""), body({ key: 'body-container' }, "")]);
+  }
+}));
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _TreeActions = __webpack_require__(2);
 
@@ -1218,7 +1391,7 @@ var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var scroll = {
+exports.default = {
   w: null, // width
   $d: null, // container
   $n: null, // nav
@@ -1232,14 +1405,14 @@ var scroll = {
     this.w = $(window).width();
     this.$n = $('#head');
     this.$d = $('#head .ctrl');
-    return this.nh = $('#head .ctrl').outerHeight(true);
+    this.nh = $('#head .ctrl').outerHeight(true);
   },
   clearNav: function clearNav() {
     return this.$n.removeClass('m-up m-down m-fixed');
   },
   resize: function resize() {
     if (this.w > 1170) {
-      return this.clearNav();
+      this.clearNav();
     }
   },
   scroll: function scroll() {
@@ -1253,8 +1426,8 @@ var scroll = {
       this.clearNav();
     }
     if (this.w < 767) {
-      var ct = void 0,
-          top = void 0;
+      var ct = void 0;
+      var top = void 0;
       var dy = this.ls - this.cs;
 
       this.$d.removeClass('focus');
@@ -1309,7 +1482,7 @@ var scroll = {
     }
 
     this.ls = this.cs;
-    return this.lwh = this.cwh;
+    this.lwh = this.cwh;
   },
   init: function init() {
     setInterval(this.track.bind(this), 200);
@@ -1322,10 +1495,8 @@ var scroll = {
   }
 };
 
-exports.default = scroll;
-
 /***/ },
-/* 9 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1563,120 +1734,6 @@ exports.default = (0, _Async2.default)({
 function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = _.extend(new Flux.Dispatcher(), {
-  handleServerAction: function handleServerAction(action) {
-    return this.dispatch({
-      source: 'server',
-      action: action
-    });
-  },
-  handleViewAction: function handleViewAction(action) {
-    return this.dispatch({
-      source: 'view',
-      action: action
-    });
-  }
-});
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var recl = React.createClass;
-var div = React.DOM.div;
-exports.default = {
-  codemirror: __webpack_require__(13),
-  search: __webpack_require__(26),
-  list: __webpack_require__(19),
-  kids: __webpack_require__(18),
-  toc: __webpack_require__(28),
-  email: __webpack_require__(16),
-  module: __webpack_require__(20),
-  script: __webpack_require__(25),
-  plan: __webpack_require__(23),
-  panel: __webpack_require__(22),
-  post: __webpack_require__(24),
-  imagepanel: __webpack_require__(17),
-  load: __webpack_require__(5),
-  ship: __webpack_require__(6),
-  lost: recl({
-    render: function render() {
-      return div({}, "<lost(", this.props.children, ")>");
-    }
-  })
-};
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _classnames = __webpack_require__(4);
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _Async = __webpack_require__(1);
-
-var _Async2 = _interopRequireDefault(_Async);
-
-var _NavComponent = __webpack_require__(21);
-
-var _NavComponent2 = _interopRequireDefault(_NavComponent);
-
-var _BodyComponent = __webpack_require__(9);
-
-var _BodyComponent2 = _interopRequireDefault(_BodyComponent);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var head = React.createFactory(_NavComponent2.default);
-
-// top level tree component should get rendered to document.body
-// and only render two components, head and nav
-// each one can determine whether or not it's a container.
-
-var body = React.createFactory(_BodyComponent2.default);
-
-var div = React.DOM.div;
-exports.default = (0, _Async2.default)({
-  body: 'r',
-  name: 't',
-  path: 't',
-  meta: 'j',
-  sein: 't'
-}, React.createClass({
-  displayName: "Tree",
-
-  render: function render() {
-    var treeClas = (0, _classnames2.default)({
-      container: this.props.meta.container !== 'false' });
-
-    return div({ className: treeClas }, [head({ key: 'head-container' }, ""), body({ key: 'body-container' }, "")]);
-  }
-}));
 
 /***/ },
 /* 13 */
@@ -2192,7 +2249,7 @@ exports.default = (0, _Async2.default)({
                 c: [{
                   gn: 'h1',
                   ga: { className: 'title' },
-                  c: [{ "title": meta.title }]
+                  c: [meta.title]
                 }]
               };
             } else {
@@ -4051,19 +4108,23 @@ function isUndefined(arg) {
 "use strict";
 
 
-var _TreeActions = __webpack_require__(2);
-
-var _TreeActions2 = _interopRequireDefault(_TreeActions);
-
 var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _scroll = __webpack_require__(8);
+var _scroll = __webpack_require__(11);
 
 var _scroll2 = _interopRequireDefault(_scroll);
 
-var _TreeComponent = __webpack_require__(12);
+var _TreeActions = __webpack_require__(2);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+var _Components = __webpack_require__(9);
+
+var _Components2 = _interopRequireDefault(_Components);
+
+var _TreeComponent = __webpack_require__(10);
 
 var _TreeComponent2 = _interopRequireDefault(_TreeComponent);
 
@@ -4071,11 +4132,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 $(function () {
   window.tree.util = _util2.default;
-  _scroll2.default.init();
-  __webpack_require__(8);
 
-  if (document.location.pathname.substr(-1) !== "/") {
-    history.replaceState({}, "", document.location.pathname + "/" + document.location.search + document.location.hash);
+  _scroll2.default.init();
+
+  if (document.location.pathname.substr(-1) !== '/') {
+    history.replaceState({}, '', document.location.pathname + '/\n      ' + document.location.search + '\n      ' + document.location.hash);
   }
 
   // we load modules that may need to send actions up, so we attach
@@ -4084,17 +4145,15 @@ $(function () {
 
   // reactify has virtual components which themselves need to call
   // reactify.  to do this, we register the components after the fact
-  window.tree.actions.addVirtual(__webpack_require__(11));
+  window.tree.actions.addVirtual(_Components2.default);
 
   var frag = _util2.default.fragpath(window.location.pathname.replace(/\.[^\/]*$/, ''));
   window.tree.actions.setCurr(frag, true);
   window.tree.actions.loadPath(frag, window.tree.data);
-
   if (window.tree.sein != null) {
     window.tree.actions.loadSein(frag, window.tree.sein);
   }
-
-  window.urb.ondataupdate = function (dep) {
+  window.urb.ondataupdate = function () {
     for (var dat in window.urb.datadeps) {
       window.urb.dewasp(dat);
     }
@@ -4102,7 +4161,8 @@ $(function () {
   };
 
   var main = React.createFactory(_TreeComponent2.default);
-  return ReactDOM.render(main({}, ""), document.getElementById('tree'));
+  ReactDOM.render(main({}, ''), document.getElementById('tree'));
+  return true;
 });
 
 /***/ }

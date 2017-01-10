@@ -1,20 +1,35 @@
-let recl       = React.createClass;
-let {div}      = React.DOM;
+import codemirror from './CodeMirror';
+import search from './SearchComponent';
+import list from './ListComponent';
+import kids from './KidsComponent';
+import toc from './TocComponent';
+import email from './EmailComponent';
+import module from './ModuleComponent';
+import script from './ScriptComponent';
+import plan from './PlanComponent';
+import panel from './PanelComponent';
+import post from './PostComponent';
+import imagepanel from './ImagepanelComponent';
+import load from './LoadComponent';
+import ship from './ShipComponent';
+
+const recl = React.createClass;
+const { div } = React.DOM;
 
 export default {
-  codemirror: require('./CodeMirror.js'),
-  search:     require('./SearchComponent.js'),
-  list:       require('./ListComponent.js'),
-  kids:       require('./KidsComponent.js'),
-  toc:        require('./TocComponent.js'),
-  email:      require('./EmailComponent.js'),
-  module:     require('./ModuleComponent.js'),
-  script:     require('./ScriptComponent.js'),
-  plan:       require('./PlanComponent.js'),
-  panel:      require('./PanelComponent.js'),
-  post:       require('./PostComponent.js'),
-  imagepanel: require('./ImagepanelComponent.js'),
-  load:       require('./LoadComponent.js'),
-  ship:       require('./ShipComponent.js'),
+  codemirror,
+  search,
+  list,
+  kids,
+  toc,
+  email,
+  module,
+  script,
+  plan,
+  panel,
+  post,
+  imagepanel,
+  load,
+  ship,
   lost:       recl({render() { return (div({}, "<lost(", this.props.children, ")>")); }})
 };

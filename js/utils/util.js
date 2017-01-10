@@ -55,7 +55,10 @@ export default {
     }
   },
 
-  getKeys(kids,sortBy) { return _.map((this.sortKids(kids,sortBy)), 'name'); },
+  getKeys(kids, sortBy) {
+    return _.map((this.sortKids(kids, sortBy)), 'name');
+  },
+
   sortKids(kids,sortBy){ // kids: {name:'t', bump:'t', meta:'j'}
     let v;
     if (sortBy == null) { sortBy = null; }

@@ -4,6 +4,9 @@
     "browser": true
   },
   "globals": {
-      "React": false
+      "React": false,
+      "ReactDOM": false,
+      "_": false,
+      "$": false
     }
 }

@@ -1,9 +1,9 @@
 import clas from 'classnames';
 
-import reactify from './Reactify.js';
-import query from './Async.js';
+import reactify from './Reactify';
+import query from './Async';
 
-import util from '../utils/util.js';
+import util from '../utils/util';
 
 let recl = React.createClass;
 let {div,pre,span,a,ul,li,h1} = React.DOM;
@@ -63,7 +63,7 @@ export default query({
               c: [{
                 gn: 'h1',
                 ga: {className:'title'},
-                c: [{"title":meta.title}]
+                c: [meta.title]
               }]
             };
           } else {
