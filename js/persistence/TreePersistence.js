@@ -1,21 +1,29 @@
-import util from '../utils/util.js';
-let dedup = {};  // XX wrong layer
+import util from '../utils/util';
 
-let pending = {};
+let dedup = {}; // XX wrong layer
+
+const pending = {};
 let waspWait = [];
 
 export default {
-  refresh() { return dedup = {}; },
-  get(path,query,cb) {
-    if (query == null) { query = "no-query"; }
-    let url = `${util.basepath(path)}.tree-json?q=${this.encode(query)}`;
-    if (dedup[url]) { return; }
+  refresh() {
+    dedup = {};
+  },
+
+  get(path, query, cb) {
+    if (query == null) {
+      query = "no-query";
+    }
+    const url = `${util.basepath(path)}.tree-json?q=${this.encode(query)}`;
+    if (dedup[url]) {
+      return;
+    }
     dedup[url] = true;
     pending[url] = true;
-    return $.get(url, {}, function(data,status,xhr) {  // XX on error
+    $.get(url, {}, (data, status, xhr) => { // XX on error
       delete pending[url];
       if (urb.wasp != null) {
-        let dep = urb.getXHRWasp(xhr);
+        const dep = urb.getXHRWasp(xhr);
         urb.sources[dep] = url; // debugging info
         waspWait.push(dep);
         if (_.isEmpty(pending)) {
@@ -23,43 +31,53 @@ export default {
           waspWait = [];
         }
       }
-      if (cb) { return cb(null,data); }
+      if (cb) {
+        return cb(null, data);
+      } return null;
     });
   },
-    
-  put(data,mark,appl,cb){
-    if (appl == null) { appl = /[a-z]*/.exec(mark)[0]; }
-    return urb.init(() => urb.send(data, {mark,appl}, cb));
+
+  put(data, mark, appl, cb) {
+    if (appl == null) {
+      appl = /[a-z]*/.exec(mark)[0];
+    }
+    return urb.init(() => urb.send(data, {
+      mark,
+      appl,
+    }, cb));
   },
 
-  waspElem(a){
+  waspElem(a) {
     if (urb.wasp != null) {
       return urb.waspElem(a);
-    }
+    } return null;
   },
-    
-  encode(obj){
-    let delim = n=> Array(n+1).join('_') || '.';
-    let _encode = function(obj){
+
+  encode(object) {
+    const delim = n => Array(n + 1).join('_') || '.';
+    function encoder(obj) {
       if (typeof obj !== 'object') {
-        return [0,obj];
+        return [0, obj];
       }
       let dep = 0;
-      let sub = (() => {
-        let result = [];
-        for (let k in obj) {
-          let v = obj[k];
+      const sub = (() => {
+        const result = [];
+        _.map(obj, (v, k) => {
           let item;
-          let [_dep,res] = _encode(v);
-          if (_dep > dep) { dep = _dep; }
-          if (res != null) { item = k+(delim(_dep))+res; }
+          const [_dep, res] = encoder(v);
+          if (_dep > dep) {
+            dep = _dep;
+          }
+          if (res != null) {
+            item = k + (delim(_dep)) + res;
+          }
           result.push(item);
-        }
+        });
         return result;
       })();
-      dep++;
+      dep += 1;
       return [dep, sub.join(delim(dep))];
-    };
-    return (_encode(obj))[1];
-  }
+    }
+    return (encoder(object))[1];
+  },
 };

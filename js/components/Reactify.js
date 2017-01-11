@@ -1,87 +1,128 @@
+import TreeStore from '../stores/TreeStore.js';
+import LoadComponent from './LoadComponent';
+
 const recl = React.createClass;
 const rele = React.createElement;
-const { div, span } = React.DOM;
-const load = React.createFactory(require('./LoadComponent.js'));
-
-import TreeStore from '../stores/TreeStore.js';
-
-let name = (displayName,component)=> _.extend(component, {displayName});
-
-let walk = function(root,_nil,_str,_comp){
-  // manx: {fork: ["string", {gn:"string" ga:{dict:"string"} c:{list:"manx"}}]}
-  let _walk = function(elem,key){ let left;
-  switch (false) {
-    case !(elem == null): return _nil();
-    case typeof elem !== "string": return _str(elem);
-    case (elem.gn == null):
-      let {gn,ga,c} = elem;
-      c = ((left = __guard__(c, x => x.map(_walk)))) != null ? left : [];
-      return _comp.call(elem, {gn,ga,c}, key);
-    default: throw `Bad react-json ${JSON.stringify(elem)}`;
-  } };
-  return _walk(root);
-};
-
-let DynamicVirtual = recl({
-  displayName: "DynamicVirtual",
-  getInitialState() { return this.stateFromStore(); },
-
-  stateFromStore() { return {components: TreeStore.getVirtualComponents()}; },
-
-  _onChangeStore() {
-    if (this.isMounted()) {
-      return this.setState(this.stateFromStore());
-    }
-  },
-
-  componentDidMount() {
-    return TreeStore.addChangeListener(this._onChangeStore);
-  },
-
-  componentWillUnmount() {
-    return TreeStore.removeChangeListener(this._onChangeStore);
-  },
-
-  render() {
-    return (Virtual(
-      _.extend({}, this.props,
-        { components: this.state.components })
-      )
-    );
-  }
-});
-
-var Virtual = name("Virtual", ({manx,components,basePath})=>
-    walk(manx,
-      ()=> load({},""),
-      str=> str,
-      function({gn,ga,c},key){
-        let props = {key};
-        if (__guard__(ga, x => x.style)) {
-          try {
-            ga.style = eval(`(${ga.style})`);
-          } catch (e) {
-            ga.style = ga.style;
-          }
-        }
-        if (components[gn]) {
-          props.basePath = basePath;
-        }
-        return rele((components[gn] != null ? components[gn] : gn),
-             (_.extend(props, ga)),
-             c.length ? c : undefined);
-    })
-);
-
-let reactify = function(manx,key,param){
-  if (param == null) { param = {}; }
-  let {basePath,components} = param;
-  if (components != null) {
-    return rele(Virtual, {manx,key,basePath,components});
-  } else { return rele(DynamicVirtual, {manx,key,basePath}); }
-};
-export default _.extend(reactify, {walk,Virtual});
+const load = React.createFactory(LoadComponent);
 
 function __guard__(value, transform) {
   return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
 }
+
+const name = (displayName, component) => _.extend(component, {
+  displayName,
+});
+
+const walk = (root, _nil, _str, _comp) => {
+  // manx: {fork: ["string", {gn:"string" ga:{dict:"string"} c:{list:"manx"}}]}
+  const step = (elem, key) => {
+    let left;
+    switch (false) {
+      case !(elem == null):
+        return _nil();
+      case typeof elem !== 'string':
+        return _str(elem);
+      case (elem.gn == null): {
+        const { gn, ga } = elem;
+        let { c } = elem;
+        c = ((left = __guard__(c, x => x.map(step)))) != null ? left : [];
+        return _comp.call(elem, {
+          gn,
+          ga,
+          c
+        }, key);
+      }
+      default:
+        throw new Error(`Bad react-json ${JSON.stringify(elem)}`);
+    }
+  };
+  return step(root);
+};
+
+const DynamicVirtual = recl({
+  displayName: 'DynamicVirtual',
+  getInitialState() {
+    return this.stateFromStore();
+  },
+
+  stateFromStore() {
+    return {
+      components: TreeStore.getVirtualComponents(),
+    };
+  },
+
+  onChangeStore() {
+    if (this.isMounted()) {
+      return this.setState(this.stateFromStore());
+    }
+    return null;
+  },
+
+  componentDidMount() {
+    return TreeStore.addChangeListener(this.onChangeStore);
+  },
+
+  componentWillUnmount() {
+    return TreeStore.removeChangeListener(this.onChangeStore);
+  },
+
+  render() {
+    return (Virtual(
+      _.extend({}, this.props, {
+        components: this.state.components,
+      }),
+    ));
+  },
+});
+
+const Virtual = name('Virtual', ({
+    manx,
+    components,
+    basePath,
+  }) =>
+  walk(manx,
+    () => load({}, ''),
+    str => str,
+    ({ gn, ga, c }, key) => {
+      const props = { key };
+      if (__guard__(ga, x => x.style)) {
+        try {
+          ga.style = eval(`(${ga.style})`);
+        } catch (e) {
+          ga.style = ga.style;
+        }
+      }
+      if (components[gn]) {
+        props.basePath = basePath;
+      }
+      return rele((components[gn] != null ? components[gn] : gn),
+        (_.extend(props, ga)),
+        c.length ? c : undefined);
+    }),
+);
+
+const reactify = (manx, key, param) => {
+  if (param == null) { param = {}; }
+  const { basePath, components } = param;
+  let component = {};
+  if (components != null) {
+    component = rele(Virtual, {
+      manx,
+      key,
+      basePath,
+      components,
+    });
+  } else {
+    component = rele(DynamicVirtual, {
+      manx,
+      key,
+      basePath,
+    });
+  }
+  return component;
+};
+
+export default _.extend(reactify, {
+  walk,
+  Virtual,
+});

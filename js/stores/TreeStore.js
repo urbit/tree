@@ -1,219 +1,289 @@
-let {EventEmitter} = require('events').EventEmitter;
+import MessageDispatcher from '../dispatcher/Dispatcher';
 
-import MessageDispatcher from '../dispatcher/Dispatcher.js';
-let clog = console.log.bind(console);
+const { EventEmitter } = require('events').EventEmitter;
 
 let _virt = {};
 let _tree = {};
 let _data = {};
-let _curr = "";
-let _nav  = {};
+let _curr = '';
+let _nav = {};
 
 const QUERIES = {
-  body:'r',
-  head:'r',
-  snip:'r',
-  sect:'j',
-  meta:'j',
-  comt:'j',
-  plan:'j',
-  beak:'t',
-  spur:'t',
-  bump:'t'
+  body: 'r',
+  head: 'r',
+  snip: 'r',
+  sect: 'j',
+  meta: 'j',
+  comt: 'j',
+  plan: 'j',
+  beak: 't',
+  spur: 't',
+  bump: 't'
 };
 
-let TreeStore = _.extend((new EventEmitter).setMaxListeners(50), {
-  addChangeListener(cb) { return this.on('change', cb); },
-
-  removeChangeListener(cb) { return this.removeListener("change", cb); },
-
-  emitChange() { return this.emit('change'); },
-
-  pathToArr(_path) { return _path.split("/"); },
-    
-  fulfill(path,query) {
-    if (path === "/") { path = ""; }
-    return this.fulfillAt((this.getTree(path.split('/'))),path,query);
+const TreeStore = _.extend((new EventEmitter).setMaxListeners(50), {
+  addChangeListener(cb) {
+    return this.on('change', cb);
   },
-  fulfillAt(tree,path,query){
-    let k;
-    let data = this.fulfillLocal(path, query);
-    let have = _data[path];
+
+  removeChangeListener(cb) {
+    return this.removeListener('change', cb);
+  },
+
+  emitChange() {
+    return this.emit('change');
+  },
+
+  pathToArr(_path) {
+    return _path.split('/');
+  },
+
+  fulfill(path, query) {
+    if (path === '/') {
+      path = '';
+    }
+    return this.fulfillAt((this.getTree(path.split('/'))), path, query);
+  },
+
+  fulfillAt(tree, path, query) {
+    const data = this.fulfillLocal(path, query);
+    const have = _data[path];
     if (have != null) {
-      for (k in query) {
-        let t = query[k];
-        if (QUERIES[k]) {
-          if (t !== QUERIES[k]) { throw TypeError(`Wrong query type: ${k}, '${t}'`); }
-          data[k] = have[k];
-        }
+      if (query) {
+        Object.keys(query).forEach((k) => {
+          const t = query[k];
+          if (QUERIES[k]) {
+            if (t !== QUERIES[k]) {
+              throw TypeError(`Wrong query type: ${k}, '${t}'`);
+            }
+            data[k] = have[k];
+          }
+        });
       }
     }
-        
     if (query.kids) {
       if (__guard__(have, x => x.kids) === false) {
         data.kids = {};
-      } else { for (k in tree) {
-        let sub = tree[k];
-        if (data.kids == null) { data.kids = {}; }
-        data.kids[k] = this.fulfillAt(sub, path+"/"+k, query.kids);
-      } }
+      } else {
+        Object.keys(tree).forEach((k) => {
+          const sub = tree[k];
+          if (data.kids == null) {
+            data.kids = {};
+          }
+          data.kids[k] = this.fulfillAt(sub, `${path}/${k}`, query.kids);
+        });
+      }
     }
-    if (!_.isEmpty(data)) { return data; }
+    if (!_.isEmpty(data)) {
+      return data;
+    }
   },
-      
-  fulfillLocal(path, query){
-    let data = {};
-    if (query.path) { data.path = path; }
-    if (query.name) { data.name = path.split("/").pop(); }
-    if (query.sein) { data.sein = this.getPare(path); }
-    if (query.next) { data.next = this.getNext(path); }
-    if (query.prev) { data.prev = this.getPrev(path); }
+
+  fulfillLocal(path, query) {
+    const data = {};
+    if (query.path) {
+      data.path = path;
+    }
+    if (query.name) {
+      data.name = path.split('/').pop();
+    }
+    if (query.sein) {
+      data.sein = this.getPare(path);
+    }
+    if (query.next) {
+      data.next = this.getNext(path);
+    }
+    if (query.prev) {
+      data.prev = this.getPrev(path);
+    }
     return data;
   },
 
-  setCurr({path}) { return _curr = path; },
-  getCurr() { return _curr; },
+  setCurr({ path }) {
+    _curr = path;
+  },
 
-  addVirtual({components}) { return _.extend(_virt, components); },
-  getVirtualComponents() { return _virt; },
-  
-  clearData() { _data = {}; return _tree = {}; },
-  
-  loadSein({path,data}) {
-    let sein = this.getPare(path);
+  getCurr() {
+    return _curr;
+  },
+
+  addVirtual({
+    components,
+  }) {
+    return _.extend(_virt, components);
+  },
+  getVirtualComponents() {
+    return _virt;
+  },
+
+  clearData() {
+    _data = {};
+    _tree = {};
+  },
+
+  loadSein({ path, data }) {
+    const sein = this.getPare(path);
     if (sein != null) {
-      return this.loadPath({path:sein,data});
-    }
+      return this.loadPath({
+        path: sein,
+        data,
+      });
+    } return null;
   },
-    
-  loadPath({path,data}) {
-    return this.loadValues((this.getTree((path.split('/')),true)), path, data);
+
+  loadPath({
+    path,
+    data,
+  }) {
+    return this.loadValues((this.getTree((path.split('/')), true)), path, data);
   },
-    
-  loadValues(tree,path,data) {
+
+  loadValues(tree, path, data) {
     let old = _data[path] != null ? _data[path] : {};
-    for (var k in data) {
+    Object.keys(data).forEach((k) => {
       if (QUERIES[k]) {
         old[k] = data[k];
       }
+    });
+
+    if (data.kids) {
+      Object.keys(data.kids).forEach((k) => {
+        const v = data.kids[k];
+        if (tree[k] == null) {
+          tree[k] = {};
+        }
+        let _path = path;
+        if (_path === '/') {
+          _path = '';
+        }
+        this.loadValues(tree[k], `${_path}/${k}`, v);
+      });
     }
-    
-    for (k in data.kids) {
-      let v = data.kids[k];
-      if (tree[k] == null) { tree[k] = {}; }
-      let _path = path;
-      if (_path === "/") {
-        _path = "";
-      }
-      this.loadValues(tree[k], _path+"/"+k, v);
-    }
-      
+
     if (data.kids && _.isEmpty(data.kids)) {
       old.kids = false;
     }
-        
-    return _data[path] = old;
+
+    _data[path] = old;
   },
 
-  getSiblings(path){
-    if (path == null) { path = _curr; }
-    let curr = path.split("/");
+  getSiblings(path) {
+    if (path == null) {
+      path = _curr;
+    }
+    const curr = path.split('/');
     curr.pop();
     if (curr.length !== 0) {
       return this.getTree(curr);
-    } else {
-      return {};
-    }
+    } return {};
   },
-  
-  getTree(_path,make) {
-    if (make == null) { make = false; }
+
+  getTree(_path, make) {
+    if (make == null) {
+      make = false;
+    }
     let tree = _tree;
-    for (let sub of Array.from(_path)) {
-      if (!sub) { continue; }  // discard empty path elements
+    Array.from(_path).forEach((sub) => {
+      if (!sub) {
+        return;
+      } // discard empty path elements
       if (tree[sub] == null) {
-        if (!make) { return null; }
+        if (!make) {
+          return;
+        }
         tree[sub] = {};
       }
       tree = tree[sub];
-    }
+    });
     return tree;
   },
-      
-  getPrev(path){ 
-    if (path == null) { path = _curr; }
-    let sibs = _.keys(this.getSiblings(path)).sort();
+
+  getPrev(path) {
+    if (path == null) {
+      path = _curr;
+    }
+    const sibs = _.keys(this.getSiblings(path)).sort();
     if (sibs.length < 2) {
       return null;
-    } else {
-      let par = path.split("/");
-      let key = par.pop();
-      let ind = sibs.indexOf(key);
-      let win = (ind-1) >= 0 ? sibs[ind-1] : sibs[sibs.length-1];
-      par.push(win);
-      return par.join("/");
     }
+    const par = path.split('/');
+    const key = par.pop();
+    const ind = sibs.indexOf(key);
+    const win = (ind - 1) >= 0 ? sibs[ind - 1] : sibs[sibs.length - 1];
+    par.push(win);
+    return par.join('/');
   },
 
-  getNext(path){ 
-    if (path == null) { path = _curr; }
-    let sibs = _.keys(this.getSiblings(path)).sort();
+  getNext(path) {
+    if (path == null) {
+      path = _curr;
+    }
+    const sibs = _.keys(this.getSiblings(path)).sort();
     if (sibs.length < 2) {
       return null;
-    } else {
-      let par = path.split("/");
-      let key = par.pop();
-      let ind = sibs.indexOf(key);
-      let win = (ind+1) < sibs.length ? sibs[ind+1] : sibs[0];
-      par.push(win);
-      return par.join("/");
     }
+    const par = path.split('/');
+    const key = par.pop();
+    const ind = sibs.indexOf(key);
+    const win = (ind + 1) < sibs.length ? sibs[ind + 1] : sibs[0];
+    par.push(win);
+    return par.join('/');
   },
 
-  getPare(path){ 
-    if (path == null) { path = _curr; }
+  getPare(path) {
+    if (path == null) {
+      path = _curr;
+    }
     let _path = this.pathToArr(path);
     if (_path.length > 1) {
       _path.pop();
-      _path = _path.join("/");
-      if (_path === "") { _path = "/"; }
+      _path = _path.join('/');
+      if (_path === '') {
+        _path = '/';
+      }
       return _path;
-    } else {
-      return null;
-    }
+    } return null;
   },
 
-  setNav({title,dpad,sibs,subnav}) {  
-    let nav = {
+  setNav({
+    title,
+    dpad,
+    sibs,
+    subnav,
+  }) {
+    const nav = {
       title,
       dpad,
       sibs,
       subnav,
-      open:(_nav.open ? _nav.open : false)
+      open: (_nav.open ? _nav.open : false),
     };
-    return _nav = nav;
+    _nav = nav;
   },
   getNav() { return _nav; },
-  toggleNav() { return _nav.open = !_nav.open; },
-  closeNav() { return _nav.open = false; },
-  clearNav() { 
-    return _nav = { 
-      title:null,
-      dpad:null,
-      sibs:null,
-      subnav:null,
-      open:false
+
+  toggleNav() { _nav.open = !_nav.open; },
+
+  closeNav() { _nav.open = false; },
+
+  clearNav() {
+    _nav = {
+      title: null,
+      dpad: null,
+      sibs: null,
+      subnav: null,
+      open: false,
     };
-  }
+  },
 });
 
-TreeStore.dispatchToken = MessageDispatcher.register(function(p) {
-  let a = p.action;
+TreeStore.dispatchToken = MessageDispatcher.register((p) => {
+  const a = p.action;
 
   if (TreeStore[a.type]) {
     TreeStore[a.type](a);
     return TreeStore.emitChange();
-  }
+  } return null;
 });
 
 export default TreeStore;

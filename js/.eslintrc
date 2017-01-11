@@ -6,7 +6,9 @@
   "globals": {
       "React": false,
       "ReactDOM": false,
+      "Flux": false,
       "_": false,
-      "$": false
+      "$": false,
+      "urb": false
     }
 }

@@ -527,21 +527,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var _initialLoad = true; // XX right place?
-var _initialLoadDedup = {};
+var initialLoad = true; // XX right place?
+var initialLoadDedup = {};
 
 exports.default = {
   loadPath: function loadPath(path, data) {
-    return _Dispatcher2.default.handleServerAction({ path: path, data: data, type: "loadPath" });
+    return _Dispatcher2.default.handleServerAction({
+      path: path,
+      data: data,
+      type: 'loadPath'
+    });
   },
   loadSein: function loadSein(path, data) {
-    return _Dispatcher2.default.handleServerAction({ path: path, data: data, type: "loadSein" });
+    return _Dispatcher2.default.handleServerAction({
+      path: path,
+      data: data,
+      type: 'loadSein'
+    });
   },
   clearData: function clearData() {
-    _initialLoad = false;
-    _initialLoadDedup = {};
+    initialLoad = false;
+    initialLoadDedup = {};
     _TreePersistence2.default.refresh(); // XX right place?
-    return _Dispatcher2.default.handleServerAction({ type: "clearData" });
+    return _Dispatcher2.default.handleServerAction({
+      type: 'clearData'
+    });
   },
   sendQuery: function sendQuery(path, query) {
     var _this = this;
@@ -549,17 +559,17 @@ exports.default = {
     if (query == null) {
       return;
     }
-    if (_initialLoad) {
+    if (initialLoad) {
       var key = path + JSON.stringify(query);
-      if (!_initialLoadDedup[key]) {
-        _initialLoadDedup[key] = true;
-        console.warn("Requesting data during initial page load", JSON.stringify(path), query);
+      if (!initialLoadDedup[key]) {
+        initialLoadDedup[key] = true;
+        console.warn('Requesting data during initial page load', JSON.stringify(path), query);
       }
     }
-    if (path.slice(-1) === "/") {
+    if (path.slice(-1) === '/') {
       path = path.slice(0, -1);
     }
-    return _TreePersistence2.default.get(path, query, function (err, res) {
+    _TreePersistence2.default.get(path, query, function (err, res) {
       if (err != null) {
         throw err;
       }
@@ -573,41 +583,56 @@ exports.default = {
     return _TreePersistence2.default.waspElem(elem);
   },
   addVirtual: function addVirtual(components) {
-    return _Dispatcher2.default.handleViewAction({ type: "addVirtual", components: components });
+    return _Dispatcher2.default.handleViewAction({
+      type: 'addVirtual',
+      components: components
+    });
   },
   addComment: function addComment(pax, sup, txt) {
     var _this2 = this;
 
-    return _TreePersistence2.default.put({ pax: pax, sup: sup, txt: txt }, "talk-comment", "talk", function (err, res) {
+    return _TreePersistence2.default.put({
+      pax: pax,
+      sup: sup,
+      txt: txt
+    }, 'talk-comment', 'talk', function (err) {
       if (err == null) {
         return _this2.clearData();
-      }
+      }return null;
     });
   },
   addPost: function addPost(pax, sup, hed, txt) {
     var _this3 = this;
 
-    return _TreePersistence2.default.put({ pax: pax, sup: sup, hed: hed, txt: txt }, "talk-fora-post", "talk", function (err, res) {
+    return _TreePersistence2.default.put({
+      pax: pax,
+      sup: sup,
+      hed: hed,
+      txt: txt
+    }, 'talk-fora-post', 'talk', function (err) {
       if (err == null) {
         _this3.clearData();
-        history.pushState({}, "", "..");
+        history.pushState({}, '', '..');
         return _this3.setCurr(pax);
-      }
+      }return null;
     });
   },
   setPlanInfo: function setPlanInfo(_ref) {
     var who = _ref.who,
         loc = _ref.loc;
 
-    return _TreePersistence2.default.put({ who: who, loc: loc }, "write-plan-info", "hood");
+    return _TreePersistence2.default.put({
+      who: who,
+      loc: loc
+    }, 'write-plan-info', 'hood');
   },
   setCurr: function setCurr(path, init) {
     if (init == null) {
       init = false;
     }
-    _initialLoad &= init;
+    initialLoad = initialLoad && init;
     return _Dispatcher2.default.handleViewAction({
-      type: "setCurr",
+      type: 'setCurr',
       path: path
     });
   },
@@ -622,17 +647,23 @@ exports.default = {
       dpad: dpad,
       sibs: sibs,
       subnav: subnav,
-      type: "setNav"
+      type: 'setNav'
     });
   },
   toggleNav: function toggleNav() {
-    return _Dispatcher2.default.handleViewAction({ type: "toggleNav" });
+    return _Dispatcher2.default.handleViewAction({
+      type: 'toggleNav'
+    });
   },
   closeNav: function closeNav() {
-    return _Dispatcher2.default.handleViewAction({ type: "closeNav" });
+    return _Dispatcher2.default.handleViewAction({
+      type: 'closeNav'
+    });
   },
   clearNav: function clearNav() {
-    return _Dispatcher2.default.handleViewAction({ type: "clearNav" });
+    return _Dispatcher2.default.handleViewAction({
+      type: 'clearNav'
+    });
   }
 };
 
@@ -651,75 +682,92 @@ var _TreeStore = __webpack_require__(7);
 
 var _TreeStore2 = _interopRequireDefault(_TreeStore);
 
+var _LoadComponent = __webpack_require__(5);
+
+var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var recl = React.createClass;
 var rele = React.createElement;
-var _React$DOM = React.DOM,
-    div = _React$DOM.div,
-    span = _React$DOM.span;
+var load = React.createFactory(_LoadComponent2.default);
 
-var load = React.createFactory(__webpack_require__(5));
+function __guard__(value, transform) {
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
+}
 
 var name = function name(displayName, component) {
-  return _.extend(component, { displayName: displayName });
+  return _.extend(component, {
+    displayName: displayName
+  });
 };
 
 var walk = function walk(root, _nil, _str, _comp) {
   // manx: {fork: ["string", {gn:"string" ga:{dict:"string"} c:{list:"manx"}}]}
-  var _walk = function _walk(elem, key) {
+  var step = function step(elem, key) {
     var left = void 0;
     switch (false) {
       case !(elem == null):
         return _nil();
-      case typeof elem !== "string":
+      case typeof elem !== 'string':
         return _str(elem);
       case elem.gn == null:
-        var gn = elem.gn,
-            ga = elem.ga,
-            c = elem.c;
+        {
+          var gn = elem.gn,
+              ga = elem.ga;
+          var c = elem.c;
 
-        c = (left = __guard__(c, function (x) {
-          return x.map(_walk);
-        })) != null ? left : [];
-        return _comp.call(elem, { gn: gn, ga: ga, c: c }, key);
+          c = (left = __guard__(c, function (x) {
+            return x.map(step);
+          })) != null ? left : [];
+          return _comp.call(elem, {
+            gn: gn,
+            ga: ga,
+            c: c
+          }, key);
+        }
       default:
-        throw 'Bad react-json ' + JSON.stringify(elem);
+        throw new Error('Bad react-json ' + JSON.stringify(elem));
     }
   };
-  return _walk(root);
+  return step(root);
 };
 
 var DynamicVirtual = recl({
-  displayName: "DynamicVirtual",
+  displayName: 'DynamicVirtual',
   getInitialState: function getInitialState() {
     return this.stateFromStore();
   },
   stateFromStore: function stateFromStore() {
-    return { components: _TreeStore2.default.getVirtualComponents() };
+    return {
+      components: _TreeStore2.default.getVirtualComponents()
+    };
   },
-  _onChangeStore: function _onChangeStore() {
+  onChangeStore: function onChangeStore() {
     if (this.isMounted()) {
       return this.setState(this.stateFromStore());
     }
+    return null;
   },
   componentDidMount: function componentDidMount() {
-    return _TreeStore2.default.addChangeListener(this._onChangeStore);
+    return _TreeStore2.default.addChangeListener(this.onChangeStore);
   },
   componentWillUnmount: function componentWillUnmount() {
-    return _TreeStore2.default.removeChangeListener(this._onChangeStore);
+    return _TreeStore2.default.removeChangeListener(this.onChangeStore);
   },
   render: function render() {
-    return Virtual(_.extend({}, this.props, { components: this.state.components }));
+    return Virtual(_.extend({}, this.props, {
+      components: this.state.components
+    }));
   }
 });
 
-var Virtual = name("Virtual", function (_ref) {
+var Virtual = name('Virtual', function (_ref) {
   var manx = _ref.manx,
       components = _ref.components,
       basePath = _ref.basePath;
   return walk(manx, function () {
-    return load({}, "");
+    return load({}, '');
   }, function (str) {
     return str;
   }, function (_ref2, key) {
@@ -752,18 +800,28 @@ var reactify = function reactify(manx, key, param) {
       basePath = _param.basePath,
       components = _param.components;
 
+  var component = {};
   if (components != null) {
-    return rele(Virtual, { manx: manx, key: key, basePath: basePath, components: components });
+    component = rele(Virtual, {
+      manx: manx,
+      key: key,
+      basePath: basePath,
+      components: components
+    });
   } else {
-    return rele(DynamicVirtual, { manx: manx, key: key, basePath: basePath });
+    component = rele(DynamicVirtual, {
+      manx: manx,
+      key: key,
+      basePath: basePath
+    });
   }
+  return component;
 };
-exports.default = _.extend(reactify, { walk: walk, Virtual: Virtual });
 
-
-function __guard__(value, transform) {
-  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
-}
+exports.default = _.extend(reactify, {
+  walk: walk,
+  Virtual: Virtual
+});
 
 /***/ },
 /* 4 */
@@ -897,12 +955,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var EventEmitter = __webpack_require__(30).EventEmitter.EventEmitter;
 
-var clog = console.log.bind(console);
-
 var _virt = {};
 var _tree = {};
 var _data = {};
-var _curr = "";
+var _curr = '';
 var _nav = {};
 
 var QUERIES = {
@@ -923,49 +979,51 @@ var TreeStore = _.extend(new EventEmitter().setMaxListeners(50), {
     return this.on('change', cb);
   },
   removeChangeListener: function removeChangeListener(cb) {
-    return this.removeListener("change", cb);
+    return this.removeListener('change', cb);
   },
   emitChange: function emitChange() {
     return this.emit('change');
   },
   pathToArr: function pathToArr(_path) {
-    return _path.split("/");
+    return _path.split('/');
   },
   fulfill: function fulfill(path, query) {
-    if (path === "/") {
-      path = "";
+    if (path === '/') {
+      path = '';
     }
     return this.fulfillAt(this.getTree(path.split('/')), path, query);
   },
   fulfillAt: function fulfillAt(tree, path, query) {
-    var k = void 0;
+    var _this = this;
+
     var data = this.fulfillLocal(path, query);
     var have = _data[path];
     if (have != null) {
-      for (k in query) {
-        var t = query[k];
-        if (QUERIES[k]) {
-          if (t !== QUERIES[k]) {
-            throw TypeError('Wrong query type: ' + k + ', \'' + t + '\'');
+      if (query) {
+        Object.keys(query).forEach(function (k) {
+          var t = query[k];
+          if (QUERIES[k]) {
+            if (t !== QUERIES[k]) {
+              throw TypeError('Wrong query type: ' + k + ', \'' + t + '\'');
+            }
+            data[k] = have[k];
           }
-          data[k] = have[k];
-        }
+        });
       }
     }
-
     if (query.kids) {
       if (__guard__(have, function (x) {
         return x.kids;
       }) === false) {
         data.kids = {};
       } else {
-        for (k in tree) {
+        Object.keys(tree).forEach(function (k) {
           var sub = tree[k];
           if (data.kids == null) {
             data.kids = {};
           }
-          data.kids[k] = this.fulfillAt(sub, path + "/" + k, query.kids);
-        }
+          data.kids[k] = _this.fulfillAt(sub, path + '/' + k, query.kids);
+        });
       }
     }
     if (!_.isEmpty(data)) {
@@ -978,7 +1036,7 @@ var TreeStore = _.extend(new EventEmitter().setMaxListeners(50), {
       data.path = path;
     }
     if (query.name) {
-      data.name = path.split("/").pop();
+      data.name = path.split('/').pop();
     }
     if (query.sein) {
       data.sein = this.getPare(path);
@@ -993,20 +1051,23 @@ var TreeStore = _.extend(new EventEmitter().setMaxListeners(50), {
   },
   setCurr: function setCurr(_ref) {
     var path = _ref.path;
-    return _curr = path;
+
+    _curr = path;
   },
   getCurr: function getCurr() {
     return _curr;
   },
   addVirtual: function addVirtual(_ref2) {
     var components = _ref2.components;
+
     return _.extend(_virt, components);
   },
   getVirtualComponents: function getVirtualComponents() {
     return _virt;
   },
   clearData: function clearData() {
-    _data = {};return _tree = {};
+    _data = {};
+    _tree = {};
   },
   loadSein: function loadSein(_ref3) {
     var path = _ref3.path,
@@ -1014,8 +1075,11 @@ var TreeStore = _.extend(new EventEmitter().setMaxListeners(50), {
 
     var sein = this.getPare(path);
     if (sein != null) {
-      return this.loadPath({ path: sein, data: data });
-    }
+      return this.loadPath({
+        path: sein,
+        data: data
+      });
+    }return null;
   },
   loadPath: function loadPath(_ref4) {
     var path = _ref4.path,
@@ -1024,82 +1088,62 @@ var TreeStore = _.extend(new EventEmitter().setMaxListeners(50), {
     return this.loadValues(this.getTree(path.split('/'), true), path, data);
   },
   loadValues: function loadValues(tree, path, data) {
+    var _this2 = this;
+
     var old = _data[path] != null ? _data[path] : {};
-    for (var k in data) {
+    Object.keys(data).forEach(function (k) {
       if (QUERIES[k]) {
         old[k] = data[k];
       }
-    }
+    });
 
-    for (k in data.kids) {
-      var v = data.kids[k];
-      if (tree[k] == null) {
-        tree[k] = {};
-      }
-      var _path = path;
-      if (_path === "/") {
-        _path = "";
-      }
-      this.loadValues(tree[k], _path + "/" + k, v);
+    if (data.kids) {
+      Object.keys(data.kids).forEach(function (k) {
+        var v = data.kids[k];
+        if (tree[k] == null) {
+          tree[k] = {};
+        }
+        var _path = path;
+        if (_path === '/') {
+          _path = '';
+        }
+        _this2.loadValues(tree[k], _path + '/' + k, v);
+      });
     }
 
     if (data.kids && _.isEmpty(data.kids)) {
       old.kids = false;
     }
 
-    return _data[path] = old;
+    _data[path] = old;
   },
   getSiblings: function getSiblings(path) {
     if (path == null) {
       path = _curr;
     }
-    var curr = path.split("/");
+    var curr = path.split('/');
     curr.pop();
     if (curr.length !== 0) {
       return this.getTree(curr);
-    } else {
-      return {};
-    }
+    }return {};
   },
   getTree: function getTree(_path, make) {
     if (make == null) {
       make = false;
     }
     var tree = _tree;
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-      for (var _iterator = Array.from(_path)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var sub = _step.value;
-
-        if (!sub) {
-          continue;
-        } // discard empty path elements
-        if (tree[sub] == null) {
-          if (!make) {
-            return null;
-          }
-          tree[sub] = {};
+    Array.from(_path).forEach(function (sub) {
+      if (!sub) {
+        return;
+      } // discard empty path elements
+      if (tree[sub] == null) {
+        if (!make) {
+          return;
         }
-        tree = tree[sub];
+        tree[sub] = {};
       }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
-    }
-
+      tree = tree[sub];
+    });
     return tree;
   },
   getPrev: function getPrev(path) {
@@ -1109,14 +1153,13 @@ var TreeStore = _.extend(new EventEmitter().setMaxListeners(50), {
     var sibs = _.keys(this.getSiblings(path)).sort();
     if (sibs.length < 2) {
       return null;
-    } else {
-      var par = path.split("/");
-      var key = par.pop();
-      var ind = sibs.indexOf(key);
-      var win = ind - 1 >= 0 ? sibs[ind - 1] : sibs[sibs.length - 1];
-      par.push(win);
-      return par.join("/");
     }
+    var par = path.split('/');
+    var key = par.pop();
+    var ind = sibs.indexOf(key);
+    var win = ind - 1 >= 0 ? sibs[ind - 1] : sibs[sibs.length - 1];
+    par.push(win);
+    return par.join('/');
   },
   getNext: function getNext(path) {
     if (path == null) {
@@ -1125,14 +1168,13 @@ var TreeStore = _.extend(new EventEmitter().setMaxListeners(50), {
     var sibs = _.keys(this.getSiblings(path)).sort();
     if (sibs.length < 2) {
       return null;
-    } else {
-      var par = path.split("/");
-      var key = par.pop();
-      var ind = sibs.indexOf(key);
-      var win = ind + 1 < sibs.length ? sibs[ind + 1] : sibs[0];
-      par.push(win);
-      return par.join("/");
     }
+    var par = path.split('/');
+    var key = par.pop();
+    var ind = sibs.indexOf(key);
+    var win = ind + 1 < sibs.length ? sibs[ind + 1] : sibs[0];
+    par.push(win);
+    return par.join('/');
   },
   getPare: function getPare(path) {
     if (path == null) {
@@ -1141,14 +1183,12 @@ var TreeStore = _.extend(new EventEmitter().setMaxListeners(50), {
     var _path = this.pathToArr(path);
     if (_path.length > 1) {
       _path.pop();
-      _path = _path.join("/");
-      if (_path === "") {
-        _path = "/";
+      _path = _path.join('/');
+      if (_path === '') {
+        _path = '/';
       }
       return _path;
-    } else {
-      return null;
-    }
+    }return null;
   },
   setNav: function setNav(_ref5) {
     var title = _ref5.title,
@@ -1163,19 +1203,19 @@ var TreeStore = _.extend(new EventEmitter().setMaxListeners(50), {
       subnav: subnav,
       open: _nav.open ? _nav.open : false
     };
-    return _nav = nav;
+    _nav = nav;
   },
   getNav: function getNav() {
     return _nav;
   },
   toggleNav: function toggleNav() {
-    return _nav.open = !_nav.open;
+    _nav.open = !_nav.open;
   },
   closeNav: function closeNav() {
-    return _nav.open = false;
+    _nav.open = false;
   },
   clearNav: function clearNav() {
-    return _nav = {
+    _nav = {
       title: null,
       dpad: null,
       sibs: null,
@@ -1191,7 +1231,7 @@ TreeStore.dispatchToken = _Dispatcher2.default.register(function (p) {
   if (TreeStore[a.type]) {
     TreeStore[a.type](a);
     return TreeStore.emitChange();
-  }
+  }return null;
 });
 
 exports.default = TreeStore;
@@ -3714,7 +3754,7 @@ var waspWait = [];
 
 exports.default = {
   refresh: function refresh() {
-    return dedup = {};
+    dedup = {};
   },
   get: function get(path, query, cb) {
     if (query == null) {
@@ -3726,7 +3766,7 @@ exports.default = {
     }
     dedup[url] = true;
     pending[url] = true;
-    return $.get(url, {}, function (data, status, xhr) {
+    $.get(url, {}, function (data, status, xhr) {
       // XX on error
       delete pending[url];
       if (urb.wasp != null) {
@@ -3740,7 +3780,7 @@ exports.default = {
       }
       if (cb) {
         return cb(null, data);
-      }
+      }return null;
     });
   },
   put: function put(data, mark, appl, cb) {
@@ -3748,33 +3788,35 @@ exports.default = {
       appl = /[a-z]*/.exec(mark)[0];
     }
     return urb.init(function () {
-      return urb.send(data, { mark: mark, appl: appl }, cb);
+      return urb.send(data, {
+        mark: mark,
+        appl: appl
+      }, cb);
     });
   },
   waspElem: function waspElem(a) {
     if (urb.wasp != null) {
       return urb.waspElem(a);
-    }
+    }return null;
   },
-  encode: function encode(obj) {
+  encode: function encode(object) {
     var delim = function delim(n) {
       return Array(n + 1).join('_') || '.';
     };
-    var _encode = function _encode(obj) {
+    function encoder(obj) {
       if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) !== 'object') {
         return [0, obj];
       }
       var dep = 0;
       var sub = function () {
         var result = [];
-        for (var k in obj) {
-          var v = obj[k];
+        _.map(obj, function (v, k) {
           var item = void 0;
 
-          var _encode2 = _encode(v),
-              _encode3 = _slicedToArray(_encode2, 2),
-              _dep = _encode3[0],
-              res = _encode3[1];
+          var _encoder = encoder(v),
+              _encoder2 = _slicedToArray(_encoder, 2),
+              _dep = _encoder2[0],
+              res = _encoder2[1];
 
           if (_dep > dep) {
             dep = _dep;
@@ -3783,13 +3825,13 @@ exports.default = {
             item = k + delim(_dep) + res;
           }
           result.push(item);
-        }
+        });
         return result;
       }();
-      dep++;
+      dep += 1;
       return [dep, sub.join(delim(dep))];
-    };
-    return _encode(obj)[1];
+    }
+    return encoder(object)[1];
   }
 };
 
