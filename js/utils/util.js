@@ -1,51 +1,56 @@
-let _basepath = ""
+import Ship from '../components/ShipComponent';
+
+let _basepath = '';
 
 export default {
   init() {
-    _basepath = window.urb.util.basepath("/");
+    _basepath = window.urb.util.basepath('/');
     _basepath +=
-      (window.location.pathname.replace(window.tree._basepath, "")).split("/")[0];
+      (window.location.pathname.replace(window.tree._basepath, '')).split('/')[0];
   },
 
-  components: {
-    ship: require('../components/ShipComponent.js')
-  },
+  components: { ship: Ship },
 
   basepath(path) {
     let prefix = _basepath;
-    if (prefix === "/") { prefix = ""; }
-    if (path[0] !== "/") { path = `/${path}`; }
+    if (prefix === '/') {
+      prefix = '';
+    }
+    if (path[0] !== '/') {
+      path = `/${path}`;
+    }
     let _path = prefix + path;
-    if ((_path.slice(-1) === "/") && (_path.length > 1)) {
-      _path = _path.slice(0,-1);
+    if ((_path.slice(-1) === '/') && (_path.length > 1)) {
+      _path = _path.slice(0, -1);
     }
     return _path;
   },
 
   fragpath(path) {
-    return path.replace(/\/$/,'')
-        .replace(_basepath,"");
+    return path.replace(/\/$/, '')
+      .replace(_basepath, '');
   },
 
-  shortShip(ship){
-    if (ship == null) { ship = urb.user != null ? urb.user : ""; }
+  shortShip(ship) {
+    if (ship == null) {
+      ship = urb.user != null ? urb.user : '';
+    }
     if (ship.length <= 13) {
       return ship;
     } else if (ship.length === 27) {
-      return ship.slice(14, 20) + "^" + ship.slice(-6);
-    } else {
-      return ship.slice(0, 6) + "_" + ship.slice(-6); // s/(.{6}).*(.{6})/\1_\2/
+      return `${ship.slice(14, 20)}^${ship.slice(-6)}`;
     }
+    return `${ship.slice(0, 6)}_${ship.slice(-6)}`; // s/(.{6}).*(.{6})/\1_\2/
   },
 
-  dateFromAtom(date){
+  dateFromAtom(date) {
     let d;
-    let [yer,mon,day,__,hor,min,sec] = // ~y.m.d..h.m.s
-      date.slice(1).split(".");
+    const [yer, mon, day, xx, hor, min, sec] = // ~y.m.d..h.m.s
+    date.slice(1).split('.');
     if (day != null) {
       d = new Date();
       d.setYear(yer);
-      d.setMonth(mon-1);
+      d.setMonth(mon - 1);
       d.setDate(day);
     }
     if (hor != null) {
@@ -59,58 +64,75 @@ export default {
     return _.map((this.sortKids(kids, sortBy)), 'name');
   },
 
-  sortKids(kids,sortBy){ // kids: {name:'t', bump:'t', meta:'j'}
+  sortKids(kids, sortBy) { // kids: {name:'t', bump:'t', meta:'j'}
     let v;
-    if (sortBy == null) { sortBy = null; }
-    kids = _.filter(kids,({meta})=> !(__guard__(meta, x => x.hide)));
+    let f;
+    let miss = false;
+    if (sortBy == null) {
+      sortBy = null;
+    }
+    kids = _.filter(kids,
+      ({meta}) => !(__guard__(meta, x => x.hide)));
+
     switch (sortBy) {
-      case 'bump':
+      case 'bump': {
         return _.sortBy(kids,
-          ({bump,meta,name})=> this.dateFromAtom(bump || __guard__(meta, x => x.date) || name)
+          ({ bump, meta, name }) => {
+            this.dateFromAtom(bump || __guard__(meta, x => x.date) || name)
+          },
         ).reverse();
-      //
-      case 'date':
+      }
+      case 'date': {
         let _kids = [];
-        for (var k in kids) {
+        Object.keys(kids).forEach((k) => {
           v = kids[k];
-          if (__guard__(v.meta, x => x.date) == null) { // XX throw?
-            return _.sortBy(kids,'name');
+          if (__guard__(v.meta, x => x.date) == null) {
+            miss = true;
           }
-          let date = this.dateFromAtom(v.meta.date);
+          const date = this.dateFromAtom(v.meta.date);
           if (date == null) { // XX throw
-            return _.sortBy(kids,'name');
+            miss = true;
           }
-          let _k = Number(new Date(date));
+          const _k = Number(new Date(date));
           _kids[_k] = v;
+        });
+
+        if (miss === true) {
+          console.warn(`Hit malformed metadata. Sort set to date, date missing. See: ${v.title}`)
+          return _.sortBy(kids, 'name');
         }
-        return (() => {
-          let result = [];
-          for (k of Array.from(_.keys(_kids).sort().reverse())) {
-            result.push(_kids[k]);
-          }
-          return result;
-        })();
-      //
-      case null:
-        _kids = [];
-        for (k in kids) {
+
+        f = [];
+        _.keys(_kids).sort().reverse().forEach((k) => {
+          f.push(_kids[k]);
+        })
+        return f;
+      }
+      case null: {
+        let _kids = [];
+        Object.keys(kids).forEach((k) => {
           v = kids[k];
-          if (__guard__(v.meta, x1 => x1.sort) == null) { // XX throw if inconsistent?
-            return _.sortBy(kids,'name');
+          if (__guard__(v.meta, x1 => x1.sort) == null) {
+            miss = true
           }
           _kids[Number(v.meta.sort)] = v;
+        });
+
+        if (miss === true) {
+          console.warn(`Hit malformed metadata. See: ${v.title}`)
+          return _.sortBy(kids, 'name');
         }
-        return (() => {
-          let result1 = [];
-          for (k of Array.from(_.keys(_kids).sort())) {
-            result1.push(_kids[k]);
-          }
-          return result1;
-        })();
-      //
-      default: throw new Error(`Unknown sort: ${sortBy}`);
+
+        f = [];
+        _.keys(_kids).sort().forEach((k) => {
+          f.push(_kids[k]);
+        })
+        return f;
+      }
+      default:
+        throw new Error(`Unknown sort: ${sortBy}`);
     }
-  }
+  },
 };
 
 function __guard__(value, transform) {

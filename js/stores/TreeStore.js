@@ -18,10 +18,10 @@ const QUERIES = {
   plan: 'j',
   beak: 't',
   spur: 't',
-  bump: 't'
+  bump: 't',
 };
 
-const TreeStore = _.extend((new EventEmitter).setMaxListeners(50), {
+const TreeStore = _.extend((new EventEmitter()).setMaxListeners(50), {
   addChangeListener(cb) {
     return this.on('change', cb);
   },

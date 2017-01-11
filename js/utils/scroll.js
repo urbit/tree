@@ -17,10 +17,14 @@ export default {
     this.nh = $('#head .ctrl').outerHeight(true);
   },
 
-  clearNav() { return this.$n.removeClass('m-up m-down m-fixed'); },
+  clearNav() {
+    return this.$n.removeClass('m-up m-down m-fixed');
+  },
 
   resize() {
-    if (this.w > 1170) { this.clearNav(); }
+    if (this.w > 1170) {
+      this.clearNav();
+    }
   },
 
   scroll() {
@@ -30,7 +34,9 @@ export default {
     this.cs = $(window).scrollTop();
     this.cwh = window.innerHeight;
 
-    if (this.w > 767) { this.clearNav(); }
+    if (this.w > 767) {
+      this.clearNav();
+    }
     if (this.w < 767) {
       let ct;
       let top;
@@ -50,14 +56,16 @@ export default {
           this.$n.removeClass('m-up').addClass('m-down');
           ct = this.$n.offset().top;
           top = this.cs - this.nh;
-          if ((this.cs > ct) && (this.cs < (ct + this.nh))) { top = ct; }
+          if ((this.cs > ct) && (this.cs < (ct + this.nh))) {
+            top = ct;
+          }
           // if top < 0 then top = 0
           this.$n.offset({ top });
         }
         // set fixed when at top
         if (this.$n.hasClass('m-down') &&
-        !this.$n.hasClass('m-fixed') &&
-        (this.$n.offset().top >= this.cs)) {
+          !this.$n.hasClass('m-fixed') &&
+          (this.$n.offset().top >= this.cs)) {
           this.$n.addClass('m-fixed');
           this.$n.attr({ style: '' });
         }
@@ -72,12 +80,14 @@ export default {
             $('.menu.open').removeClass('open');
             top = this.cs < 0 ? 0 : this.cs;
             ct = this.$n.offset().top;
-            if ((top > ct) && (top < (ct + this.nh))) { top = ct; }
+            if ((top > ct) && (top < (ct + this.nh))) {
+              top = ct;
+            }
             this.$n.offset({ top });
           }
           // close when gone if open
           if (this.$n.hasClass('m-up') &&
-          this.$d.hasClass('open')) {
+            this.$d.hasClass('open')) {
             if (this.cs > (this.$n.offset().top + this.$n.height())) {
               TreeActions.closeNav();
             }

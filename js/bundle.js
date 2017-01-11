@@ -81,58 +81,61 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _basepath = "";
+var _ShipComponent = __webpack_require__(6);
+
+var _ShipComponent2 = _interopRequireDefault(_ShipComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _basepath = '';
 
 exports.default = {
   init: function init() {
-    _basepath = window.urb.util.basepath("/");
-    _basepath += window.location.pathname.replace(window.tree._basepath, "").split("/")[0];
+    _basepath = window.urb.util.basepath('/');
+    _basepath += window.location.pathname.replace(window.tree._basepath, '').split('/')[0];
   },
 
 
-  components: {
-    ship: __webpack_require__(6)
-  },
+  components: { ship: _ShipComponent2.default },
 
   basepath: function basepath(path) {
     var prefix = _basepath;
-    if (prefix === "/") {
-      prefix = "";
+    if (prefix === '/') {
+      prefix = '';
     }
-    if (path[0] !== "/") {
-      path = "/" + path;
+    if (path[0] !== '/') {
+      path = '/' + path;
     }
     var _path = prefix + path;
-    if (_path.slice(-1) === "/" && _path.length > 1) {
+    if (_path.slice(-1) === '/' && _path.length > 1) {
       _path = _path.slice(0, -1);
     }
     return _path;
   },
   fragpath: function fragpath(path) {
-    return path.replace(/\/$/, '').replace(_basepath, "");
+    return path.replace(/\/$/, '').replace(_basepath, '');
   },
   shortShip: function shortShip(ship) {
     if (ship == null) {
-      ship = urb.user != null ? urb.user : "";
+      ship = urb.user != null ? urb.user : '';
     }
     if (ship.length <= 13) {
       return ship;
     } else if (ship.length === 27) {
-      return ship.slice(14, 20) + "^" + ship.slice(-6);
-    } else {
-      return ship.slice(0, 6) + "_" + ship.slice(-6); // s/(.{6}).*(.{6})/\1_\2/
+      return ship.slice(14, 20) + '^' + ship.slice(-6);
     }
+    return ship.slice(0, 6) + '_' + ship.slice(-6); // s/(.{6}).*(.{6})/\1_\2/
   },
   dateFromAtom: function dateFromAtom(date) {
     var d = void 0;
 
     var _date$slice$split = // ~y.m.d..h.m.s
-    date.slice(1).split("."),
+    date.slice(1).split('.'),
         _date$slice$split2 = _slicedToArray(_date$slice$split, 7),
         yer = _date$slice$split2[0],
         mon = _date$slice$split2[1],
         day = _date$slice$split2[2],
-        __ = _date$slice$split2[3],
+        xx = _date$slice$split2[3],
         hor = _date$slice$split2[4],
         min = _date$slice$split2[5],
         sec = _date$slice$split2[6];
@@ -157,6 +160,8 @@ exports.default = {
 
     // kids: {name:'t', bump:'t', meta:'j'}
     var v = void 0;
+    var f = void 0;
+    var miss = false;
     if (sortBy == null) {
       sortBy = null;
     }
@@ -166,128 +171,93 @@ exports.default = {
         return x.hide;
       });
     });
-    var k;
 
-    var _ret = function () {
-      switch (sortBy) {
-        case 'bump':
-          return {
-            v: _.sortBy(kids, function (_ref2) {
-              var bump = _ref2.bump,
-                  meta = _ref2.meta,
-                  name = _ref2.name;
-              return _this.dateFromAtom(bump || __guard__(meta, function (x) {
-                return x.date;
-              }) || name);
-            }).reverse()
-          };
-        //
-        case 'date':
-          var _kids = [];
-          for (k in kids) {
-            v = kids[k];
-            if (__guard__(v.meta, function (x) {
+    switch (sortBy) {
+      case 'bump':
+        {
+          return _.sortBy(kids, function (_ref2) {
+            var bump = _ref2.bump,
+                meta = _ref2.meta,
+                name = _ref2.name;
+
+            _this.dateFromAtom(bump || __guard__(meta, function (x) {
               return x.date;
-            }) == null) {
-              // XX throw?
-              return {
-                v: _.sortBy(kids, 'name')
-              };
-            }
-            var date = _this.dateFromAtom(v.meta.date);
-            if (date == null) {
-              // XX throw
-              return {
-                v: _.sortBy(kids, 'name')
-              };
-            }
-            var _k = Number(new Date(date));
-            _kids[_k] = v;
-          }
-          return {
-            v: function () {
-              var result = [];
-              var _iteratorNormalCompletion = true;
-              var _didIteratorError = false;
-              var _iteratorError = undefined;
-
-              try {
-                for (var _iterator = Array.from(_.keys(_kids).sort().reverse())[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                  k = _step.value;
-
-                  result.push(_kids[k]);
-                }
-              } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-              } finally {
-                try {
-                  if (!_iteratorNormalCompletion && _iterator.return) {
-                    _iterator.return();
-                  }
-                } finally {
-                  if (_didIteratorError) {
-                    throw _iteratorError;
-                  }
-                }
+            }) || name);
+          }).reverse();
+        }
+      case 'date':
+        {
+          var _ret = function () {
+            var _kids = [];
+            Object.keys(kids).forEach(function (k) {
+              v = kids[k];
+              if (__guard__(v.meta, function (x) {
+                return x.date;
+              }) == null) {
+                miss = true;
               }
+              var date = _this.dateFromAtom(v.meta.date);
+              if (date == null) {
+                // XX throw
+                miss = true;
+              }
+              var _k = Number(new Date(date));
+              _kids[_k] = v;
+            });
 
-              return result;
-            }()
-          };
-        //
-        case null:
-          _kids = [];
-          for (k in kids) {
-            v = kids[k];
-            if (__guard__(v.meta, function (x1) {
-              return x1.sort;
-            }) == null) {
-              // XX throw if inconsistent?
+            if (miss === true) {
+              console.warn('Hit malformed metadata. Sort set to date, date missing. See: ' + v.title);
               return {
                 v: _.sortBy(kids, 'name')
               };
             }
-            _kids[Number(v.meta.sort)] = v;
-          }
-          return {
-            v: function () {
-              var result1 = [];
-              var _iteratorNormalCompletion2 = true;
-              var _didIteratorError2 = false;
-              var _iteratorError2 = undefined;
 
-              try {
-                for (var _iterator2 = Array.from(_.keys(_kids).sort())[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                  k = _step2.value;
+            f = [];
+            _.keys(_kids).sort().reverse().forEach(function (k) {
+              f.push(_kids[k]);
+            });
+            return {
+              v: f
+            };
+          }();
 
-                  result1.push(_kids[k]);
-                }
-              } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-              } finally {
-                try {
-                  if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                    _iterator2.return();
-                  }
-                } finally {
-                  if (_didIteratorError2) {
-                    throw _iteratorError2;
-                  }
-                }
+          if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+        }
+      case null:
+        {
+          var _ret2 = function () {
+            var _kids = [];
+            Object.keys(kids).forEach(function (k) {
+              v = kids[k];
+              if (__guard__(v.meta, function (x1) {
+                return x1.sort;
+              }) == null) {
+                miss = true;
               }
+              _kids[Number(v.meta.sort)] = v;
+            });
 
-              return result1;
-            }()
-          };
-        //
-        default:
-          throw new Error("Unknown sort: " + sortBy);
-      }
-    }();
+            if (miss === true) {
+              console.warn('Hit malformed metadata. See: ' + v.title);
+              return {
+                v: _.sortBy(kids, 'name')
+              };
+            }
 
-    if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
+            f = [];
+            _.keys(_kids).sort().forEach(function (k) {
+              f.push(_kids[k]);
+            });
+            return {
+              v: f
+            };
+          }();
+
+          if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
+        }
+      default:
+        throw new Error('Unknown sort: ' + sortBy);
+    }
   }
 };
 
