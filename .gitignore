@@ -6,5 +6,5 @@ node_modules/
 # compiled files
 main.css
 main.css.map
-main.js
+bundle.js
 /desk
