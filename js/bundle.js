@@ -280,8 +280,9 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = function (queries, Child, load) {
   if (load == null) {
     load = _LoadComponent2.default;
-  }return recl({
-    displayName: "Async",
+  }
+  return React.createClass({
+    displayName: 'Async',
 
     getInitialState: function getInitialState() {
       return this.stateFromStore();
@@ -298,7 +299,7 @@ exports.default = function (queries, Child, load) {
         var left = void 0;
         path = (left = fragsrc(this.props.src, base)) != null ? left : base;
       }
-      if (path.slice(-1) === "/") {
+      if (path.slice(-1) === '/') {
         return path.slice(0, -1);
       } else {
         return path;
@@ -313,7 +314,12 @@ exports.default = function (queries, Child, load) {
       } else {
         got = this.mergeWith(this.state.got, fresh);
       }
-      return { path: path, fresh: fresh, got: got, queries: queries };
+      return {
+        path: path,
+        fresh: fresh,
+        got: got,
+        queries: queries
+      };
     },
     mergeWith: function mergeWith(have, fresh, _queries) {
       if (have == null) {
@@ -446,18 +452,14 @@ var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var recl = React.createClass;
-var _React$DOM = React.DOM,
-    div = _React$DOM.div,
-    span = _React$DOM.span,
-    code = _React$DOM.code;
+var div = React.DOM.div;
 
 
-var fragsrc = function fragsrc(src, basePath) {
+function fragsrc(src, basePath) {
   if (src != null) {
     basePath = _util2.default.basepath(basePath);
-    if (basePath.slice(-1) !== "/") {
-      basePath += "/";
+    if (basePath.slice(-1) !== '/') {
+      basePath += '/';
     }
     var base = new URL(basePath, document.location);
 
@@ -465,8 +467,8 @@ var fragsrc = function fragsrc(src, basePath) {
         pathname = _ref.pathname;
 
     return _util2.default.fragpath(pathname);
-  }
-};
+  }return null;
+}
 
 ;
 
@@ -2462,6 +2464,10 @@ var _TreeActions = __webpack_require__(2);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
+var _NavBodyComponent = __webpack_require__(32);
+
+var _NavBodyComponent2 = _interopRequireDefault(_NavBodyComponent);
+
 var _SibsComponent = __webpack_require__(27);
 
 var _SibsComponent2 = _interopRequireDefault(_SibsComponent);
@@ -2472,193 +2478,29 @@ var _DpadComponent2 = _interopRequireDefault(_DpadComponent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// unused
-// let BodyComponent = React.createFactory(require('./BodyComponent'));
-
 var Sibs = React.createFactory(_SibsComponent2.default);
 var Dpad = React.createFactory(_DpadComponent2.default);
 
-var recl = React.createClass;
-var rend = ReactDOM.render;
 var _React$DOM = React.DOM,
     div = _React$DOM.div,
     a = _React$DOM.a,
     ul = _React$DOM.ul,
     li = _React$DOM.li,
     button = _React$DOM.button;
-
-
-var Nav = React.createFactory((0, _Async2.default)({
-  path: 't',
-  kids: {
-    name: 't',
-    head: 'r',
-    meta: 'j'
-  }
-}, recl({
-  displayName: "Links",
-  stateFromStore: function stateFromStore() {
-    return _TreeStore2.default.getNav();
-  },
-  getInitialState: function getInitialState() {
-    return this.stateFromStore();
-  },
-  _onChangeStore: function _onChangeStore() {
-    if (this.isMounted()) {
-      return this.setState(this.stateFromStore());
-    }
-  },
-  componentDidMount: function componentDidMount() {
-    return _TreeStore2.default.addChangeListener(this._onChangeStore);
-  },
-  componentWillUnmount: function componentWillUnmount() {
-    return _TreeStore2.default.removeChangeListener(this._onChangeStore);
-  },
-  onClick: function onClick() {
-    return this.toggleFocus();
-  },
-  onMouseOver: function onMouseOver() {
-    return this.toggleFocus(true);
-  },
-  onMouseOut: function onMouseOut() {
-    return this.toggleFocus(false);
-  },
-  onTouchStart: function onTouchStart() {
-    return this.ts = Number(Date.now());
-  },
-  onTouchEnd: function onTouchEnd() {
-    var dt = void 0;
-    return dt = this.ts - Number(Date.now());
-  },
-  _home: function _home() {
-    return this.props.goTo(this.props.meta.navhome ? this.props.meta.navhome : "/");
-  },
-  toggleFocus: function toggleFocus(state) {
-    return $(ReactDOM.findDOMNode(this)).toggleClass('focus', state);
-  },
-  toggleNav: function toggleNav() {
-    return _TreeActions2.default.toggleNav();
-  },
-  closeNav: function closeNav() {
-    return _TreeActions2.default.closeNav();
-  },
-  render: function render() {
-    var sub = void 0;
-    var attr = {
-      onMouseOver: this.onMouseOver,
-      onMouseOut: this.onMouseOut,
-      onClick: this.onClick,
-      onTouchStart: this.onTouchStart,
-      onTouchEnd: this.onTouchEnd,
-      'data-path': this.props.dataPath
-    };
-
-    if (_.keys(window).indexOf("ontouchstart") !== -1) {
-      delete attr.onMouseOver;
-      delete attr.onMouseOut;
-    }
-
-    var linksClas = (0, _classnames2.default)({
-      links: true,
-      subnav: this.props.meta.navsub != null
-    });
-
-    var navClas = {
-      navbar: this.props.meta.navmode === 'navbar',
-      ctrl: true,
-      open: this.state.open === true
-    };
-    if (this.props.meta.layout) {
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = Array.from(this.props.meta.layout.split(","))[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var v = _step.value;
-
-          navClas[v.trim()] = true;
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-    }
-    navClas = (0, _classnames2.default)(navClas);
-    var iconClass = (0, _classnames2.default)({
-      icon: true,
-      'col-md-1': this.props.meta.navmode === 'navbar'
-    });
-
-    attr = _.extend(attr, { className: navClas, key: "nav" });
-
-    var title = this.state.title ? this.state.title : "";
-    var dpad = this.state.dpad !== false && __guard__(this.props.meta, function (x) {
-      return x.navdpad;
-    }) !== "false" ? Dpad(this.props, "") : "";
-    var sibs = this.state.sibs !== false && __guard__(this.props.meta, function (x1) {
-      return x1.navsibs;
-    }) !== "false" ? Sibs(_.merge(_.clone(this.props), { closeNav: this.closeNav }), "") : "";
-
-    var itemsClass = (0, _classnames2.default)({
-      items: true,
-      'col-md-11': this.props.meta.navmode === 'navbar'
-    });
-
-    if (this.props.meta.navsub) {
-      var subprops = _.cloneDeep(this.props);
-      subprops.dataPath = subprops.meta.navsub;
-      delete subprops.meta.navselect;
-      subprops.className = 'subnav';
-      sub = Sibs(_.merge(subprops, { toggleNav: this.toggleNav }), "");
-    }
-
-    var toggleClas = (0, _classnames2.default)({
-      'navbar-toggler': true,
-      show: this.state.subnav != null
-    });
-
-    return div(attr, [div({ className: linksClas, key: "links" }, [div({ className: iconClass }, [div({ className: 'home', onClick: this._home }, ""), div({ className: 'app' }, title), dpad, button({
-      className: toggleClas,
-      type: 'button',
-      onClick: this.toggleNav }, "☰")]), div({ className: itemsClass }, [sibs, sub])])]);
-  }
-}), recl({
-  displayName: "Links_loading",
-  _home: function _home() {
-    return this.props.goTo("/");
-  },
-  render: function render() {
-    return div({
-      className: "ctrl loading",
-      "data-path": this.props.dataPath,
-      key: "nav-loading"
-    }, div({ className: 'links' }, div({ className: 'icon' }, div({ className: 'home', onClick: this._home }, "")), ul({ className: "nav" }, li({ className: "nav-item selected" }, a({ className: "nav-link" }, this.props.curr)))));
-  }
-})));
-
 exports.default = (0, _Async2.default)({
   sein: 't',
   path: 't',
   name: 't',
   meta: 'j'
-}, recl({
+}, React.createClass({
   displayName: "Nav",
   stateFromStore: function stateFromStore() {
     return _TreeStore2.default.getNav();
   },
   getInitialState: function getInitialState() {
-    return _.extend(this.stateFromStore(), { url: window.location.pathname });
+    return _.extend(this.stateFromStore(), {
+      url: window.location.pathname
+    });
   },
   _onChangeStore: function _onChangeStore() {
     if (this.isMounted()) {
@@ -2752,7 +2594,9 @@ exports.default = (0, _Async2.default)({
     }
   },
   reset: function reset() {
-    return $("html,body").animate({ scrollTop: 0 });
+    return $("html,body").animate({
+      scrollTop: 0
+    });
   },
 
   // $('#nav').attr 'style',''
@@ -2769,14 +2613,15 @@ exports.default = (0, _Async2.default)({
     }
 
     var navClas = (0, _classnames2.default)({
-      container: this.props.meta.container === 'false' });
+      container: this.props.meta.container === 'false'
+    });
 
     var kidsPath = this.props.sein;
     if (this.props.meta.navpath) {
       kidsPath = this.props.meta.navpath;
     }
 
-    var kids = [Nav({
+    var kids = [(0, _NavBodyComponent2.default)({
       curr: this.props.name,
       dataPath: kidsPath,
       meta: this.props.meta,
@@ -2788,12 +2633,18 @@ exports.default = (0, _Async2.default)({
     if (this.state.subnav) {
       kids.push((0, _Reactify2.default)({
         gn: this.state.subnav,
-        ga: { open: this.state.open, toggle: _TreeActions2.default.toggleNav },
+        ga: {
+          open: this.state.open,
+          toggle: _TreeActions2.default.toggleNav
+        },
         c: []
       }, "subnav"));
     }
 
-    return div({ id: 'head', className: navClas }, kids);
+    return div({
+      id: 'head',
+      className: navClas
+    }, kids);
   }
 }));
 
@@ -4176,6 +4027,267 @@ $(function () {
   ReactDOM.render(main({}, ''), document.getElementById('tree'));
   return true;
 });
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classnames = __webpack_require__(4);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _Async = __webpack_require__(1);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+var _Reactify = __webpack_require__(3);
+
+var _Reactify2 = _interopRequireDefault(_Reactify);
+
+var _TreeStore = __webpack_require__(7);
+
+var _TreeStore2 = _interopRequireDefault(_TreeStore);
+
+var _TreeActions = __webpack_require__(2);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+var _NavBodyComponent = __webpack_require__(32);
+
+var _NavBodyComponent2 = _interopRequireDefault(_NavBodyComponent);
+
+var _SibsComponent = __webpack_require__(27);
+
+var _SibsComponent2 = _interopRequireDefault(_SibsComponent);
+
+var _DpadComponent = __webpack_require__(15);
+
+var _DpadComponent2 = _interopRequireDefault(_DpadComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Sibs = React.createFactory(_SibsComponent2.default);
+var Dpad = React.createFactory(_DpadComponent2.default);
+
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    a = _React$DOM.a,
+    ul = _React$DOM.ul,
+    li = _React$DOM.li,
+    button = _React$DOM.button;
+
+
+var body = React.createClass({
+  displayName: "Links",
+  stateFromStore: function stateFromStore() {
+    return _TreeStore2.default.getNav();
+  },
+  getInitialState: function getInitialState() {
+    return this.stateFromStore();
+  },
+  _onChangeStore: function _onChangeStore() {
+    if (this.isMounted()) {
+      return this.setState(this.stateFromStore());
+    }
+  },
+  componentDidMount: function componentDidMount() {
+    return _TreeStore2.default.addChangeListener(this._onChangeStore);
+  },
+  componentWillUnmount: function componentWillUnmount() {
+    return _TreeStore2.default.removeChangeListener(this._onChangeStore);
+  },
+  onClick: function onClick() {
+    return this.toggleFocus();
+  },
+  onMouseOver: function onMouseOver() {
+    return this.toggleFocus(true);
+  },
+  onMouseOut: function onMouseOut() {
+    return this.toggleFocus(false);
+  },
+  onTouchStart: function onTouchStart() {
+    return this.ts = Number(Date.now());
+  },
+  onTouchEnd: function onTouchEnd() {
+    var dt = void 0;
+    return dt = this.ts - Number(Date.now());
+  },
+  _home: function _home() {
+    return this.props.goTo(this.props.meta.navhome ? this.props.meta.navhome : "/");
+  },
+  toggleFocus: function toggleFocus(state) {
+    return $(ReactDOM.findDOMNode(this)).toggleClass('focus', state);
+  },
+  toggleNav: function toggleNav() {
+    return _TreeActions2.default.toggleNav();
+  },
+  closeNav: function closeNav() {
+    return _TreeActions2.default.closeNav();
+  },
+  render: function render() {
+    var sub = void 0;
+    var attr = {
+      onMouseOver: this.onMouseOver,
+      onMouseOut: this.onMouseOut,
+      onClick: this.onClick,
+      onTouchStart: this.onTouchStart,
+      onTouchEnd: this.onTouchEnd,
+      'data-path': this.props.dataPath
+    };
+
+    if (_.keys(window).indexOf("ontouchstart") !== -1) {
+      delete attr.onMouseOver;
+      delete attr.onMouseOut;
+    }
+
+    var linksClas = (0, _classnames2.default)({
+      links: true,
+      subnav: this.props.meta.navsub != null
+    });
+
+    var navClas = {
+      navbar: this.props.meta.navmode === 'navbar',
+      ctrl: true,
+      open: this.state.open === true
+    };
+    if (this.props.meta.layout) {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = Array.from(this.props.meta.layout.split(","))[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var v = _step.value;
+
+          navClas[v.trim()] = true;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+    navClas = (0, _classnames2.default)(navClas);
+    var iconClass = (0, _classnames2.default)({
+      icon: true,
+      'col-md-1': this.props.meta.navmode === 'navbar'
+    });
+
+    attr = _.extend(attr, {
+      className: navClas,
+      key: "nav"
+    });
+
+    var title = this.state.title ? this.state.title : "";
+    var dpad = this.state.dpad !== false && __guard__(this.props.meta, function (x) {
+      return x.navdpad;
+    }) !== "false" ? Dpad(this.props, "") : "";
+    var sibs = this.state.sibs !== false && __guard__(this.props.meta, function (x1) {
+      return x1.navsibs;
+    }) !== "false" ? Sibs(_.merge(_.clone(this.props), {
+      closeNav: this.closeNav
+    }), "") : "";
+
+    var itemsClass = (0, _classnames2.default)({
+      items: true,
+      'col-md-11': this.props.meta.navmode === 'navbar'
+    });
+
+    if (this.props.meta.navsub) {
+      var subprops = _.cloneDeep(this.props);
+      subprops.dataPath = subprops.meta.navsub;
+      delete subprops.meta.navselect;
+      subprops.className = 'subnav';
+      sub = Sibs(_.merge(subprops, {
+        toggleNav: this.toggleNav
+      }), "");
+    }
+
+    var toggleClas = (0, _classnames2.default)({
+      'navbar-toggler': true,
+      show: this.state.subnav != null
+    });
+
+    return div(attr, [div({
+      className: linksClas,
+      key: "links"
+    }, [div({
+      className: iconClass
+    }, [div({
+      className: 'home',
+      onClick: this._home
+    }, ""), div({
+      className: 'app'
+    }, title), dpad, button({
+      className: toggleClas,
+      type: 'button',
+      onClick: this.toggleNav
+    }, "☰")]), div({
+      className: itemsClass
+    }, [sibs, sub])])]);
+  }
+});
+
+var loading = React.createClass({
+  displayName: "Links_loading",
+  _home: function _home() {
+    return this.props.goTo("/");
+  },
+  render: function render() {
+    return div({
+      className: "ctrl loading",
+      "data-path": this.props.dataPath,
+      key: "nav-loading"
+    }, div({
+      className: 'links'
+    }, div({
+      className: 'icon'
+    }, div({
+      className: 'home',
+      onClick: this._home
+    }, "")), ul({
+      className: "nav"
+    }, li({
+      className: "nav-item selected"
+    }, a({
+      className: "nav-link"
+    }, this.props.curr)))));
+  }
+});
+
+exports.default = React.createFactory((0, _Async2.default)({
+  path: 't',
+  kids: {
+    name: 't',
+    head: 'r',
+    meta: 'j'
+  }
+}, body, loading));
+
+
+function __guard__(value, transform) {
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
+}
 
 /***/ }
 /******/ ]);
