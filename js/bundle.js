@@ -63,12 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 31);
+/******/ 	return __webpack_require__(__webpack_require__.s = 32);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -81,7 +81,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _ShipComponent = __webpack_require__(6);
+var _ShipComponent = __webpack_require__(7);
 
 var _ShipComponent2 = _interopRequireDefault(_ShipComponent);
 
@@ -266,9 +266,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -442,7 +442,7 @@ var _LoadComponent = __webpack_require__(5);
 
 var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
 
-var _TreeStore = __webpack_require__(7);
+var _TreeStore = __webpack_require__(6);
 
 var _TreeStore2 = _interopRequireDefault(_TreeStore);
 
@@ -476,9 +476,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -487,11 +487,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Dispatcher = __webpack_require__(8);
+var _Dispatcher = __webpack_require__(11);
 
 var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
 
-var _TreePersistence = __webpack_require__(29);
+var _TreePersistence = __webpack_require__(30);
 
 var _TreePersistence2 = _interopRequireDefault(_TreePersistence);
 
@@ -639,9 +639,9 @@ exports.default = {
   }
 };
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -650,7 +650,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _TreeStore = __webpack_require__(7);
+var _TreeStore = __webpack_require__(6);
 
 var _TreeStore2 = _interopRequireDefault(_TreeStore);
 
@@ -795,9 +795,9 @@ exports.default = _.extend(reactify, {
   Virtual: Virtual
 });
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
   Copyright (c) 2016 Jed Watson.
@@ -842,16 +842,17 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 		// register as 'classnames', consistent with npm package name
 		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
 			return classNames;
-		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	} else {
 		window.classNames = classNames;
 	}
 }());
 
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -886,31 +887,9 @@ exports.default = recl({
   }
 });
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var recl = React.createClass;
-var div = React.DOM.div;
-exports.default = recl({
-  render: function render() {
-    var attr = {
-      "data-alias": "~" + window.tree.util.shortShip(this.props.ship),
-      className: 'ship'
-    };
-    return div(attr, "~", this.props.ship);
-  }
-});
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -919,13 +898,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Dispatcher = __webpack_require__(8);
+var _Dispatcher = __webpack_require__(11);
 
 var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var EventEmitter = __webpack_require__(30).EventEmitter.EventEmitter;
+var EventEmitter = __webpack_require__(31).EventEmitter.EventEmitter;
 
 var _virt = {};
 var _tree = {};
@@ -1213,9 +1192,455 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ },
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var recl = React.createClass;
+var div = React.DOM.div;
+exports.default = recl({
+  render: function render() {
+    var attr = {
+      "data-alias": "~" + window.tree.util.shortShip(this.props.ship),
+      className: 'ship'
+    };
+    return div(attr, "~", this.props.ship);
+  }
+});
+
+/***/ }),
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Dpad = void 0;
+
+
+var recl = React.createClass;
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    a = _React$DOM.a;
+
+
+var Arrow = function Arrow(name, path) {
+  var href = _util2.default.basepath(path);
+  return a({ href: href, key: "" + name, className: "" + name }, "");
+};
+
+exports.default = Dpad = function Dpad(_ref) {
+  var sein = _ref.sein,
+      curr = _ref.curr,
+      kids = _ref.kids,
+      meta = _ref.meta;
+
+  var keys = void 0,
+      next = void 0,
+      prev = void 0;
+  var arrowUp = sein ? meta.navuptwo ? Arrow("up", sein.replace(/\/[^\/]*$/, "")) // strip last path element
+  : Arrow("up", sein) : undefined;
+
+  var arrowSibs = (keys = _util2.default.getKeys(kids, meta.navsort), function () {
+    if (keys.length > 1) {
+      var index = keys.indexOf(curr);
+      prev = index - 1;
+      next = index + 1;
+      if (prev < 0) {
+        prev = keys.length - 1;
+      }
+      if (next === keys.length) {
+        next = 0;
+      }
+      prev = keys[prev];
+      return next = keys[next];
+    }
+  }(), function () {
+    if (sein) {
+      var _arrow = void 0;
+      if (sein === "/") {
+        sein = "";
+      }
+      if (prev) {
+        _arrow = Arrow("prev", sein + "/" + prev);
+      }
+      if (next) {
+        _arrow = Arrow("next", sein + "/" + next);
+      }
+      return div({}, _arrow);
+    }
+  }());
+
+  return div({ className: 'dpad', key: 'dpad' }, arrowUp, arrowSibs);
+};
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classnames = __webpack_require__(4);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _Async = __webpack_require__(1);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+var _TreeStore = __webpack_require__(6);
+
+var _TreeStore2 = _interopRequireDefault(_TreeStore);
+
+var _TreeActions = __webpack_require__(2);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+var _SibsComponent = __webpack_require__(10);
+
+var _SibsComponent2 = _interopRequireDefault(_SibsComponent);
+
+var _DpadComponent = __webpack_require__(8);
+
+var _DpadComponent2 = _interopRequireDefault(_DpadComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Sibs = React.createFactory(_SibsComponent2.default);
+var Dpad = React.createFactory(_DpadComponent2.default);
+
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    a = _React$DOM.a,
+    ul = _React$DOM.ul,
+    li = _React$DOM.li,
+    button = _React$DOM.button;
+
+
+var body = React.createClass({
+  displayName: "Links",
+  stateFromStore: function stateFromStore() {
+    return _TreeStore2.default.getNav();
+  },
+  getInitialState: function getInitialState() {
+    return this.stateFromStore();
+  },
+  _onChangeStore: function _onChangeStore() {
+    if (this.isMounted()) {
+      return this.setState(this.stateFromStore());
+    }
+  },
+  componentDidMount: function componentDidMount() {
+    return _TreeStore2.default.addChangeListener(this._onChangeStore);
+  },
+  componentWillUnmount: function componentWillUnmount() {
+    return _TreeStore2.default.removeChangeListener(this._onChangeStore);
+  },
+  onClick: function onClick() {
+    return this.toggleFocus();
+  },
+  onMouseOver: function onMouseOver() {
+    return this.toggleFocus(true);
+  },
+  onMouseOut: function onMouseOut() {
+    return this.toggleFocus(false);
+  },
+  onTouchStart: function onTouchStart() {
+    return this.ts = Number(Date.now());
+  },
+  onTouchEnd: function onTouchEnd() {
+    var dt = void 0;
+    return dt = this.ts - Number(Date.now());
+  },
+  _home: function _home() {
+    return this.props.goTo(this.props.meta.navhome ? this.props.meta.navhome : "/");
+  },
+  toggleFocus: function toggleFocus(state) {
+    return $(ReactDOM.findDOMNode(this)).toggleClass('focus', state);
+  },
+  toggleNav: function toggleNav() {
+    return _TreeActions2.default.toggleNav();
+  },
+  closeNav: function closeNav() {
+    return _TreeActions2.default.closeNav();
+  },
+  render: function render() {
+    var sub = void 0;
+    var attr = {
+      onMouseOver: this.onMouseOver,
+      onMouseOut: this.onMouseOut,
+      onClick: this.onClick,
+      onTouchStart: this.onTouchStart,
+      onTouchEnd: this.onTouchEnd,
+      'data-path': this.props.dataPath
+    };
+
+    if (_.keys(window).indexOf("ontouchstart") !== -1) {
+      delete attr.onMouseOver;
+      delete attr.onMouseOut;
+    }
+
+    var linksClas = (0, _classnames2.default)({
+      links: true,
+      subnav: this.props.meta.navsub != null
+    });
+
+    var navClas = {
+      navbar: this.props.meta.navmode === 'navbar',
+      ctrl: true,
+      open: this.state.open === true
+    };
+    if (this.props.meta.layout) {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = Array.from(this.props.meta.layout.split(","))[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var v = _step.value;
+
+          navClas[v.trim()] = true;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+    navClas = (0, _classnames2.default)(navClas);
+    var iconClass = (0, _classnames2.default)({
+      icon: true,
+      'col-md-1': this.props.meta.navmode === 'navbar'
+    });
+
+    attr = _.extend(attr, {
+      className: navClas,
+      key: "nav"
+    });
+
+    var title = this.state.title ? this.state.title : "";
+    var dpad = this.state.dpad !== false && __guard__(this.props.meta, function (x) {
+      return x.navdpad;
+    }) !== "false" ? Dpad(this.props, "") : "";
+    var sibs = this.state.sibs !== false && __guard__(this.props.meta, function (x1) {
+      return x1.navsibs;
+    }) !== "false" ? Sibs(_.merge(_.clone(this.props), {
+      closeNav: this.closeNav
+    }), "") : "";
+
+    var itemsClass = (0, _classnames2.default)({
+      items: true,
+      'col-md-11': this.props.meta.navmode === 'navbar'
+    });
+
+    if (this.props.meta.navsub) {
+      var subprops = _.cloneDeep(this.props);
+      subprops.dataPath = subprops.meta.navsub;
+      delete subprops.meta.navselect;
+      subprops.className = 'subnav';
+      sub = Sibs(_.merge(subprops, {
+        toggleNav: this.toggleNav
+      }), "");
+    }
+
+    var toggleClas = (0, _classnames2.default)({
+      'navbar-toggler': true,
+      show: this.state.subnav != null
+    });
+
+    return div(attr, [div({
+      className: linksClas,
+      key: "links"
+    }, [div({
+      className: iconClass
+    }, [div({
+      className: 'home',
+      onClick: this._home
+    }, ""), div({
+      className: 'app'
+    }, title), dpad, button({
+      className: toggleClas,
+      type: 'button',
+      onClick: this.toggleNav
+    }, "☰")]), div({
+      className: itemsClass
+    }, [sibs, sub])])]);
+  }
+});
+
+var loading = React.createClass({
+  displayName: "Links_loading",
+  _home: function _home() {
+    return this.props.goTo("/");
+  },
+  render: function render() {
+    return div({
+      className: "ctrl loading",
+      "data-path": this.props.dataPath,
+      key: "nav-loading"
+    }, div({
+      className: 'links'
+    }, div({
+      className: 'icon'
+    }, div({
+      className: 'home',
+      onClick: this._home
+    }, "")), ul({
+      className: "nav"
+    }, li({
+      className: "nav-item selected"
+    }, a({
+      className: "nav-link"
+    }, this.props.curr)))));
+  }
+});
+
+exports.default = React.createFactory((0, _Async2.default)({
+  path: 't',
+  kids: {
+    name: 't',
+    head: 'r',
+    meta: 'j'
+  }
+}, body, loading));
+
+
+function __guard__(value, transform) {
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
+}
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _classnames = __webpack_require__(4);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _Reactify = __webpack_require__(3);
+
+var _Reactify2 = _interopRequireDefault(_Reactify);
+
+var _Async = __webpack_require__(1);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var recl = React.createClass;
+var _React$DOM = React.DOM,
+    ul = _React$DOM.ul,
+    li = _React$DOM.li,
+    a = _React$DOM.a;
+exports.default = (0, _Async2.default)({
+  kids: {
+    head: 'r',
+    meta: 'j',
+    name: 't',
+    path: 't',
+    bump: 't'
+  }
+}, recl({
+  displayName: "Siblings",
+  toText: function toText(elem) {
+    return _Reactify2.default.walk(elem, function () {
+      return '';
+    }, function (s) {
+      return s;
+    }, function (_ref) {
+      var c = _ref.c;
+      return (c != null ? c : []).join('');
+    });
+  },
+  render: function render() {
+    var _this = this;
+
+    var kids = _util2.default.sortKids(this.props.kids, this.props.meta.navsort);
+
+    var navClas = {
+      nav: true,
+      'col-md-12': this.props.meta.navmode === 'navbar'
+    };
+    if (this.props.className) {
+      navClas[this.props.className] = true;
+    }
+    navClas = (0, _classnames2.default)(navClas);
+
+    return ul({ className: navClas }, kids.map(function (_ref2) {
+      var head = _ref2.head,
+          _ref2$meta = _ref2.meta,
+          meta = _ref2$meta === undefined ? {} : _ref2$meta,
+          name = _ref2.name,
+          path = _ref2.path;
+
+      var selected = name === _this.props.curr;
+      if (_this.props.meta.navselect) {
+        selected = name === _this.props.meta.navselect;
+      }
+      var href = _util2.default.basepath(path);
+      head = meta.title;
+      if (head == null) {
+        head = _this.toText(head);
+      }
+      if (!head) {
+        head = name;
+      }
+      var className = (0, _classnames2.default)({
+        "nav-item": true,
+        selected: selected
+      });
+      if (meta.sibsclass) {
+        className += ' ' + (0, _classnames2.default)(meta.sibsclass.split(","));
+      }
+      return li({ className: className, key: name }, a({ className: "nav-link", href: href, onClick: _this.props.closeNav }, head));
+    }));
+  }
+}));
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1238,9 +1663,9 @@ exports.default = _.extend(new Flux.Dispatcher(), {
   }
 });
 
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1249,51 +1674,51 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _CodeMirror = __webpack_require__(13);
+var _CodeMirror = __webpack_require__(16);
 
 var _CodeMirror2 = _interopRequireDefault(_CodeMirror);
 
-var _SearchComponent = __webpack_require__(26);
+var _SearchComponent = __webpack_require__(28);
 
 var _SearchComponent2 = _interopRequireDefault(_SearchComponent);
 
-var _ListComponent = __webpack_require__(19);
+var _ListComponent = __webpack_require__(21);
 
 var _ListComponent2 = _interopRequireDefault(_ListComponent);
 
-var _KidsComponent = __webpack_require__(18);
+var _KidsComponent = __webpack_require__(20);
 
 var _KidsComponent2 = _interopRequireDefault(_KidsComponent);
 
-var _TocComponent = __webpack_require__(28);
+var _TocComponent = __webpack_require__(29);
 
 var _TocComponent2 = _interopRequireDefault(_TocComponent);
 
-var _EmailComponent = __webpack_require__(16);
+var _EmailComponent = __webpack_require__(18);
 
 var _EmailComponent2 = _interopRequireDefault(_EmailComponent);
 
-var _ModuleComponent = __webpack_require__(20);
+var _ModuleComponent = __webpack_require__(22);
 
 var _ModuleComponent2 = _interopRequireDefault(_ModuleComponent);
 
-var _ScriptComponent = __webpack_require__(25);
+var _ScriptComponent = __webpack_require__(27);
 
 var _ScriptComponent2 = _interopRequireDefault(_ScriptComponent);
 
-var _PlanComponent = __webpack_require__(23);
+var _PlanComponent = __webpack_require__(25);
 
 var _PlanComponent2 = _interopRequireDefault(_PlanComponent);
 
-var _PanelComponent = __webpack_require__(22);
+var _PanelComponent = __webpack_require__(24);
 
 var _PanelComponent2 = _interopRequireDefault(_PanelComponent);
 
-var _PostComponent = __webpack_require__(24);
+var _PostComponent = __webpack_require__(26);
 
 var _PostComponent2 = _interopRequireDefault(_PostComponent);
 
-var _ImagepanelComponent = __webpack_require__(17);
+var _ImagepanelComponent = __webpack_require__(19);
 
 var _ImagepanelComponent2 = _interopRequireDefault(_ImagepanelComponent);
 
@@ -1301,7 +1726,7 @@ var _LoadComponent = __webpack_require__(5);
 
 var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
 
-var _ShipComponent = __webpack_require__(6);
+var _ShipComponent = __webpack_require__(7);
 
 var _ShipComponent2 = _interopRequireDefault(_ShipComponent);
 
@@ -1331,9 +1756,9 @@ exports.default = {
   })
 };
 
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1350,11 +1775,11 @@ var _Async = __webpack_require__(1);
 
 var _Async2 = _interopRequireDefault(_Async);
 
-var _NavComponent = __webpack_require__(21);
+var _NavComponent = __webpack_require__(23);
 
 var _NavComponent2 = _interopRequireDefault(_NavComponent);
 
-var _BodyComponent = __webpack_require__(12);
+var _BodyComponent = __webpack_require__(15);
 
 var _BodyComponent2 = _interopRequireDefault(_BodyComponent);
 
@@ -1386,9 +1811,9 @@ exports.default = (0, _Async2.default)({
   }
 }));
 
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1507,9 +1932,9 @@ exports.default = {
   }
 };
 
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1538,11 +1963,11 @@ var _TreeActions = __webpack_require__(2);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
-var _TreeStore = __webpack_require__(7);
+var _TreeStore = __webpack_require__(6);
 
 var _TreeStore2 = _interopRequireDefault(_TreeStore);
 
-var _CommentsComponent = __webpack_require__(14);
+var _CommentsComponent = __webpack_require__(17);
 
 var _CommentsComponent2 = _interopRequireDefault(_CommentsComponent);
 
@@ -1747,9 +2172,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1773,9 +2198,9 @@ exports.default = recl({
   }
 });
 
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1808,7 +2233,7 @@ var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _ShipComponent = __webpack_require__(6);
+var _ShipComponent = __webpack_require__(7);
 
 var _ShipComponent2 = _interopRequireDefault(_ShipComponent);
 
@@ -1919,85 +2344,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _util = __webpack_require__(0);
-
-var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Dpad = void 0;
-
-
-var recl = React.createClass;
-var _React$DOM = React.DOM,
-    div = _React$DOM.div,
-    a = _React$DOM.a;
-
-
-var Arrow = function Arrow(name, path) {
-  var href = _util2.default.basepath(path);
-  return a({ href: href, key: "" + name, className: "" + name }, "");
-};
-
-exports.default = Dpad = function Dpad(_ref) {
-  var sein = _ref.sein,
-      curr = _ref.curr,
-      kids = _ref.kids,
-      meta = _ref.meta;
-
-  var keys = void 0,
-      next = void 0,
-      prev = void 0;
-  var arrowUp = sein ? meta.navuptwo ? Arrow("up", sein.replace(/\/[^\/]*$/, "")) // strip last path element
-  : Arrow("up", sein) : undefined;
-
-  var arrowSibs = (keys = _util2.default.getKeys(kids, meta.navsort), function () {
-    if (keys.length > 1) {
-      var index = keys.indexOf(curr);
-      prev = index - 1;
-      next = index + 1;
-      if (prev < 0) {
-        prev = keys.length - 1;
-      }
-      if (next === keys.length) {
-        next = 0;
-      }
-      prev = keys[prev];
-      return next = keys[next];
-    }
-  }(), function () {
-    if (sein) {
-      var _arrow = void 0;
-      if (sein === "/") {
-        sein = "";
-      }
-      if (prev) {
-        _arrow = Arrow("prev", sein + "/" + prev);
-      }
-      if (next) {
-        _arrow = Arrow("next", sein + "/" + next);
-      }
-      return div({}, _arrow);
-    }
-  }());
-
-  return div({ className: 'dpad', key: 'dpad' }, arrowUp, arrowSibs);
-};
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2059,9 +2408,9 @@ exports.default = recl({
   }
 });
 
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2082,9 +2431,9 @@ exports.default = name("ImagePanel", function (_ref) {
   });
 });
 
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2159,9 +2508,9 @@ exports.default = (0, _Async2.default)({ kids: { name: 't', bump: 't', body: 'r'
   }
 }));
 
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2384,9 +2733,9 @@ exports.default = (0, _Async2.default)({
   }
 }));
 
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2429,9 +2778,9 @@ exports.default = recl({
   }
 });
 
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2456,7 +2805,7 @@ var _Reactify = __webpack_require__(3);
 
 var _Reactify2 = _interopRequireDefault(_Reactify);
 
-var _TreeStore = __webpack_require__(7);
+var _TreeStore = __webpack_require__(6);
 
 var _TreeStore2 = _interopRequireDefault(_TreeStore);
 
@@ -2464,36 +2813,17 @@ var _TreeActions = __webpack_require__(2);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
-var _NavBodyComponent = __webpack_require__(32);
+var _NavBodyComponent = __webpack_require__(9);
 
 var _NavBodyComponent2 = _interopRequireDefault(_NavBodyComponent);
 
-var _SibsComponent = __webpack_require__(27);
-
-var _SibsComponent2 = _interopRequireDefault(_SibsComponent);
-
-var _DpadComponent = __webpack_require__(15);
-
-var _DpadComponent2 = _interopRequireDefault(_DpadComponent);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Sibs = React.createFactory(_SibsComponent2.default);
-var Dpad = React.createFactory(_DpadComponent2.default);
+var div = React.DOM.div;
 
-var _React$DOM = React.DOM,
-    div = _React$DOM.div,
-    a = _React$DOM.a,
-    ul = _React$DOM.ul,
-    li = _React$DOM.li,
-    button = _React$DOM.button;
-exports.default = (0, _Async2.default)({
-  sein: 't',
-  path: 't',
-  name: 't',
-  meta: 'j'
-}, React.createClass({
-  displayName: "Nav",
+
+var Nav = React.createClass({
+  displayName: 'Nav',
   stateFromStore: function stateFromStore() {
     return _TreeStore2.default.getNav();
   },
@@ -2646,16 +2976,23 @@ exports.default = (0, _Async2.default)({
       className: navClas
     }, kids);
   }
-}));
+});
+
+exports.default = (0, _Async2.default)({
+  sein: 't',
+  path: 't',
+  name: 't',
+  meta: 'j'
+}, Nav);
 
 
 function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2690,9 +3027,9 @@ exports.default = recl({
   }
 });
 
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2901,9 +3238,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2936,7 +3273,7 @@ var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _ShipComponent = __webpack_require__(6);
+var _ShipComponent = __webpack_require__(7);
 
 var _ShipComponent2 = _interopRequireDefault(_ShipComponent);
 
@@ -3020,9 +3357,9 @@ exports.default = (0, _Async2.default)({ comt: 'j', path: 't', spur: 't' }, recl
   }
 }));
 
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -3078,9 +3415,9 @@ exports.default = recl({
   }
 });
 
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -3221,108 +3558,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _util = __webpack_require__(0);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _classnames = __webpack_require__(4);
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _Reactify = __webpack_require__(3);
-
-var _Reactify2 = _interopRequireDefault(_Reactify);
-
-var _Async = __webpack_require__(1);
-
-var _Async2 = _interopRequireDefault(_Async);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var recl = React.createClass;
-var _React$DOM = React.DOM,
-    ul = _React$DOM.ul,
-    li = _React$DOM.li,
-    a = _React$DOM.a;
-exports.default = (0, _Async2.default)({
-  kids: {
-    head: 'r',
-    meta: 'j',
-    name: 't',
-    path: 't',
-    bump: 't'
-  }
-}, recl({
-  displayName: "Siblings",
-  toText: function toText(elem) {
-    return _Reactify2.default.walk(elem, function () {
-      return '';
-    }, function (s) {
-      return s;
-    }, function (_ref) {
-      var c = _ref.c;
-      return (c != null ? c : []).join('');
-    });
-  },
-  render: function render() {
-    var _this = this;
-
-    var kids = _util2.default.sortKids(this.props.kids, this.props.meta.navsort);
-
-    var navClas = {
-      nav: true,
-      'col-md-12': this.props.meta.navmode === 'navbar'
-    };
-    if (this.props.className) {
-      navClas[this.props.className] = true;
-    }
-    navClas = (0, _classnames2.default)(navClas);
-
-    return ul({ className: navClas }, kids.map(function (_ref2) {
-      var head = _ref2.head,
-          _ref2$meta = _ref2.meta,
-          meta = _ref2$meta === undefined ? {} : _ref2$meta,
-          name = _ref2.name,
-          path = _ref2.path;
-
-      var selected = name === _this.props.curr;
-      if (_this.props.meta.navselect) {
-        selected = name === _this.props.meta.navselect;
-      }
-      var href = _util2.default.basepath(path);
-      head = meta.title;
-      if (head == null) {
-        head = _this.toText(head);
-      }
-      if (!head) {
-        head = name;
-      }
-      var className = (0, _classnames2.default)({
-        "nav-item": true,
-        selected: selected
-      });
-      if (meta.sibsclass) {
-        className += ' ' + (0, _classnames2.default)(meta.sibsclass.split(","));
-      }
-      return li({ className: className, key: name }, a({ className: "nav-link", href: href, onClick: _this.props.closeNav }, head));
-    }));
-  }
-}));
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -3547,9 +3785,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -3656,9 +3894,9 @@ exports.default = {
   }
 };
 
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
+/***/ }),
+/* 31 */
+/***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3964,9 +4202,9 @@ function isUndefined(arg) {
 }
 
 
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -3975,7 +4213,7 @@ var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _scroll = __webpack_require__(11);
+var _scroll = __webpack_require__(14);
 
 var _scroll2 = _interopRequireDefault(_scroll);
 
@@ -3983,11 +4221,11 @@ var _TreeActions = __webpack_require__(2);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
-var _Components = __webpack_require__(9);
+var _Components = __webpack_require__(12);
 
 var _Components2 = _interopRequireDefault(_Components);
 
-var _TreeComponent = __webpack_require__(10);
+var _TreeComponent = __webpack_require__(13);
 
 var _TreeComponent2 = _interopRequireDefault(_TreeComponent);
 
@@ -4028,266 +4266,5 @@ $(function () {
   return true;
 });
 
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _classnames = __webpack_require__(4);
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _util = __webpack_require__(0);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _Async = __webpack_require__(1);
-
-var _Async2 = _interopRequireDefault(_Async);
-
-var _Reactify = __webpack_require__(3);
-
-var _Reactify2 = _interopRequireDefault(_Reactify);
-
-var _TreeStore = __webpack_require__(7);
-
-var _TreeStore2 = _interopRequireDefault(_TreeStore);
-
-var _TreeActions = __webpack_require__(2);
-
-var _TreeActions2 = _interopRequireDefault(_TreeActions);
-
-var _NavBodyComponent = __webpack_require__(32);
-
-var _NavBodyComponent2 = _interopRequireDefault(_NavBodyComponent);
-
-var _SibsComponent = __webpack_require__(27);
-
-var _SibsComponent2 = _interopRequireDefault(_SibsComponent);
-
-var _DpadComponent = __webpack_require__(15);
-
-var _DpadComponent2 = _interopRequireDefault(_DpadComponent);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Sibs = React.createFactory(_SibsComponent2.default);
-var Dpad = React.createFactory(_DpadComponent2.default);
-
-var _React$DOM = React.DOM,
-    div = _React$DOM.div,
-    a = _React$DOM.a,
-    ul = _React$DOM.ul,
-    li = _React$DOM.li,
-    button = _React$DOM.button;
-
-
-var body = React.createClass({
-  displayName: "Links",
-  stateFromStore: function stateFromStore() {
-    return _TreeStore2.default.getNav();
-  },
-  getInitialState: function getInitialState() {
-    return this.stateFromStore();
-  },
-  _onChangeStore: function _onChangeStore() {
-    if (this.isMounted()) {
-      return this.setState(this.stateFromStore());
-    }
-  },
-  componentDidMount: function componentDidMount() {
-    return _TreeStore2.default.addChangeListener(this._onChangeStore);
-  },
-  componentWillUnmount: function componentWillUnmount() {
-    return _TreeStore2.default.removeChangeListener(this._onChangeStore);
-  },
-  onClick: function onClick() {
-    return this.toggleFocus();
-  },
-  onMouseOver: function onMouseOver() {
-    return this.toggleFocus(true);
-  },
-  onMouseOut: function onMouseOut() {
-    return this.toggleFocus(false);
-  },
-  onTouchStart: function onTouchStart() {
-    return this.ts = Number(Date.now());
-  },
-  onTouchEnd: function onTouchEnd() {
-    var dt = void 0;
-    return dt = this.ts - Number(Date.now());
-  },
-  _home: function _home() {
-    return this.props.goTo(this.props.meta.navhome ? this.props.meta.navhome : "/");
-  },
-  toggleFocus: function toggleFocus(state) {
-    return $(ReactDOM.findDOMNode(this)).toggleClass('focus', state);
-  },
-  toggleNav: function toggleNav() {
-    return _TreeActions2.default.toggleNav();
-  },
-  closeNav: function closeNav() {
-    return _TreeActions2.default.closeNav();
-  },
-  render: function render() {
-    var sub = void 0;
-    var attr = {
-      onMouseOver: this.onMouseOver,
-      onMouseOut: this.onMouseOut,
-      onClick: this.onClick,
-      onTouchStart: this.onTouchStart,
-      onTouchEnd: this.onTouchEnd,
-      'data-path': this.props.dataPath
-    };
-
-    if (_.keys(window).indexOf("ontouchstart") !== -1) {
-      delete attr.onMouseOver;
-      delete attr.onMouseOut;
-    }
-
-    var linksClas = (0, _classnames2.default)({
-      links: true,
-      subnav: this.props.meta.navsub != null
-    });
-
-    var navClas = {
-      navbar: this.props.meta.navmode === 'navbar',
-      ctrl: true,
-      open: this.state.open === true
-    };
-    if (this.props.meta.layout) {
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = Array.from(this.props.meta.layout.split(","))[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var v = _step.value;
-
-          navClas[v.trim()] = true;
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-    }
-    navClas = (0, _classnames2.default)(navClas);
-    var iconClass = (0, _classnames2.default)({
-      icon: true,
-      'col-md-1': this.props.meta.navmode === 'navbar'
-    });
-
-    attr = _.extend(attr, {
-      className: navClas,
-      key: "nav"
-    });
-
-    var title = this.state.title ? this.state.title : "";
-    var dpad = this.state.dpad !== false && __guard__(this.props.meta, function (x) {
-      return x.navdpad;
-    }) !== "false" ? Dpad(this.props, "") : "";
-    var sibs = this.state.sibs !== false && __guard__(this.props.meta, function (x1) {
-      return x1.navsibs;
-    }) !== "false" ? Sibs(_.merge(_.clone(this.props), {
-      closeNav: this.closeNav
-    }), "") : "";
-
-    var itemsClass = (0, _classnames2.default)({
-      items: true,
-      'col-md-11': this.props.meta.navmode === 'navbar'
-    });
-
-    if (this.props.meta.navsub) {
-      var subprops = _.cloneDeep(this.props);
-      subprops.dataPath = subprops.meta.navsub;
-      delete subprops.meta.navselect;
-      subprops.className = 'subnav';
-      sub = Sibs(_.merge(subprops, {
-        toggleNav: this.toggleNav
-      }), "");
-    }
-
-    var toggleClas = (0, _classnames2.default)({
-      'navbar-toggler': true,
-      show: this.state.subnav != null
-    });
-
-    return div(attr, [div({
-      className: linksClas,
-      key: "links"
-    }, [div({
-      className: iconClass
-    }, [div({
-      className: 'home',
-      onClick: this._home
-    }, ""), div({
-      className: 'app'
-    }, title), dpad, button({
-      className: toggleClas,
-      type: 'button',
-      onClick: this.toggleNav
-    }, "☰")]), div({
-      className: itemsClass
-    }, [sibs, sub])])]);
-  }
-});
-
-var loading = React.createClass({
-  displayName: "Links_loading",
-  _home: function _home() {
-    return this.props.goTo("/");
-  },
-  render: function render() {
-    return div({
-      className: "ctrl loading",
-      "data-path": this.props.dataPath,
-      key: "nav-loading"
-    }, div({
-      className: 'links'
-    }, div({
-      className: 'icon'
-    }, div({
-      className: 'home',
-      onClick: this._home
-    }, "")), ul({
-      className: "nav"
-    }, li({
-      className: "nav-item selected"
-    }, a({
-      className: "nav-link"
-    }, this.props.curr)))));
-  }
-});
-
-exports.default = React.createFactory((0, _Async2.default)({
-  path: 't',
-  kids: {
-    name: 't',
-    head: 'r',
-    meta: 'j'
-  }
-}, body, loading));
-
-
-function __guard__(value, transform) {
-  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
-}
-
-/***/ }
+/***/ })
 /******/ ]);

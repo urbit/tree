@@ -1,35 +1,15 @@
 import clas from 'classnames';
-
 import util from '../utils/util';
 import query from './Async';
 import reactify from './Reactify';
-
 import TreeStore from '../stores/TreeStore';
 import TreeActions from '../actions/TreeActions';
-
 import NavBody from './NavBodyComponent';
 
-import SibsComponent from './SibsComponent';
-import DpadComponent from './DpadComponent';
+const { div } = React.DOM;
 
-const Sibs = React.createFactory(SibsComponent);
-const Dpad = React.createFactory(DpadComponent);
-
-const {
-  div,
-  a,
-  ul,
-  li,
-  button,
-} = React.DOM;
-
-export default query({
-  sein: 't',
-  path: 't',
-  name: 't',
-  meta: 'j'
-}, (React.createClass({
-  displayName: "Nav",
+const Nav = React.createClass({
+  displayName: 'Nav',
   stateFromStore() {
     return TreeStore.getNav();
   },
@@ -185,7 +165,14 @@ export default query({
       className: navClas
     }, kids);
   }
-})));
+})
+
+export default query({
+  sein: 't',
+  path: 't',
+  name: 't',
+  meta: 'j'
+}, Nav);
 
 function __guard__(value, transform) {
   return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;

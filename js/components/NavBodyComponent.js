@@ -1,14 +1,7 @@
 import clas from 'classnames';
-
-import util from '../utils/util';
 import query from './Async';
-import reactify from './Reactify';
-
 import TreeStore from '../stores/TreeStore';
 import TreeActions from '../actions/TreeActions';
-
-import NavBody from './NavBodyComponent';
-
 import SibsComponent from './SibsComponent';
 import DpadComponent from './DpadComponent';
 
