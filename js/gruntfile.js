@@ -1,24 +1,26 @@
 module.exports = function (grunt) {
+  var config = require('./grunt.config.js');
+
   grunt.initConfig({
     sync: {
       js: {
         files: [
           { cwd: '.',
             src: ['bundle.js'],
-            dest: '/Users/galen/Documents/src/urbit/arvo/web/tree/' },
+            dest: config.arvo + 'web/tree/' },
         ] },
       arvo: {
         files: [
-          { cwd: '/Users/galen/Documents/src/urbit/arvo/',
+          { cwd: config.arvo,
             src: ['**'],
-            dest: '/Users/galen/Documents/src/urbit/zod/home/' },
+            dest: config.pier },
         ],
         verbose: true,
       },
     },
     watch: {
       scripts: {
-        files: ['bundle.js', '/Users/galen/Documents/src/urbit/arvo/**'],
+        files: ['bundle.js', config.arvo + '**'],
         tasks: 'sync',
       },
     },

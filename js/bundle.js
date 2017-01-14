@@ -68,7 +68,380 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function (queries, Child, load) {
+  if (load == null) {
+    load = _LoadComponent2.default;
+  }
+  return React.createClass({
+    displayName: 'Async',
+
+    getInitialState: function getInitialState() {
+      return this.stateFromStore();
+    },
+    _onChangeStore: function _onChangeStore() {
+      if (this.isMounted()) {
+        return this.setState(this.stateFromStore());
+      }
+    },
+    getPath: function getPath() {
+      var path = this.props.dataPath;
+      var base = this.props.basePath != null ? this.props.basePath : _TreeStore2.default.getCurr();
+      if (path == null) {
+        var left = void 0;
+        path = (left = fragsrc(this.props.src, base)) != null ? left : base;
+      }
+      if (path.slice(-1) === '/') {
+        return path.slice(0, -1);
+      } else {
+        return path;
+      }
+    },
+    stateFromStore: function stateFromStore() {
+      var got = void 0;
+      var path = this.getPath();
+      var fresh = _TreeStore2.default.fulfill(path, queries);
+      if (this.state == null || path !== this.state.path) {
+        got = fresh;
+      } else {
+        got = this.mergeWith(this.state.got, fresh);
+      }
+      return {
+        path: path,
+        fresh: fresh,
+        got: got,
+        queries: queries
+      };
+    },
+    mergeWith: function mergeWith(have, fresh, _queries) {
+      if (have == null) {
+        have = {};
+      }
+      if (fresh == null) {
+        fresh = {};
+      }
+      if (_queries == null) {
+        _queries = queries;
+      }
+      var got = {};
+      for (var k in _queries) {
+        if (k !== 'kids') {
+          got[k] = fresh[k] != null ? fresh[k] : have[k];
+        }
+      }
+      if (_queries.kids != null) {
+        if (fresh.kids == null) {
+          got.kids = have.kids;
+        } else {
+          got.kids = {};
+          for (k in fresh.kids) {
+            var kid = fresh.kids[k];
+            got.kids[k] = this.mergeWith(__guard__(have.kids, function (x) {
+              return x[k];
+            }), kid, _queries.kids);
+          }
+        }
+      }
+      return got;
+    },
+    componentDidMount: function componentDidMount() {
+      _TreeStore2.default.addChangeListener(this._onChangeStore);
+      return this.checkPath();
+    },
+    componentWillUnmount: function componentWillUnmount() {
+      return _TreeStore2.default.removeChangeListener(this._onChangeStore);
+    },
+    componentDidUpdate: function componentDidUpdate(_props, _state) {
+      if (_props !== this.props) {
+        this.setState(this.stateFromStore());
+      }
+      return this.checkPath();
+    },
+    checkPath: function checkPath() {
+      return _TreeActions2.default.sendQuery(this.getPath(), this.filterFreshQueries());
+    },
+    filterFreshQueries: function filterFreshQueries() {
+      return this.filterWith(this.state.fresh, queries);
+    },
+    filterQueries: function filterQueries() {
+      return this.filterWith(this.state.got, queries);
+    },
+    filterWith: function filterWith(have, _queries) {
+      if (have == null) {
+        return _queries;
+      }
+      var request = {};
+      for (var k in _queries) {
+        if (k !== 'kids') {
+          if (have[k] === undefined) {
+            request[k] = _queries[k];
+          }
+        }
+      }
+      if (_queries.kids != null) {
+        if (have.kids == null) {
+          request.kids = _queries.kids;
+        } else {
+          request.kids = {};
+          for (k in have.kids) {
+            var kid = have.kids[k];
+            _.merge(request.kids, this.filterWith(kid, _queries.kids));
+          }
+          if (_.isEmpty(request.kids)) {
+            delete request.kids;
+          }
+        }
+      }
+      if (!_.isEmpty(request)) {
+        return request;
+      }
+    },
+    scrollHash: function scrollHash() {
+      return __guard__(this.getHashElement(), function (x) {
+        return x.scrollIntoView();
+      });
+    },
+    getHashElement: function getHashElement() {
+      var hash = document.location.hash;
+
+      if (hash) {
+        return document.getElementById(hash.slice(1));
+      }
+    },
+    render: function render() {
+      var _this = this;
+
+      return div({}, function () {
+        if (_this.filterQueries() != null) {
+          return React.createElement(load, _this.props);
+        } else {
+          if (!_this.getHashElement()) {
+            // onmount?
+            setTimeout(_this.scrollHash, 0);
+          }
+          return React.createElement(Child, _.extend({}, _this.props, _this.state.got), _this.props.children);
+        }
+      }());
+    }
+  });
+};
+
+var _util = __webpack_require__(2);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _LoadComponent = __webpack_require__(5);
+
+var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
+
+var _TreeStore = __webpack_require__(6);
+
+var _TreeStore2 = _interopRequireDefault(_TreeStore);
+
+var _TreeActions = __webpack_require__(1);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var div = React.DOM.div;
+
+
+function fragsrc(src, basePath) {
+  if (src != null) {
+    basePath = _util2.default.basepath(basePath);
+    if (basePath.slice(-1) !== '/') {
+      basePath += '/';
+    }
+    var base = new URL(basePath, document.location);
+
+    var _ref = new URL(src, base),
+        pathname = _ref.pathname;
+
+    return _util2.default.fragpath(pathname);
+  }return null;
+}
+
+;
+
+function __guard__(value, transform) {
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
+}
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Dispatcher = __webpack_require__(8);
+
+var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
+
+var _TreePersistence = __webpack_require__(30);
+
+var _TreePersistence2 = _interopRequireDefault(_TreePersistence);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var initialLoad = true; // XX right place?
+var initialLoadDedup = {};
+
+exports.default = {
+  loadPath: function loadPath(path, data) {
+    return _Dispatcher2.default.handleServerAction({
+      path: path,
+      data: data,
+      type: 'loadPath'
+    });
+  },
+  loadSein: function loadSein(path, data) {
+    return _Dispatcher2.default.handleServerAction({
+      path: path,
+      data: data,
+      type: 'loadSein'
+    });
+  },
+  clearData: function clearData() {
+    initialLoad = false;
+    initialLoadDedup = {};
+    _TreePersistence2.default.refresh(); // XX right place?
+    return _Dispatcher2.default.handleServerAction({
+      type: 'clearData'
+    });
+  },
+  sendQuery: function sendQuery(path, query) {
+    var _this = this;
+
+    if (query == null) {
+      return;
+    }
+    if (initialLoad) {
+      var key = path + JSON.stringify(query);
+      if (!initialLoadDedup[key]) {
+        initialLoadDedup[key] = true;
+        console.warn('Requesting data during initial page load', JSON.stringify(path), query);
+      }
+    }
+    if (path.slice(-1) === '/') {
+      path = path.slice(0, -1);
+    }
+    _TreePersistence2.default.get(path, query, function (err, res) {
+      if (err != null) {
+        throw err;
+      }
+      return _this.loadPath(path, res);
+    });
+  },
+  registerComponent: function registerComponent(name, comp) {
+    return this.addVirtual(_defineProperty({}, name, comp));
+  },
+  registerScriptElement: function registerScriptElement(elem) {
+    return _TreePersistence2.default.waspElem(elem);
+  },
+  addVirtual: function addVirtual(components) {
+    return _Dispatcher2.default.handleViewAction({
+      type: 'addVirtual',
+      components: components
+    });
+  },
+  addComment: function addComment(pax, sup, txt) {
+    var _this2 = this;
+
+    return _TreePersistence2.default.put({
+      pax: pax,
+      sup: sup,
+      txt: txt
+    }, 'talk-comment', 'talk', function (err) {
+      if (err == null) {
+        return _this2.clearData();
+      }return null;
+    });
+  },
+  addPost: function addPost(pax, sup, hed, txt) {
+    var _this3 = this;
+
+    return _TreePersistence2.default.put({
+      pax: pax,
+      sup: sup,
+      hed: hed,
+      txt: txt
+    }, 'talk-fora-post', 'talk', function (err) {
+      if (err == null) {
+        _this3.clearData();
+        history.pushState({}, '', '..');
+        return _this3.setCurr(pax);
+      }return null;
+    });
+  },
+  setPlanInfo: function setPlanInfo(_ref) {
+    var who = _ref.who,
+        loc = _ref.loc;
+
+    return _TreePersistence2.default.put({
+      who: who,
+      loc: loc
+    }, 'write-plan-info', 'hood');
+  },
+  setCurr: function setCurr(path, init) {
+    if (init == null) {
+      init = false;
+    }
+    initialLoad = initialLoad && init;
+    return _Dispatcher2.default.handleViewAction({
+      type: 'setCurr',
+      path: path
+    });
+  },
+  setNav: function setNav(_ref2) {
+    var title = _ref2.title,
+        dpad = _ref2.dpad,
+        sibs = _ref2.sibs,
+        subnav = _ref2.subnav;
+
+    return _Dispatcher2.default.handleViewAction({
+      title: title,
+      dpad: dpad,
+      sibs: sibs,
+      subnav: subnav,
+      type: 'setNav'
+    });
+  },
+  toggleNav: function toggleNav() {
+    return _Dispatcher2.default.handleViewAction({
+      type: 'toggleNav'
+    });
+  },
+  closeNav: function closeNav() {
+    return _Dispatcher2.default.handleViewAction({
+      type: 'closeNav'
+    });
+  },
+  clearNav: function clearNav() {
+    return _Dispatcher2.default.handleViewAction({
+      type: 'clearNav'
+    });
+  }
+};
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -266,382 +639,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (queries, Child, load) {
-  if (load == null) {
-    load = _LoadComponent2.default;
-  }
-  return React.createClass({
-    displayName: 'Async',
-
-    getInitialState: function getInitialState() {
-      return this.stateFromStore();
-    },
-    _onChangeStore: function _onChangeStore() {
-      if (this.isMounted()) {
-        return this.setState(this.stateFromStore());
-      }
-    },
-    getPath: function getPath() {
-      var path = this.props.dataPath;
-      var base = this.props.basePath != null ? this.props.basePath : _TreeStore2.default.getCurr();
-      if (path == null) {
-        var left = void 0;
-        path = (left = fragsrc(this.props.src, base)) != null ? left : base;
-      }
-      if (path.slice(-1) === '/') {
-        return path.slice(0, -1);
-      } else {
-        return path;
-      }
-    },
-    stateFromStore: function stateFromStore() {
-      var got = void 0;
-      var path = this.getPath();
-      var fresh = _TreeStore2.default.fulfill(path, queries);
-      if (this.state == null || path !== this.state.path) {
-        got = fresh;
-      } else {
-        got = this.mergeWith(this.state.got, fresh);
-      }
-      return {
-        path: path,
-        fresh: fresh,
-        got: got,
-        queries: queries
-      };
-    },
-    mergeWith: function mergeWith(have, fresh, _queries) {
-      if (have == null) {
-        have = {};
-      }
-      if (fresh == null) {
-        fresh = {};
-      }
-      if (_queries == null) {
-        _queries = queries;
-      }
-      var got = {};
-      for (var k in _queries) {
-        if (k !== 'kids') {
-          got[k] = fresh[k] != null ? fresh[k] : have[k];
-        }
-      }
-      if (_queries.kids != null) {
-        if (fresh.kids == null) {
-          got.kids = have.kids;
-        } else {
-          got.kids = {};
-          for (k in fresh.kids) {
-            var kid = fresh.kids[k];
-            got.kids[k] = this.mergeWith(__guard__(have.kids, function (x) {
-              return x[k];
-            }), kid, _queries.kids);
-          }
-        }
-      }
-      return got;
-    },
-    componentDidMount: function componentDidMount() {
-      _TreeStore2.default.addChangeListener(this._onChangeStore);
-      return this.checkPath();
-    },
-    componentWillUnmount: function componentWillUnmount() {
-      return _TreeStore2.default.removeChangeListener(this._onChangeStore);
-    },
-    componentDidUpdate: function componentDidUpdate(_props, _state) {
-      if (_props !== this.props) {
-        this.setState(this.stateFromStore());
-      }
-      return this.checkPath();
-    },
-    checkPath: function checkPath() {
-      return _TreeActions2.default.sendQuery(this.getPath(), this.filterFreshQueries());
-    },
-    filterFreshQueries: function filterFreshQueries() {
-      return this.filterWith(this.state.fresh, queries);
-    },
-    filterQueries: function filterQueries() {
-      return this.filterWith(this.state.got, queries);
-    },
-    filterWith: function filterWith(have, _queries) {
-      if (have == null) {
-        return _queries;
-      }
-      var request = {};
-      for (var k in _queries) {
-        if (k !== 'kids') {
-          if (have[k] === undefined) {
-            request[k] = _queries[k];
-          }
-        }
-      }
-      if (_queries.kids != null) {
-        if (have.kids == null) {
-          request.kids = _queries.kids;
-        } else {
-          request.kids = {};
-          for (k in have.kids) {
-            var kid = have.kids[k];
-            _.merge(request.kids, this.filterWith(kid, _queries.kids));
-          }
-          if (_.isEmpty(request.kids)) {
-            delete request.kids;
-          }
-        }
-      }
-      if (!_.isEmpty(request)) {
-        return request;
-      }
-    },
-    scrollHash: function scrollHash() {
-      return __guard__(this.getHashElement(), function (x) {
-        return x.scrollIntoView();
-      });
-    },
-    getHashElement: function getHashElement() {
-      var hash = document.location.hash;
-
-      if (hash) {
-        return document.getElementById(hash.slice(1));
-      }
-    },
-    render: function render() {
-      var _this = this;
-
-      return div({}, function () {
-        if (_this.filterQueries() != null) {
-          return React.createElement(load, _this.props);
-        } else {
-          if (!_this.getHashElement()) {
-            // onmount?
-            setTimeout(_this.scrollHash, 0);
-          }
-          return React.createElement(Child, _.extend({}, _this.props, _this.state.got), _this.props.children);
-        }
-      }());
-    }
-  });
-};
-
-var _util = __webpack_require__(0);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _LoadComponent = __webpack_require__(5);
-
-var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
-
-var _TreeStore = __webpack_require__(6);
-
-var _TreeStore2 = _interopRequireDefault(_TreeStore);
-
-var _TreeActions = __webpack_require__(2);
-
-var _TreeActions2 = _interopRequireDefault(_TreeActions);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var div = React.DOM.div;
-
-
-function fragsrc(src, basePath) {
-  if (src != null) {
-    basePath = _util2.default.basepath(basePath);
-    if (basePath.slice(-1) !== '/') {
-      basePath += '/';
-    }
-    var base = new URL(basePath, document.location);
-
-    var _ref = new URL(src, base),
-        pathname = _ref.pathname;
-
-    return _util2.default.fragpath(pathname);
-  }return null;
-}
-
-;
-
-function __guard__(value, transform) {
-  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
-}
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _Dispatcher = __webpack_require__(11);
-
-var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
-
-var _TreePersistence = __webpack_require__(30);
-
-var _TreePersistence2 = _interopRequireDefault(_TreePersistence);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var initialLoad = true; // XX right place?
-var initialLoadDedup = {};
-
-exports.default = {
-  loadPath: function loadPath(path, data) {
-    return _Dispatcher2.default.handleServerAction({
-      path: path,
-      data: data,
-      type: 'loadPath'
-    });
-  },
-  loadSein: function loadSein(path, data) {
-    return _Dispatcher2.default.handleServerAction({
-      path: path,
-      data: data,
-      type: 'loadSein'
-    });
-  },
-  clearData: function clearData() {
-    initialLoad = false;
-    initialLoadDedup = {};
-    _TreePersistence2.default.refresh(); // XX right place?
-    return _Dispatcher2.default.handleServerAction({
-      type: 'clearData'
-    });
-  },
-  sendQuery: function sendQuery(path, query) {
-    var _this = this;
-
-    if (query == null) {
-      return;
-    }
-    if (initialLoad) {
-      var key = path + JSON.stringify(query);
-      if (!initialLoadDedup[key]) {
-        initialLoadDedup[key] = true;
-        console.warn('Requesting data during initial page load', JSON.stringify(path), query);
-      }
-    }
-    if (path.slice(-1) === '/') {
-      path = path.slice(0, -1);
-    }
-    _TreePersistence2.default.get(path, query, function (err, res) {
-      if (err != null) {
-        throw err;
-      }
-      return _this.loadPath(path, res);
-    });
-  },
-  registerComponent: function registerComponent(name, comp) {
-    return this.addVirtual(_defineProperty({}, name, comp));
-  },
-  registerScriptElement: function registerScriptElement(elem) {
-    return _TreePersistence2.default.waspElem(elem);
-  },
-  addVirtual: function addVirtual(components) {
-    return _Dispatcher2.default.handleViewAction({
-      type: 'addVirtual',
-      components: components
-    });
-  },
-  addComment: function addComment(pax, sup, txt) {
-    var _this2 = this;
-
-    return _TreePersistence2.default.put({
-      pax: pax,
-      sup: sup,
-      txt: txt
-    }, 'talk-comment', 'talk', function (err) {
-      if (err == null) {
-        return _this2.clearData();
-      }return null;
-    });
-  },
-  addPost: function addPost(pax, sup, hed, txt) {
-    var _this3 = this;
-
-    return _TreePersistence2.default.put({
-      pax: pax,
-      sup: sup,
-      hed: hed,
-      txt: txt
-    }, 'talk-fora-post', 'talk', function (err) {
-      if (err == null) {
-        _this3.clearData();
-        history.pushState({}, '', '..');
-        return _this3.setCurr(pax);
-      }return null;
-    });
-  },
-  setPlanInfo: function setPlanInfo(_ref) {
-    var who = _ref.who,
-        loc = _ref.loc;
-
-    return _TreePersistence2.default.put({
-      who: who,
-      loc: loc
-    }, 'write-plan-info', 'hood');
-  },
-  setCurr: function setCurr(path, init) {
-    if (init == null) {
-      init = false;
-    }
-    initialLoad = initialLoad && init;
-    return _Dispatcher2.default.handleViewAction({
-      type: 'setCurr',
-      path: path
-    });
-  },
-  setNav: function setNav(_ref2) {
-    var title = _ref2.title,
-        dpad = _ref2.dpad,
-        sibs = _ref2.sibs,
-        subnav = _ref2.subnav;
-
-    return _Dispatcher2.default.handleViewAction({
-      title: title,
-      dpad: dpad,
-      sibs: sibs,
-      subnav: subnav,
-      type: 'setNav'
-    });
-  },
-  toggleNav: function toggleNav() {
-    return _Dispatcher2.default.handleViewAction({
-      type: 'toggleNav'
-    });
-  },
-  closeNav: function closeNav() {
-    return _Dispatcher2.default.handleViewAction({
-      type: 'closeNav'
-    });
-  },
-  clearNav: function clearNav() {
-    return _Dispatcher2.default.handleViewAction({
-      type: 'clearNav'
-    });
-  }
-};
-
-/***/ }),
+/***/ },
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -795,9 +795,9 @@ exports.default = _.extend(reactify, {
   Virtual: Virtual
 });
 
-/***/ }),
+/***/ },
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
   Copyright (c) 2016 Jed Watson.
@@ -842,17 +842,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 		// register as 'classnames', consistent with npm package name
 		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
 			return classNames;
-		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	} else {
 		window.classNames = classNames;
 	}
 }());
 
 
-/***/ }),
+/***/ },
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -887,9 +886,9 @@ exports.default = recl({
   }
 });
 
-/***/ }),
+/***/ },
 /* 6 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -898,7 +897,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Dispatcher = __webpack_require__(11);
+var _Dispatcher = __webpack_require__(8);
 
 var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
 
@@ -1192,9 +1191,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ }),
+/***/ },
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1214,433 +1213,9 @@ exports.default = recl({
   }
 });
 
-/***/ }),
+/***/ },
 /* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _util = __webpack_require__(0);
-
-var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Dpad = void 0;
-
-
-var recl = React.createClass;
-var _React$DOM = React.DOM,
-    div = _React$DOM.div,
-    a = _React$DOM.a;
-
-
-var Arrow = function Arrow(name, path) {
-  var href = _util2.default.basepath(path);
-  return a({ href: href, key: "" + name, className: "" + name }, "");
-};
-
-exports.default = Dpad = function Dpad(_ref) {
-  var sein = _ref.sein,
-      curr = _ref.curr,
-      kids = _ref.kids,
-      meta = _ref.meta;
-
-  var keys = void 0,
-      next = void 0,
-      prev = void 0;
-  var arrowUp = sein ? meta.navuptwo ? Arrow("up", sein.replace(/\/[^\/]*$/, "")) // strip last path element
-  : Arrow("up", sein) : undefined;
-
-  var arrowSibs = (keys = _util2.default.getKeys(kids, meta.navsort), function () {
-    if (keys.length > 1) {
-      var index = keys.indexOf(curr);
-      prev = index - 1;
-      next = index + 1;
-      if (prev < 0) {
-        prev = keys.length - 1;
-      }
-      if (next === keys.length) {
-        next = 0;
-      }
-      prev = keys[prev];
-      return next = keys[next];
-    }
-  }(), function () {
-    if (sein) {
-      var _arrow = void 0;
-      if (sein === "/") {
-        sein = "";
-      }
-      if (prev) {
-        _arrow = Arrow("prev", sein + "/" + prev);
-      }
-      if (next) {
-        _arrow = Arrow("next", sein + "/" + next);
-      }
-      return div({}, _arrow);
-    }
-  }());
-
-  return div({ className: 'dpad', key: 'dpad' }, arrowUp, arrowSibs);
-};
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _classnames = __webpack_require__(4);
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _Async = __webpack_require__(1);
-
-var _Async2 = _interopRequireDefault(_Async);
-
-var _TreeStore = __webpack_require__(6);
-
-var _TreeStore2 = _interopRequireDefault(_TreeStore);
-
-var _TreeActions = __webpack_require__(2);
-
-var _TreeActions2 = _interopRequireDefault(_TreeActions);
-
-var _SibsComponent = __webpack_require__(10);
-
-var _SibsComponent2 = _interopRequireDefault(_SibsComponent);
-
-var _DpadComponent = __webpack_require__(8);
-
-var _DpadComponent2 = _interopRequireDefault(_DpadComponent);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Sibs = React.createFactory(_SibsComponent2.default);
-var Dpad = React.createFactory(_DpadComponent2.default);
-
-var _React$DOM = React.DOM,
-    div = _React$DOM.div,
-    a = _React$DOM.a,
-    ul = _React$DOM.ul,
-    li = _React$DOM.li,
-    button = _React$DOM.button;
-
-
-var body = React.createClass({
-  displayName: "Links",
-  stateFromStore: function stateFromStore() {
-    return _TreeStore2.default.getNav();
-  },
-  getInitialState: function getInitialState() {
-    return this.stateFromStore();
-  },
-  _onChangeStore: function _onChangeStore() {
-    if (this.isMounted()) {
-      return this.setState(this.stateFromStore());
-    }
-  },
-  componentDidMount: function componentDidMount() {
-    return _TreeStore2.default.addChangeListener(this._onChangeStore);
-  },
-  componentWillUnmount: function componentWillUnmount() {
-    return _TreeStore2.default.removeChangeListener(this._onChangeStore);
-  },
-  onClick: function onClick() {
-    return this.toggleFocus();
-  },
-  onMouseOver: function onMouseOver() {
-    return this.toggleFocus(true);
-  },
-  onMouseOut: function onMouseOut() {
-    return this.toggleFocus(false);
-  },
-  onTouchStart: function onTouchStart() {
-    return this.ts = Number(Date.now());
-  },
-  onTouchEnd: function onTouchEnd() {
-    var dt = void 0;
-    return dt = this.ts - Number(Date.now());
-  },
-  _home: function _home() {
-    return this.props.goTo(this.props.meta.navhome ? this.props.meta.navhome : "/");
-  },
-  toggleFocus: function toggleFocus(state) {
-    return $(ReactDOM.findDOMNode(this)).toggleClass('focus', state);
-  },
-  toggleNav: function toggleNav() {
-    return _TreeActions2.default.toggleNav();
-  },
-  closeNav: function closeNav() {
-    return _TreeActions2.default.closeNav();
-  },
-  render: function render() {
-    var sub = void 0;
-    var attr = {
-      onMouseOver: this.onMouseOver,
-      onMouseOut: this.onMouseOut,
-      onClick: this.onClick,
-      onTouchStart: this.onTouchStart,
-      onTouchEnd: this.onTouchEnd,
-      'data-path': this.props.dataPath
-    };
-
-    if (_.keys(window).indexOf("ontouchstart") !== -1) {
-      delete attr.onMouseOver;
-      delete attr.onMouseOut;
-    }
-
-    var linksClas = (0, _classnames2.default)({
-      links: true,
-      subnav: this.props.meta.navsub != null
-    });
-
-    var navClas = {
-      navbar: this.props.meta.navmode === 'navbar',
-      ctrl: true,
-      open: this.state.open === true
-    };
-    if (this.props.meta.layout) {
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = Array.from(this.props.meta.layout.split(","))[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var v = _step.value;
-
-          navClas[v.trim()] = true;
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-    }
-    navClas = (0, _classnames2.default)(navClas);
-    var iconClass = (0, _classnames2.default)({
-      icon: true,
-      'col-md-1': this.props.meta.navmode === 'navbar'
-    });
-
-    attr = _.extend(attr, {
-      className: navClas,
-      key: "nav"
-    });
-
-    var title = this.state.title ? this.state.title : "";
-    var dpad = this.state.dpad !== false && __guard__(this.props.meta, function (x) {
-      return x.navdpad;
-    }) !== "false" ? Dpad(this.props, "") : "";
-    var sibs = this.state.sibs !== false && __guard__(this.props.meta, function (x1) {
-      return x1.navsibs;
-    }) !== "false" ? Sibs(_.merge(_.clone(this.props), {
-      closeNav: this.closeNav
-    }), "") : "";
-
-    var itemsClass = (0, _classnames2.default)({
-      items: true,
-      'col-md-11': this.props.meta.navmode === 'navbar'
-    });
-
-    if (this.props.meta.navsub) {
-      var subprops = _.cloneDeep(this.props);
-      subprops.dataPath = subprops.meta.navsub;
-      delete subprops.meta.navselect;
-      subprops.className = 'subnav';
-      sub = Sibs(_.merge(subprops, {
-        toggleNav: this.toggleNav
-      }), "");
-    }
-
-    var toggleClas = (0, _classnames2.default)({
-      'navbar-toggler': true,
-      show: this.state.subnav != null
-    });
-
-    return div(attr, [div({
-      className: linksClas,
-      key: "links"
-    }, [div({
-      className: iconClass
-    }, [div({
-      className: 'home',
-      onClick: this._home
-    }, ""), div({
-      className: 'app'
-    }, title), dpad, button({
-      className: toggleClas,
-      type: 'button',
-      onClick: this.toggleNav
-    }, "☰")]), div({
-      className: itemsClass
-    }, [sibs, sub])])]);
-  }
-});
-
-var loading = React.createClass({
-  displayName: "Links_loading",
-  _home: function _home() {
-    return this.props.goTo("/");
-  },
-  render: function render() {
-    return div({
-      className: "ctrl loading",
-      "data-path": this.props.dataPath,
-      key: "nav-loading"
-    }, div({
-      className: 'links'
-    }, div({
-      className: 'icon'
-    }, div({
-      className: 'home',
-      onClick: this._home
-    }, "")), ul({
-      className: "nav"
-    }, li({
-      className: "nav-item selected"
-    }, a({
-      className: "nav-link"
-    }, this.props.curr)))));
-  }
-});
-
-exports.default = React.createFactory((0, _Async2.default)({
-  path: 't',
-  kids: {
-    name: 't',
-    head: 'r',
-    meta: 'j'
-  }
-}, body, loading));
-
-
-function __guard__(value, transform) {
-  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
-}
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _util = __webpack_require__(0);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _classnames = __webpack_require__(4);
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _Reactify = __webpack_require__(3);
-
-var _Reactify2 = _interopRequireDefault(_Reactify);
-
-var _Async = __webpack_require__(1);
-
-var _Async2 = _interopRequireDefault(_Async);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var recl = React.createClass;
-var _React$DOM = React.DOM,
-    ul = _React$DOM.ul,
-    li = _React$DOM.li,
-    a = _React$DOM.a;
-exports.default = (0, _Async2.default)({
-  kids: {
-    head: 'r',
-    meta: 'j',
-    name: 't',
-    path: 't',
-    bump: 't'
-  }
-}, recl({
-  displayName: "Siblings",
-  toText: function toText(elem) {
-    return _Reactify2.default.walk(elem, function () {
-      return '';
-    }, function (s) {
-      return s;
-    }, function (_ref) {
-      var c = _ref.c;
-      return (c != null ? c : []).join('');
-    });
-  },
-  render: function render() {
-    var _this = this;
-
-    var kids = _util2.default.sortKids(this.props.kids, this.props.meta.navsort);
-
-    var navClas = {
-      nav: true,
-      'col-md-12': this.props.meta.navmode === 'navbar'
-    };
-    if (this.props.className) {
-      navClas[this.props.className] = true;
-    }
-    navClas = (0, _classnames2.default)(navClas);
-
-    return ul({ className: navClas }, kids.map(function (_ref2) {
-      var head = _ref2.head,
-          _ref2$meta = _ref2.meta,
-          meta = _ref2$meta === undefined ? {} : _ref2$meta,
-          name = _ref2.name,
-          path = _ref2.path;
-
-      var selected = name === _this.props.curr;
-      if (_this.props.meta.navselect) {
-        selected = name === _this.props.meta.navselect;
-      }
-      var href = _util2.default.basepath(path);
-      head = meta.title;
-      if (head == null) {
-        head = _this.toText(head);
-      }
-      if (!head) {
-        head = name;
-      }
-      var className = (0, _classnames2.default)({
-        "nav-item": true,
-        selected: selected
-      });
-      if (meta.sibsclass) {
-        className += ' ' + (0, _classnames2.default)(meta.sibsclass.split(","));
-      }
-      return li({ className: className, key: name }, a({ className: "nav-link", href: href, onClick: _this.props.closeNav }, head));
-    }));
-  }
-}));
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1663,9 +1238,9 @@ exports.default = _.extend(new Flux.Dispatcher(), {
   }
 });
 
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1674,19 +1249,19 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _CodeMirror = __webpack_require__(16);
+var _CodeMirror = __webpack_require__(13);
 
 var _CodeMirror2 = _interopRequireDefault(_CodeMirror);
 
-var _SearchComponent = __webpack_require__(28);
+var _SearchComponent = __webpack_require__(27);
 
 var _SearchComponent2 = _interopRequireDefault(_SearchComponent);
 
-var _ListComponent = __webpack_require__(21);
+var _ListComponent = __webpack_require__(19);
 
 var _ListComponent2 = _interopRequireDefault(_ListComponent);
 
-var _KidsComponent = __webpack_require__(20);
+var _KidsComponent = __webpack_require__(18);
 
 var _KidsComponent2 = _interopRequireDefault(_KidsComponent);
 
@@ -1694,31 +1269,31 @@ var _TocComponent = __webpack_require__(29);
 
 var _TocComponent2 = _interopRequireDefault(_TocComponent);
 
-var _EmailComponent = __webpack_require__(18);
+var _EmailComponent = __webpack_require__(16);
 
 var _EmailComponent2 = _interopRequireDefault(_EmailComponent);
 
-var _ModuleComponent = __webpack_require__(22);
+var _ModuleComponent = __webpack_require__(20);
 
 var _ModuleComponent2 = _interopRequireDefault(_ModuleComponent);
 
-var _ScriptComponent = __webpack_require__(27);
+var _ScriptComponent = __webpack_require__(26);
 
 var _ScriptComponent2 = _interopRequireDefault(_ScriptComponent);
 
-var _PlanComponent = __webpack_require__(25);
+var _PlanComponent = __webpack_require__(24);
 
 var _PlanComponent2 = _interopRequireDefault(_PlanComponent);
 
-var _PanelComponent = __webpack_require__(24);
+var _PanelComponent = __webpack_require__(23);
 
 var _PanelComponent2 = _interopRequireDefault(_PanelComponent);
 
-var _PostComponent = __webpack_require__(26);
+var _PostComponent = __webpack_require__(25);
 
 var _PostComponent2 = _interopRequireDefault(_PostComponent);
 
-var _ImagepanelComponent = __webpack_require__(19);
+var _ImagepanelComponent = __webpack_require__(17);
 
 var _ImagepanelComponent2 = _interopRequireDefault(_ImagepanelComponent);
 
@@ -1756,9 +1331,9 @@ exports.default = {
   })
 };
 
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1771,15 +1346,15 @@ var _classnames = __webpack_require__(4);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _Async = __webpack_require__(1);
+var _Async = __webpack_require__(0);
 
 var _Async2 = _interopRequireDefault(_Async);
 
-var _NavComponent = __webpack_require__(23);
+var _NavComponent = __webpack_require__(22);
 
 var _NavComponent2 = _interopRequireDefault(_NavComponent);
 
-var _BodyComponent = __webpack_require__(15);
+var _BodyComponent = __webpack_require__(12);
 
 var _BodyComponent2 = _interopRequireDefault(_BodyComponent);
 
@@ -1811,9 +1386,9 @@ exports.default = (0, _Async2.default)({
   }
 }));
 
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1822,7 +1397,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _TreeActions = __webpack_require__(2);
+var _TreeActions = __webpack_require__(1);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
@@ -1932,9 +1507,9 @@ exports.default = {
   }
 };
 
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -1951,7 +1526,7 @@ var _LoadComponent = __webpack_require__(5);
 
 var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
 
-var _Async = __webpack_require__(1);
+var _Async = __webpack_require__(0);
 
 var _Async2 = _interopRequireDefault(_Async);
 
@@ -1959,7 +1534,7 @@ var _Reactify = __webpack_require__(3);
 
 var _Reactify2 = _interopRequireDefault(_Reactify);
 
-var _TreeActions = __webpack_require__(2);
+var _TreeActions = __webpack_require__(1);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
@@ -1967,11 +1542,11 @@ var _TreeStore = __webpack_require__(6);
 
 var _TreeStore2 = _interopRequireDefault(_TreeStore);
 
-var _CommentsComponent = __webpack_require__(17);
+var _CommentsComponent = __webpack_require__(14);
 
 var _CommentsComponent2 = _interopRequireDefault(_CommentsComponent);
 
-var _util = __webpack_require__(0);
+var _util = __webpack_require__(2);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -2172,9 +1747,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2198,9 +1773,9 @@ exports.default = recl({
   }
 });
 
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2217,7 +1792,7 @@ var _LoadComponent = __webpack_require__(5);
 
 var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
 
-var _Async = __webpack_require__(1);
+var _Async = __webpack_require__(0);
 
 var _Async2 = _interopRequireDefault(_Async);
 
@@ -2225,11 +1800,11 @@ var _Reactify = __webpack_require__(3);
 
 var _Reactify2 = _interopRequireDefault(_Reactify);
 
-var _TreeActions = __webpack_require__(2);
+var _TreeActions = __webpack_require__(1);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
-var _util = __webpack_require__(0);
+var _util = __webpack_require__(2);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -2344,9 +1919,85 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(2);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Dpad = void 0;
+
+
+var recl = React.createClass;
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    a = _React$DOM.a;
+
+
+var Arrow = function Arrow(name, path) {
+  var href = _util2.default.basepath(path);
+  return a({ href: href, key: "" + name, className: "" + name }, "");
+};
+
+exports.default = Dpad = function Dpad(_ref) {
+  var sein = _ref.sein,
+      curr = _ref.curr,
+      kids = _ref.kids,
+      meta = _ref.meta;
+
+  var keys = void 0,
+      next = void 0,
+      prev = void 0;
+  var arrowUp = sein ? meta.navuptwo ? Arrow("up", sein.replace(/\/[^\/]*$/, "")) // strip last path element
+  : Arrow("up", sein) : undefined;
+
+  var arrowSibs = (keys = _util2.default.getKeys(kids, meta.navsort), function () {
+    if (keys.length > 1) {
+      var index = keys.indexOf(curr);
+      prev = index - 1;
+      next = index + 1;
+      if (prev < 0) {
+        prev = keys.length - 1;
+      }
+      if (next === keys.length) {
+        next = 0;
+      }
+      prev = keys[prev];
+      return next = keys[next];
+    }
+  }(), function () {
+    if (sein) {
+      var _arrow = void 0;
+      if (sein === "/") {
+        sein = "";
+      }
+      if (prev) {
+        _arrow = Arrow("prev", sein + "/" + prev);
+      }
+      if (next) {
+        _arrow = Arrow("next", sein + "/" + next);
+      }
+      return div({}, _arrow);
+    }
+  }());
+
+  return div({ className: 'dpad', key: 'dpad' }, arrowUp, arrowSibs);
+};
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2408,9 +2059,9 @@ exports.default = recl({
   }
 });
 
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2431,9 +2082,9 @@ exports.default = name("ImagePanel", function (_ref) {
   });
 });
 
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2446,7 +2097,7 @@ var _classnames = __webpack_require__(4);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _util = __webpack_require__(0);
+var _util = __webpack_require__(2);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -2454,7 +2105,7 @@ var _Reactify = __webpack_require__(3);
 
 var _Reactify2 = _interopRequireDefault(_Reactify);
 
-var _Async = __webpack_require__(1);
+var _Async = __webpack_require__(0);
 
 var _Async2 = _interopRequireDefault(_Async);
 
@@ -2508,9 +2159,9 @@ exports.default = (0, _Async2.default)({ kids: { name: 't', bump: 't', body: 'r'
   }
 }));
 
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2527,11 +2178,11 @@ var _Reactify = __webpack_require__(3);
 
 var _Reactify2 = _interopRequireDefault(_Reactify);
 
-var _Async = __webpack_require__(1);
+var _Async = __webpack_require__(0);
 
 var _Async2 = _interopRequireDefault(_Async);
 
-var _util = __webpack_require__(0);
+var _util = __webpack_require__(2);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -2733,9 +2384,9 @@ exports.default = (0, _Async2.default)({
   }
 }));
 
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2744,7 +2395,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _TreeActions = __webpack_require__(2);
+var _TreeActions = __webpack_require__(1);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
@@ -2778,9 +2429,360 @@ exports.default = recl({
   }
 });
 
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _classnames = __webpack_require__(4);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _Async = __webpack_require__(0);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+var _TreeStore = __webpack_require__(6);
+
+var _TreeStore2 = _interopRequireDefault(_TreeStore);
+
+var _TreeActions = __webpack_require__(1);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+var _SibsComponent = __webpack_require__(28);
+
+var _SibsComponent2 = _interopRequireDefault(_SibsComponent);
+
+var _DpadComponent = __webpack_require__(15);
+
+var _DpadComponent2 = _interopRequireDefault(_DpadComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Sibs = React.createFactory(_SibsComponent2.default);
+var Dpad = React.createFactory(_DpadComponent2.default);
+
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    a = _React$DOM.a,
+    ul = _React$DOM.ul,
+    li = _React$DOM.li,
+    button = _React$DOM.button;
+
+// const body = React.createClass({
+
+var body = function (_React$Component) {
+  _inherits(body, _React$Component);
+
+  function body(props) {
+    _classCallCheck(this, body);
+
+    var _this = _possibleConstructorReturn(this, (body.__proto__ || Object.getPrototypeOf(body)).call(this, props));
+
+    _this.mounted = false;
+    _this.displayName = 'Links';
+    _this.state = _this.stateFromStore();
+    return _this;
+  }
+
+  _createClass(body, [{
+    key: 'stateFromStore',
+    value: function stateFromStore() {
+      return _TreeStore2.default.getNav();
+    }
+  }, {
+    key: '_onChangeStore',
+    value: function _onChangeStore() {
+      if (this.mounted) {
+        return this.setState(this.stateFromStore());
+      }return null;
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.mounted = true;
+      return _TreeStore2.default.addChangeListener(this._onChangeStore);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this.mounted = false;
+      return _TreeStore2.default.removeChangeListener(this._onChangeStore);
+    }
+  }, {
+    key: 'onClick',
+    value: function onClick() {
+      return this.toggleFocus();
+    }
+  }, {
+    key: 'onMouseOver',
+    value: function onMouseOver() {
+      return this.toggleFocus(true);
+    }
+  }, {
+    key: 'onMouseOut',
+    value: function onMouseOut() {
+      return this.toggleFocus(false);
+    }
+  }, {
+    key: 'onTouchStart',
+    value: function onTouchStart() {
+      this.ts = Number(Date.now());
+    }
+  }, {
+    key: 'onTouchEnd',
+    value: function onTouchEnd() {
+      dt = this.ts - Number(Date.now());
+    } // XX dt? unused.
+
+  }, {
+    key: '_home',
+    value: function _home() {
+      var home = this.props.meta.navhome ? this.props.meta.navhome : '/';
+      return this.props.goTo(home);
+    }
+  }, {
+    key: 'toggleFocus',
+    value: function toggleFocus(state) {
+      return $(ReactDOM.findDOMNode(this)).toggleClass('focus', state);
+    }
+  }, {
+    key: 'toggleNav',
+    value: function toggleNav() {
+      return _TreeActions2.default.toggleNav();
+    }
+  }, {
+    key: 'closeNav',
+    value: function closeNav() {
+      return _TreeActions2.default.closeNav();
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var attr = {
+        onMouseOver: this.onMouseOver,
+        onMouseOut: this.onMouseOut,
+        onClick: this.onClick,
+        onTouchStart: this.onTouchStart,
+        onTouchEnd: this.onTouchEnd,
+        'data-path': this.props.dataPath
+      };
+      if (_.keys(window).indexOf("ontouchstart") !== -1) {
+        delete attr.onMouseOver;
+        delete attr.onMouseOut;
+      }
+
+      var linksClas = (0, _classnames2.default)({
+        links: true,
+        subnav: this.props.meta.navsub != null
+      });
+      var navClas = {
+        navbar: this.props.meta.navmode === 'navbar',
+        ctrl: true,
+        open: this.state.open === true
+      };
+      if (this.props.meta.layout) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = Array.from(this.props.meta.layout.split(","))[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var v = _step.value;
+
+            navClas[v.trim()] = true;
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      }
+      navClas = (0, _classnames2.default)(navClas);
+      var iconClass = (0, _classnames2.default)({
+        icon: true,
+        'col-md-1': this.props.meta.navmode === 'navbar'
+      });
+      var itemsClass = (0, _classnames2.default)({
+        items: true,
+        'col-md-11': this.props.meta.navmode === 'navbar'
+      });
+
+      attr = _.extend(attr, {
+        className: navClas,
+        key: "nav"
+      });
+
+      if (this.props.meta.navsub) {
+        var subprops = _.cloneDeep(this.props);
+        subprops.dataPath = subprops.meta.navsub;
+        delete subprops.meta.navselect;
+        subprops.className = 'subnav';
+        SubSibsComponent = Sibs(_.merge(subprops, {
+          toggleNav: this.toggleNav
+        }), "");
+      }
+
+      var toggleClas = (0, _classnames2.default)({
+        'navbar-toggler': true,
+        show: this.state.subnav != null
+      });
+
+      return React.createElement(
+        'div',
+        { className: navClas, key: 'nav' },
+        React.createElement(
+          'div',
+          { className: linksClas, key: 'links' },
+          React.createElement(
+            'div',
+            { className: iconClass },
+            React.createElement('div', { className: 'home', onClick: this._home }),
+            React.createElement(
+              'div',
+              { className: 'app' },
+              this.state.title ? this.state.title : ''
+            ),
+            this.state.dpad !== false && __guard__(this.props.meta, function (x) {
+              return x.navdpad;
+            }) !== "false" && React.createElement(Dpad, {
+              sein: this.props.sein,
+              curr: this.props.curr,
+              kids: this.props.kids,
+              meta: this.props.meta
+            }),
+            React.createElement(
+              'button',
+              {
+                className: toggleClas,
+                type: 'button',
+                onClick: this.toggleNav
+              },
+              '\u2630'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: itemsClass },
+            this.state.sibs !== false && __guard__(this.props.meta, function (x1) {
+              return x1.navsibs;
+            }) !== "false" && React.createElement(Sibs, {
+              className: this.props.className,
+              sein: this.props.sein,
+              curr: this.props.curr,
+              kids: this.props.kids,
+              meta: this.props.meta,
+              closeNav: this.closeNav
+            }),
+            this.props.meta.navsub && React.createElement(SubSibsComponent, null)
+          )
+        )
+      );
+
+      // return (div(attr, [
+      //   div({
+      //     className: linksClas,
+      //     key: "links"
+      //   }, [
+      //     (div({
+      //       className: iconClass
+      //     }, [
+      //       (div({
+      //         className: 'home',
+      //         onClick: this._home
+      //       }, "")),
+      //       (div({
+      //         className: 'app'
+      //       }, title)),
+      //       dpad,
+      //       (button({
+      //         className: toggleClas,
+      //         type: 'button',
+      //         onClick: this.toggleNav
+      //       }, "☰"))
+      //     ])),
+      //     (div({
+      //       className: itemsClass
+      //     }, [
+      //       sibs,
+      //       sub
+      //     ]))
+      //   ])
+      // ]));
+    }
+  }]);
+
+  return body;
+}(React.Component);
+
+var loading = React.createClass({
+  displayName: "Links_loading",
+  _home: function _home() {
+    return this.props.goTo("/");
+  },
+  render: function render() {
+    return div({
+      className: "ctrl loading",
+      "data-path": this.props.dataPath,
+      key: "nav-loading"
+    }, div({
+      className: 'links'
+    }, div({
+      className: 'icon'
+    }, div({
+      className: 'home',
+      onClick: this._home
+    }, "")), ul({
+      className: "nav"
+    }, li({
+      className: "nav-item selected"
+    }, a({
+      className: "nav-link"
+    }, this.props.curr)))));
+  }
+});
+
+exports.default = React.createFactory((0, _Async2.default)({
+  path: 't',
+  kids: {
+    name: 't',
+    head: 'r',
+    meta: 'j'
+  }
+}, body, loading));
+
+
+function __guard__(value, transform) {
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
+}
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -2793,11 +2795,11 @@ var _classnames = __webpack_require__(4);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _util = __webpack_require__(0);
+var _util = __webpack_require__(2);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _Async = __webpack_require__(1);
+var _Async = __webpack_require__(0);
 
 var _Async2 = _interopRequireDefault(_Async);
 
@@ -2809,11 +2811,11 @@ var _TreeStore = __webpack_require__(6);
 
 var _TreeStore2 = _interopRequireDefault(_TreeStore);
 
-var _TreeActions = __webpack_require__(2);
+var _TreeActions = __webpack_require__(1);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
-var _NavBodyComponent = __webpack_require__(9);
+var _NavBodyComponent = __webpack_require__(21);
 
 var _NavBodyComponent2 = _interopRequireDefault(_NavBodyComponent);
 
@@ -2990,9 +2992,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -3027,9 +3029,9 @@ exports.default = recl({
   }
 });
 
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -3042,11 +3044,11 @@ var _LoadComponent = __webpack_require__(5);
 
 var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
 
-var _Async = __webpack_require__(1);
+var _Async = __webpack_require__(0);
 
 var _Async2 = _interopRequireDefault(_Async);
 
-var _TreeActions = __webpack_require__(2);
+var _TreeActions = __webpack_require__(1);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
@@ -3238,9 +3240,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -3257,7 +3259,7 @@ var _LoadComponent = __webpack_require__(5);
 
 var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
 
-var _Async = __webpack_require__(1);
+var _Async = __webpack_require__(0);
 
 var _Async2 = _interopRequireDefault(_Async);
 
@@ -3265,11 +3267,11 @@ var _Reactify = __webpack_require__(3);
 
 var _Reactify2 = _interopRequireDefault(_Reactify);
 
-var _TreeActions = __webpack_require__(2);
+var _TreeActions = __webpack_require__(1);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
-var _util = __webpack_require__(0);
+var _util = __webpack_require__(2);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -3357,9 +3359,9 @@ exports.default = (0, _Async2.default)({ comt: 'j', path: 't', spur: 't' }, recl
   }
 }));
 
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -3368,7 +3370,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _TreeActions = __webpack_require__(2);
+var _TreeActions = __webpack_require__(1);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
@@ -3415,9 +3417,9 @@ exports.default = recl({
   }
 });
 
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -3426,7 +3428,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Async = __webpack_require__(1);
+var _Async = __webpack_require__(0);
 
 var _Async2 = _interopRequireDefault(_Async);
 
@@ -3558,9 +3560,108 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ }),
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(2);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _classnames = __webpack_require__(4);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _Reactify = __webpack_require__(3);
+
+var _Reactify2 = _interopRequireDefault(_Reactify);
+
+var _Async = __webpack_require__(0);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var recl = React.createClass;
+var _React$DOM = React.DOM,
+    ul = _React$DOM.ul,
+    li = _React$DOM.li,
+    a = _React$DOM.a;
+exports.default = (0, _Async2.default)({
+  kids: {
+    head: 'r',
+    meta: 'j',
+    name: 't',
+    path: 't',
+    bump: 't'
+  }
+}, recl({
+  displayName: "Siblings",
+  toText: function toText(elem) {
+    return _Reactify2.default.walk(elem, function () {
+      return '';
+    }, function (s) {
+      return s;
+    }, function (_ref) {
+      var c = _ref.c;
+      return (c != null ? c : []).join('');
+    });
+  },
+  render: function render() {
+    var _this = this;
+
+    var kids = _util2.default.sortKids(this.props.kids, this.props.meta.navsort);
+
+    var navClas = {
+      nav: true,
+      'col-md-12': this.props.meta.navmode === 'navbar'
+    };
+    if (this.props.className) {
+      navClas[this.props.className] = true;
+    }
+    navClas = (0, _classnames2.default)(navClas);
+
+    return ul({ className: navClas }, kids.map(function (_ref2) {
+      var head = _ref2.head,
+          _ref2$meta = _ref2.meta,
+          meta = _ref2$meta === undefined ? {} : _ref2$meta,
+          name = _ref2.name,
+          path = _ref2.path;
+
+      var selected = name === _this.props.curr;
+      if (_this.props.meta.navselect) {
+        selected = name === _this.props.meta.navselect;
+      }
+      var href = _util2.default.basepath(path);
+      head = meta.title;
+      if (head == null) {
+        head = _this.toText(head);
+      }
+      if (!head) {
+        head = name;
+      }
+      var className = (0, _classnames2.default)({
+        "nav-item": true,
+        selected: selected
+      });
+      if (meta.sibsclass) {
+        className += ' ' + (0, _classnames2.default)(meta.sibsclass.split(","));
+      }
+      return li({ className: className, key: name }, a({ className: "nav-link", href: href, onClick: _this.props.closeNav }, head));
+    }));
+  }
+}));
+
+/***/ },
 /* 29 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -3571,7 +3672,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _Async = __webpack_require__(1);
+var _Async = __webpack_require__(0);
 
 var _Async2 = _interopRequireDefault(_Async);
 
@@ -3785,9 +3886,9 @@ function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 
-/***/ }),
+/***/ },
 /* 30 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -3800,7 +3901,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _util = __webpack_require__(0);
+var _util = __webpack_require__(2);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -3894,9 +3995,9 @@ exports.default = {
   }
 };
 
-/***/ }),
+/***/ },
 /* 31 */
-/***/ (function(module, exports) {
+/***/ function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4202,30 +4303,30 @@ function isUndefined(arg) {
 }
 
 
-/***/ }),
+/***/ },
 /* 32 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _util = __webpack_require__(0);
+var _util = __webpack_require__(2);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _scroll = __webpack_require__(14);
+var _scroll = __webpack_require__(11);
 
 var _scroll2 = _interopRequireDefault(_scroll);
 
-var _TreeActions = __webpack_require__(2);
+var _TreeActions = __webpack_require__(1);
 
 var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
-var _Components = __webpack_require__(12);
+var _Components = __webpack_require__(9);
 
 var _Components2 = _interopRequireDefault(_Components);
 
-var _TreeComponent = __webpack_require__(13);
+var _TreeComponent = __webpack_require__(10);
 
 var _TreeComponent2 = _interopRequireDefault(_TreeComponent);
 
@@ -4266,5 +4367,5 @@ $(function () {
   return true;
 });
 
-/***/ })
+/***/ }
 /******/ ]);

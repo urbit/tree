@@ -16,59 +16,43 @@ const {
   button,
 } = React.DOM;
 
-const body = React.createClass({
-  displayName: "Links",
-  stateFromStore() {
-    return TreeStore.getNav();
-  },
-  getInitialState() {
-    return this.stateFromStore();
-  },
+// const body = React.createClass({
+class body extends React.Component {
+  constructor(props) {
+    super(props);
+    this.mounted = false;
+    this.displayName = 'Links';
+    this.state = this.stateFromStore();
+  }
+  stateFromStore() { return TreeStore.getNav(); }
   _onChangeStore() {
-    if (this.isMounted()) {
+    if (this.mounted) {
       return this.setState(this.stateFromStore());
-    }
-  },
+    } return null;
+  }
   componentDidMount() {
+    this.mounted = true;
     return TreeStore.addChangeListener(this._onChangeStore);
-  },
+  }
   componentWillUnmount() {
+    this.mounted = false;
     return TreeStore.removeChangeListener(this._onChangeStore);
-  },
-
-  onClick() {
-    return this.toggleFocus();
-  },
-  onMouseOver() {
-    return this.toggleFocus(true);
-  },
-  onMouseOut() {
-    return this.toggleFocus(false);
-  },
-  onTouchStart() {
-    return this.ts = Number(Date.now());
-  },
-  onTouchEnd() {
-    let dt;
-    return dt = this.ts - Number(Date.now());
-  },
-
+  }
+  onClick() { return this.toggleFocus(); }
+  onMouseOver() { return this.toggleFocus(true); }
+  onMouseOut() { return this.toggleFocus(false); }
+  onTouchStart() { this.ts = Number(Date.now()); }
+  onTouchEnd() { dt = this.ts - Number(Date.now()); }  // XX dt? unused.
   _home() {
-    return this.props.goTo(this.props.meta.navhome ? this.props.meta.navhome : "/");
-  },
-
+    const home = this.props.meta.navhome ? this.props.meta.navhome : '/';
+    return this.props.goTo(home);
+  }
   toggleFocus(state) {
     return $(ReactDOM.findDOMNode(this)).toggleClass('focus', state);
-  },
-  toggleNav() {
-    return TreeActions.toggleNav();
-  },
-  closeNav() {
-    return TreeActions.closeNav();
-  },
-
+  }
+  toggleNav() { return TreeActions.toggleNav(); }
+  closeNav() { return TreeActions.closeNav(); }
   render() {
-    let sub;
     let attr = {
       onMouseOver: this.onMouseOver,
       onMouseOut: this.onMouseOut,
@@ -77,17 +61,15 @@ const body = React.createClass({
       onTouchEnd: this.onTouchEnd,
       'data-path': this.props.dataPath
     };
-
     if (_.keys(window).indexOf("ontouchstart") !== -1) {
       delete attr.onMouseOver;
       delete attr.onMouseOut;
     }
 
-    let linksClas = clas({
+    const linksClas = clas({
       links: true,
       subnav: (this.props.meta.navsub != null)
     });
-
     let navClas = {
       navbar: (this.props.meta.navmode === 'navbar'),
       ctrl: true,
@@ -99,9 +81,13 @@ const body = React.createClass({
       }
     }
     navClas = clas(navClas);
-    let iconClass = clas({
+    const iconClass = clas({
       icon: true,
       'col-md-1': (this.props.meta.navmode === 'navbar')
+    });
+    const itemsClass = clas({
+      items: true,
+      'col-md-11': (this.props.meta.navmode === 'navbar')
     });
 
     attr = _.extend(attr, {
@@ -109,68 +95,91 @@ const body = React.createClass({
       key: "nav"
     });
 
-    let title = this.state.title ? this.state.title : "";
-    let dpad = (this.state.dpad !== false) && (__guard__(this.props.meta, x => x.navdpad) !== "false") ?
-      (Dpad(this.props, "")) :
-      "";
-    let sibs = (this.state.sibs !== false) && (__guard__(this.props.meta, x1 => x1.navsibs) !== "false") ?
-      (Sibs(_.merge(_.clone(this.props), {
-        closeNav: this.closeNav
-      }), "")) :
-      "";
-
-    let itemsClass = clas({
-      items: true,
-      'col-md-11': (this.props.meta.navmode === 'navbar')
-    });
-
     if (this.props.meta.navsub) {
       let subprops = _.cloneDeep(this.props);
       subprops.dataPath = subprops.meta.navsub;
       delete subprops.meta.navselect;
       subprops.className = 'subnav';
-      sub = Sibs(_.merge(subprops, {
+      SubSibsComponent = Sibs(_.merge(subprops, {
         toggleNav: this.toggleNav
       }), "");
     }
 
-    let toggleClas = clas({
+    const toggleClas = clas({
       'navbar-toggler': true,
       show: (this.state.subnav != null)
     });
 
-    return (div(attr, [
-      div({
-        className: linksClas,
-        key: "links"
-      }, [
-        (div({
-          className: iconClass
-        }, [
-          (div({
-            className: 'home',
-            onClick: this._home
-          }, "")),
-          (div({
-            className: 'app'
-          }, title)),
-          dpad,
-          (button({
-            className: toggleClas,
-            type: 'button',
-            onClick: this.toggleNav
-          }, "☰"))
-        ])),
-        (div({
-          className: itemsClass
-        }, [
-          sibs,
-          sub
-        ]))
-      ])
-    ]));
+    return (<div className={navClas} key="nav">
+      <div className={linksClas} key="links">
+        <div className={iconClass}>
+          <div className="home" onClick={this._home} />
+          <div className="app">{this.state.title ? this.state.title : ''}</div>
+          {((this.state.dpad !== false) &&
+            (__guard__(this.props.meta, x => x.navdpad) !== "false")) &&
+            <Dpad
+              sein={this.props.sein}
+              curr={this.props.curr}
+              kids={this.props.kids}
+              meta={this.props.meta}
+            />
+          }
+          <button
+            className={toggleClas}
+            type="button"
+            onClick={this.toggleNav}
+          >☰
+          </button>
+        </div>
+        <div className={itemsClass}>
+          {((this.state.sibs !== false) &&
+            (__guard__(this.props.meta, x1 => x1.navsibs) !== "false")) &&
+            <Sibs
+              className={this.props.className}
+              sein={this.props.sein}
+              curr={this.props.curr}
+              kids={this.props.kids}
+              meta={this.props.meta}
+              closeNav={this.closeNav}
+            />
+          }
+          {this.props.meta.navsub && <SubSibsComponent />}
+        </div>
+      </div>
+    </div>);
+
+    // return (div(attr, [
+    //   div({
+    //     className: linksClas,
+    //     key: "links"
+    //   }, [
+    //     (div({
+    //       className: iconClass
+    //     }, [
+    //       (div({
+    //         className: 'home',
+    //         onClick: this._home
+    //       }, "")),
+    //       (div({
+    //         className: 'app'
+    //       }, title)),
+    //       dpad,
+    //       (button({
+    //         className: toggleClas,
+    //         type: 'button',
+    //         onClick: this.toggleNav
+    //       }, "☰"))
+    //     ])),
+    //     (div({
+    //       className: itemsClass
+    //     }, [
+    //       sibs,
+    //       sub
+    //     ]))
+    //   ])
+    // ]));
   }
-})
+}
 
 const loading = React.createClass({
   displayName: "Links_loading",
