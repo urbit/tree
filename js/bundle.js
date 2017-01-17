@@ -2466,6 +2466,10 @@ var _DpadComponent = __webpack_require__(15);
 
 var _DpadComponent2 = _interopRequireDefault(_DpadComponent);
 
+var _NavLoadingComponent = __webpack_require__(33);
+
+var _NavLoadingComponent2 = _interopRequireDefault(_NavLoadingComponent);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2476,13 +2480,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Sibs = React.createFactory(_SibsComponent2.default);
 var Dpad = React.createFactory(_DpadComponent2.default);
-
-var _React$DOM = React.DOM,
-    div = _React$DOM.div,
-    a = _React$DOM.a,
-    ul = _React$DOM.ul,
-    li = _React$DOM.li,
-    button = _React$DOM.button;
 
 // const body = React.createClass({
 
@@ -2503,7 +2500,7 @@ var body = function (_React$Component) {
   _createClass(body, [{
     key: 'stateFromStore',
     value: function stateFromStore() {
-      return _TreeStore2.default.getNav();
+      _TreeStore2.default.getNav();
     }
   }, {
     key: '_onChangeStore',
@@ -2564,12 +2561,12 @@ var body = function (_React$Component) {
   }, {
     key: 'toggleNav',
     value: function toggleNav() {
-      return _TreeActions2.default.toggleNav();
+      _TreeActions2.default.toggleNav();
     }
   }, {
     key: 'closeNav',
     value: function closeNav() {
-      return _TreeActions2.default.closeNav();
+      _TreeActions2.default.closeNav();
     }
   }, {
     key: 'render',
@@ -2582,7 +2579,7 @@ var body = function (_React$Component) {
         onTouchEnd: this.onTouchEnd,
         'data-path': this.props.dataPath
       };
-      if (_.keys(window).indexOf("ontouchstart") !== -1) {
+      if (_.keys(window).indexOf('ontouchstart') !== -1) {
         delete attr.onMouseOver;
         delete attr.onMouseOut;
       }
@@ -2597,30 +2594,10 @@ var body = function (_React$Component) {
         open: this.state.open === true
       };
       if (this.props.meta.layout) {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = Array.from(this.props.meta.layout.split(","))[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var v = _step.value;
-
-            navClas[v.trim()] = true;
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
+        this.props.meta.layout.split(',').forEach(function (v) {
+          navClas[v.trim()] = true;
+          return true;
+        });
       }
       navClas = (0, _classnames2.default)(navClas);
       var iconClass = (0, _classnames2.default)({
@@ -2634,9 +2611,10 @@ var body = function (_React$Component) {
 
       attr = _.extend(attr, {
         className: navClas,
-        key: "nav"
+        key: 'nav'
       });
 
+      var SubSibsComponent = void 0;
       if (this.props.meta.navsub) {
         var subprops = _.cloneDeep(this.props);
         subprops.dataPath = subprops.meta.navsub;
@@ -2644,7 +2622,7 @@ var body = function (_React$Component) {
         subprops.className = 'subnav';
         SubSibsComponent = Sibs(_.merge(subprops, {
           toggleNav: this.toggleNav
-        }), "");
+        }), '');
       }
 
       var toggleClas = (0, _classnames2.default)({
@@ -2670,6 +2648,7 @@ var body = function (_React$Component) {
             this.state.dpad !== false && __guard__(this.props.meta, function (x) {
               return x.navdpad;
             }) !== "false" && React.createElement(Dpad, {
+              dataPath: this.props.dataPath,
               sein: this.props.sein,
               curr: this.props.curr,
               kids: this.props.kids,
@@ -2692,6 +2671,7 @@ var body = function (_React$Component) {
               return x1.navsibs;
             }) !== "false" && React.createElement(Sibs, {
               className: this.props.className,
+              dataPath: this.props.dataPath,
               sein: this.props.sein,
               curr: this.props.curr,
               kids: this.props.kids,
@@ -2702,69 +2682,11 @@ var body = function (_React$Component) {
           )
         )
       );
-
-      // return (div(attr, [
-      //   div({
-      //     className: linksClas,
-      //     key: "links"
-      //   }, [
-      //     (div({
-      //       className: iconClass
-      //     }, [
-      //       (div({
-      //         className: 'home',
-      //         onClick: this._home
-      //       }, "")),
-      //       (div({
-      //         className: 'app'
-      //       }, title)),
-      //       dpad,
-      //       (button({
-      //         className: toggleClas,
-      //         type: 'button',
-      //         onClick: this.toggleNav
-      //       }, "☰"))
-      //     ])),
-      //     (div({
-      //       className: itemsClass
-      //     }, [
-      //       sibs,
-      //       sub
-      //     ]))
-      //   ])
-      // ]));
     }
   }]);
 
   return body;
 }(React.Component);
-
-var loading = React.createClass({
-  displayName: "Links_loading",
-  _home: function _home() {
-    return this.props.goTo("/");
-  },
-  render: function render() {
-    return div({
-      className: "ctrl loading",
-      "data-path": this.props.dataPath,
-      key: "nav-loading"
-    }, div({
-      className: 'links'
-    }, div({
-      className: 'icon'
-    }, div({
-      className: 'home',
-      onClick: this._home
-    }, "")), ul({
-      className: "nav"
-    }, li({
-      className: "nav-item selected"
-    }, a({
-      className: "nav-link"
-    }, this.props.curr)))));
-  }
-});
 
 exports.default = React.createFactory((0, _Async2.default)({
   path: 't',
@@ -2773,7 +2695,7 @@ exports.default = React.createFactory((0, _Async2.default)({
     head: 'r',
     meta: 'j'
   }
-}, body, loading));
+}, body, _NavLoadingComponent2.default));
 
 
 function __guard__(value, transform) {
@@ -4366,6 +4288,83 @@ $(function () {
   ReactDOM.render(main({}, ''), document.getElementById('tree'));
   return true;
 });
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var loading = function (_React$Component) {
+  _inherits(loading, _React$Component);
+
+  function loading(props) {
+    _classCallCheck(this, loading);
+
+    var _this = _possibleConstructorReturn(this, (loading.__proto__ || Object.getPrototypeOf(loading)).call(this, props));
+
+    _this.displayName = 'Links_loading';
+    return _this;
+  }
+
+  _createClass(loading, [{
+    key: 'home',
+    value: function home() {
+      return this.props.goTo('/');
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return React.createElement(
+        'div',
+        {
+          className: 'ctrl loading',
+          'data-path': this.props.dataPath,
+          key: 'nav-loading'
+        },
+        React.createElement(
+          'div',
+          { className: 'links' },
+          React.createElement(
+            'div',
+            { className: 'icon' },
+            React.createElement('div', { className: 'home', onClick: this.home })
+          ),
+          React.createElement(
+            'ul',
+            { className: 'nav' },
+            React.createElement(
+              'li',
+              { className: 'nav-item selected' },
+              React.createElement(
+                'a',
+                { className: 'nav-link' },
+                this.props.curr
+              )
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return loading;
+}(React.Component);
+
+exports.default = loading;
 
 /***/ }
 /******/ ]);

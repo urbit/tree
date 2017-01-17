@@ -5,16 +5,10 @@ import TreeActions from '../actions/TreeActions';
 import SibsComponent from './SibsComponent';
 import DpadComponent from './DpadComponent';
 
+import loading from './NavLoadingComponent';
+
 const Sibs = React.createFactory(SibsComponent);
 const Dpad = React.createFactory(DpadComponent);
-
-const {
-  div,
-  a,
-  ul,
-  li,
-  button,
-} = React.DOM;
 
 // const body = React.createClass({
 class body extends React.Component {
@@ -24,7 +18,7 @@ class body extends React.Component {
     this.displayName = 'Links';
     this.state = this.stateFromStore();
   }
-  stateFromStore() { return TreeStore.getNav(); }
+  stateFromStore() { TreeStore.getNav(); }
   _onChangeStore() {
     if (this.mounted) {
       return this.setState(this.stateFromStore());
@@ -50,8 +44,8 @@ class body extends React.Component {
   toggleFocus(state) {
     return $(ReactDOM.findDOMNode(this)).toggleClass('focus', state);
   }
-  toggleNav() { return TreeActions.toggleNav(); }
-  closeNav() { return TreeActions.closeNav(); }
+  toggleNav() { TreeActions.toggleNav(); }
+  closeNav() { TreeActions.closeNav(); }
   render() {
     let attr = {
       onMouseOver: this.onMouseOver,
@@ -59,26 +53,27 @@ class body extends React.Component {
       onClick: this.onClick,
       onTouchStart: this.onTouchStart,
       onTouchEnd: this.onTouchEnd,
-      'data-path': this.props.dataPath
+      'data-path': this.props.dataPath,
     };
-    if (_.keys(window).indexOf("ontouchstart") !== -1) {
+    if (_.keys(window).indexOf('ontouchstart') !== -1) {
       delete attr.onMouseOver;
       delete attr.onMouseOut;
     }
 
     const linksClas = clas({
       links: true,
-      subnav: (this.props.meta.navsub != null)
+      subnav: (this.props.meta.navsub != null),
     });
     let navClas = {
       navbar: (this.props.meta.navmode === 'navbar'),
       ctrl: true,
-      open: (this.state.open === true)
+      open: (this.state.open === true),
     };
     if (this.props.meta.layout) {
-      for (let v of Array.from(this.props.meta.layout.split(","))) {
+      this.props.meta.layout.split(',').forEach((v) => {
         navClas[v.trim()] = true;
-      }
+        return true;
+      });
     }
     navClas = clas(navClas);
     const iconClass = clas({
@@ -92,22 +87,23 @@ class body extends React.Component {
 
     attr = _.extend(attr, {
       className: navClas,
-      key: "nav"
+      key: 'nav',
     });
 
+    let SubSibsComponent;
     if (this.props.meta.navsub) {
-      let subprops = _.cloneDeep(this.props);
+      const subprops = _.cloneDeep(this.props);
       subprops.dataPath = subprops.meta.navsub;
       delete subprops.meta.navselect;
       subprops.className = 'subnav';
       SubSibsComponent = Sibs(_.merge(subprops, {
-        toggleNav: this.toggleNav
-      }), "");
+        toggleNav: this.toggleNav,
+      }), '');
     }
 
     const toggleClas = clas({
       'navbar-toggler': true,
-      show: (this.state.subnav != null)
+      show: (this.state.subnav != null),
     });
 
     return (<div className={navClas} key="nav">
@@ -118,6 +114,7 @@ class body extends React.Component {
           {((this.state.dpad !== false) &&
             (__guard__(this.props.meta, x => x.navdpad) !== "false")) &&
             <Dpad
+              dataPath={this.props.dataPath}
               sein={this.props.sein}
               curr={this.props.curr}
               kids={this.props.kids}
@@ -136,6 +133,7 @@ class body extends React.Component {
             (__guard__(this.props.meta, x1 => x1.navsibs) !== "false")) &&
             <Sibs
               className={this.props.className}
+              dataPath={this.props.dataPath}
               sein={this.props.sein}
               curr={this.props.curr}
               kids={this.props.kids}
@@ -147,75 +145,8 @@ class body extends React.Component {
         </div>
       </div>
     </div>);
-
-    // return (div(attr, [
-    //   div({
-    //     className: linksClas,
-    //     key: "links"
-    //   }, [
-    //     (div({
-    //       className: iconClass
-    //     }, [
-    //       (div({
-    //         className: 'home',
-    //         onClick: this._home
-    //       }, "")),
-    //       (div({
-    //         className: 'app'
-    //       }, title)),
-    //       dpad,
-    //       (button({
-    //         className: toggleClas,
-    //         type: 'button',
-    //         onClick: this.toggleNav
-    //       }, "☰"))
-    //     ])),
-    //     (div({
-    //       className: itemsClass
-    //     }, [
-    //       sibs,
-    //       sub
-    //     ]))
-    //   ])
-    // ]));
   }
 }
-
-const loading = React.createClass({
-  displayName: "Links_loading",
-  _home() {
-    return this.props.goTo("/");
-  },
-  render() {
-    return div({
-        className: "ctrl loading",
-        "data-path": this.props.dataPath,
-        key: "nav-loading"
-      },
-      div({
-          className: 'links'
-        },
-        div({
-            className: 'icon'
-          },
-          (div({
-            className: 'home',
-            onClick: this._home
-          }, ""))),
-        ul({
-            className: "nav"
-          },
-          li({
-              className: "nav-item selected"
-            },
-            a({
-              className: "nav-link"
-            }, this.props.curr))
-        )
-      )
-    );
-  }
-})
 
 export default React.createFactory(query({
   path: 't',
