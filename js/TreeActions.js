@@ -17,6 +17,7 @@ export function clearData() {
 }
 
 export function loadPath(path, data) {
+  console.log('load')
   return {
     type: 'loadPath',
     path,
@@ -24,25 +25,30 @@ export function loadPath(path, data) {
   };
 }
 
+export function anError(path) {
+  console.log(path)
+}
+
+function goGet(path) {
+  console.log(path)
+  return fetch('http://google.com')
+}
+
 export function sendQuery(path, query) {
   if (query == null) { return null; }
-  // if (initialLoad) {
-  //   const key = path + (JSON.stringify(query));
-  //   if (!initialLoadDedup[key]) {
-  //     initialLoadDedup[key] = true;
-  //     console.warn('Requesting data during initial page load', (JSON.stringify(path)), query);
-  //   }
-  // }
   if (path.slice(-1) === '/') { path = path.slice(0, -1); }
-  return function disp(dispatch) {
-    return TreePersistence.get(path, query, (err, res) => {
-      if (err != null) { throw err; }
-      dispatch(loadPath(path, res));
-    });
+  // return function (dispatch) {
+  //   return setTimeout(() => {
+  //     dispatch(loadPath('/some/path', {}));
+  //   }, 1000);
+  return function (dispatch) {
+    return goGet().then(
+      advance => dispatch(loadPath(path)),
+      error => dispatch(anError(path))
+    )
+    // return TreePersistence.get(path, query, (err, res) => {
+    //   // if (err != null) { throw err; }
+    //   dispatch(loadPath(path, res));
+    // });
   };
-  //
-  // TreePersistence.get(path, query, (err, res) => {
-  //   if (err != null) { throw err; }
-  //   return this.loadPath(path, res);
-  // });
 }

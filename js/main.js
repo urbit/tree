@@ -1,15 +1,16 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
-import TreeComponent from './components/TreeComponent';
+import TreeContainer from './components/TreeContainer';
 import TreeStore from './TreeReducer';
 
-let store = createStore(TreeStore);
+const store = createStore(TreeStore, applyMiddleware(thunk));
 
 $(() => {
   ReactDOM.render(
     <Provider store={store}>
-      <TreeComponent />
+      <TreeContainer />
     </Provider>,
     document.getElementById('tree'));
 });
