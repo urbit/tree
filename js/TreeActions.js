@@ -35,20 +35,17 @@ function goGet(path) {
 }
 
 export function sendQuery(path, query) {
-  if (query == null) { return null; }
+  // if (query == null) { return null; }
   if (path.slice(-1) === '/') { path = path.slice(0, -1); }
   // return function (dispatch) {
   //   return setTimeout(() => {
   //     dispatch(loadPath('/some/path', {}));
   //   }, 1000);
+  // };
   return function (dispatch) {
-    return goGet().then(
-      advance => dispatch(loadPath(path)),
-      error => dispatch(anError(path))
-    )
-    // return TreePersistence.get(path, query, (err, res) => {
-    //   // if (err != null) { throw err; }
-    //   dispatch(loadPath(path, res));
-    // });
+    return TreePersistence.get(path, query, (err, res) => {
+      if (err != null) { throw err; }
+      dispatch(loadPath(path, res));
+    });
   };
 }

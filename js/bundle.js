@@ -6835,7 +6835,43 @@ var TreeContainer = function (_Component) {
   _createClass(TreeContainer, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      this.props.dispatch((0, _TreeActions.sendQuery)(this.props.query));
+      this.props.dispatch((0, _TreeActions.sendQuery)({
+        body: 'r',
+        name: 't',
+        path: 't',
+        meta: 'j',
+        sein: 't'
+      }, this.getPath()));
+    }
+  }, {
+    key: 'fragsrc',
+    value: function fragsrc(src, basePath) {
+      if (src != null) {
+        basePath = util.basepath(basePath);
+        if (basePath.slice(-1) !== '/') {
+          basePath += '/';
+        }
+        var base = new URL(basePath, document.location);
+
+        var _ref = new URL(src, base),
+            pathname = _ref.pathname;
+
+        return util.fragpath(pathname);
+      }return null;
+    }
+  }, {
+    key: 'getPath',
+    value: function getPath() {
+      var path = this.props.dataPath;
+      var base = '';
+      if (path == null) {
+        var left = this.fragsrc(this.props.src, base);
+        path = left != null ? left : base;
+      }
+      if (path.slice(-1) === '/') {
+        return path.slice(0, -1);
+      }
+      return path;
     }
   }, {
     key: 'render',
@@ -6910,9 +6946,7 @@ function goGet(path) {
 }
 
 function sendQuery(path, query) {
-  if (query == null) {
-    return null;
-  }
+  // if (query == null) { return null; }
   if (path.slice(-1) === '/') {
     path = path.slice(0, -1);
   }
@@ -6920,16 +6954,14 @@ function sendQuery(path, query) {
   //   return setTimeout(() => {
   //     dispatch(loadPath('/some/path', {}));
   //   }, 1000);
+  // };
   return function (dispatch) {
-    return goGet().then(function (advance) {
-      return dispatch(loadPath(path));
-    }, function (error) {
-      return dispatch(anError(path));
+    return _TreePersistence2.default.get(path, query, function (err, res) {
+      if (err != null) {
+        throw err;
+      }
+      dispatch(loadPath(path, res));
     });
-    // return TreePersistence.get(path, query, (err, res) => {
-    //   // if (err != null) { throw err; }
-    //   dispatch(loadPath(path, res));
-    // });
   };
 }
 
