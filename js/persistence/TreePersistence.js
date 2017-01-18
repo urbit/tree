@@ -11,13 +11,9 @@ export default {
   },
 
   get(path, query, cb) {
-    if (query == null) {
-      query = "no-query";
-    }
+    if (query == null) { query = 'no-query'; }
     const url = `${util.basepath(path)}.tree-json?q=${this.encode(query)}`;
-    if (dedup[url]) {
-      return;
-    }
+    if (dedup[url]) { return; }
     dedup[url] = true;
     pending[url] = true;
     $.get(url, {}, (data, status, xhr) => { // XX on error

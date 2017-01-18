@@ -41,13 +41,9 @@ export default {
         console.warn('Requesting data during initial page load', (JSON.stringify(path)), query);
       }
     }
-    if (path.slice(-1) === '/') {
-      path = path.slice(0, -1);
-    }
+    if (path.slice(-1) === '/') { path = path.slice(0, -1); }
     TreePersistence.get(path, query, (err, res) => {
-      if (err != null) {
-        throw err;
-      }
+      if (err != null) { throw err; }
       return this.loadPath(path, res);
     });
   },

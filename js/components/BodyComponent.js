@@ -162,7 +162,7 @@ export default query({
       );
     }
 
-    return div({dataPath:this.state.curr,key:this.state.curr},[
+    return div({ 'data-path':this.state.curr, key:this.state.curr }, [
       div({className:innerClas,'data-path':this.props.path,key:'body-inner'},[
         (div({
             key:`body${this.props.path}`,

@@ -157,9 +157,7 @@ export default function(queries, Child, load) {
       return __guard__(this.getHashElement(), x => x.scrollIntoView());
     },
     getHashElement() {
-      let {
-        hash
-      } = document.location;
+      const { hash } = document.location;
       if (hash) {
         return document.getElementById(hash.slice(1));
       }

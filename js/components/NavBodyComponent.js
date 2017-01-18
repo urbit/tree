@@ -16,13 +16,7 @@ class body extends React.Component {
     super(props);
     this.mounted = false;
     this.displayName = 'Links';
-    this.state = this.stateFromStore();
-  }
-  stateFromStore() { TreeStore.getNav(); }
-  _onChangeStore() {
-    if (this.mounted) {
-      return this.setState(this.stateFromStore());
-    } return null;
+    this.state = TreeStore.getNav();
   }
   componentDidMount() {
     this.mounted = true;
@@ -37,6 +31,11 @@ class body extends React.Component {
   onMouseOut() { return this.toggleFocus(false); }
   onTouchStart() { this.ts = Number(Date.now()); }
   onTouchEnd() { dt = this.ts - Number(Date.now()); }  // XX dt? unused.
+  _onChangeStore() {
+    if (this.mounted) {
+      this.state = TreeStore.getNav();
+    }
+  }
   _home() {
     const home = this.props.meta.navhome ? this.props.meta.navhome : '/';
     return this.props.goTo(home);
