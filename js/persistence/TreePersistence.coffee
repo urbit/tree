@@ -7,7 +7,7 @@ waspWait = []
 module.exports =
   refresh: -> dedup = {}
   get: (path,query="no-query",cb) ->
-    url = "#{util.basepath(path)}.tree-json?q=#{@encode query}"
+    url = "#{util.basepath(path)}.tree-json?#{@encode query}"
     return if dedup[url]
     dedup[url] = true
     pending[url] = true
@@ -30,16 +30,18 @@ module.exports =
     if urb.wasp?
       urb.waspElem a
     
-  encode: (obj)->
-    delim = (n)-> Array(n+1).join('_') || '.'
-    _encode = (obj)->
-      if typeof obj isnt 'object'
-        return [0,obj]
-      dep = 0
-      sub = for k,v of obj
-        [_dep,res] = _encode v
-        dep = _dep if _dep > dep
-        k+(delim _dep)+res if res?
-      dep++
-      [dep, sub.join delim dep]
-    (_encode obj)[1]
+  encode: (list)->
+    list = for k,v of list # compatibility
+      if _.isString v
+        k
+      else
+        "#{k}": for k2,v2 of v
+          k2
+          
+    list.map((elem)=>
+      if _.isString elem
+        return elem
+      else
+        for key,v of elem
+          return key+"="+elem[key].join('+')
+    ).join('&')
