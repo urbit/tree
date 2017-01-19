@@ -2,24 +2,46 @@ import MessageDispatcher from '../dispatcher/Dispatcher';
 
 const { EventEmitter } = require('events').EventEmitter;
 
+// the store itself
+// list of virtual components
 let _virt = {};
+// this is the tree of available paths
+// some:
+//   path: {}
+// other:
+//   path: {}
+//   sibling: {}
 let _tree = {};
+// this is the actual data
+// /some/path: {body,head,...}
+// /other/path: {body,head,...}
+// /other/sibling: {body,head...}
 let _data = {};
+// the current path
 let _curr = '';
+// nav state
 let _nav = {};
 
 const QUERIES = {
-  body: 'r',
+  body: 'r', // reactJSON
   head: 'r',
   snip: 'r',
-  sect: 'j',
+  sect: 'j', // jsonOfSomeSort
   meta: 'j',
   comt: 'j',
   plan: 'j',
-  beak: 't',
+  beak: 't', // text
   spur: 't',
   bump: 't',
 };
+
+// const QUERIES = [
+//   'body',  // react json
+//   'head',
+//   'snip' ...]
+
+// propTypes =
+//   body: ReactJSONValidator () => // some thing that checks for react json
 
 const TreeStore = _.extend((new EventEmitter()).setMaxListeners(50), {
   addChangeListener(cb) {
@@ -131,10 +153,7 @@ const TreeStore = _.extend((new EventEmitter()).setMaxListeners(50), {
     } return null;
   },
 
-  loadPath({
-    path,
-    data,
-  }) {
+  loadPath({ path, data }) {
     return this.loadValues((this.getTree((path.split('/')), true)), path, data);
   },
 
@@ -167,10 +186,7 @@ const TreeStore = _.extend((new EventEmitter()).setMaxListeners(50), {
     _data[path] = old;
   },
 
-  getSiblings(path) {
-    if (path == null) {
-      path = _curr;
-    }
+  getSiblings(path=_curr) {
     const curr = path.split('/');
     curr.pop();
     if (curr.length !== 0) {
@@ -178,15 +194,14 @@ const TreeStore = _.extend((new EventEmitter()).setMaxListeners(50), {
     } return {};
   },
 
-  getTree(_path, make) {
-    if (make == null) {
-      make = false;
-    }
+  // either create an object from a path
+  // or get the value in _tree at a particular path
+  // /a/b/c, true -> _tree += a:b:c:{}; return {};
+  // /a/b/c -> return {};
+  getTree(_path, make = false) {
     let tree = _tree;
     Array.from(_path).forEach((sub) => {
-      if (!sub) {
-        return;
-      } // discard empty path elements
+      if (!sub) { return; } // discard empty path elements
       if (tree[sub] == null) {
         if (!make) {
           return;
@@ -245,12 +260,7 @@ const TreeStore = _.extend((new EventEmitter()).setMaxListeners(50), {
     } return null;
   },
 
-  setNav({
-    title,
-    dpad,
-    sibs,
-    subnav,
-  }) {
+  setNav({ title, dpad, sibs, subnav }) {
     const nav = {
       title,
       dpad,

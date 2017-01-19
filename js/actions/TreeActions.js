@@ -101,10 +101,7 @@ export default {
     }, 'write-plan-info', 'hood');
   },
 
-  setCurr(path, init) {
-    if (init == null) {
-      init = false;
-    }
+  setCurr(path, init = false) {
     initialLoad = initialLoad && init;
     return TreeDispatcher.handleViewAction({
       type: 'setCurr',

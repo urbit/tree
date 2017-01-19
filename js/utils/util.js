@@ -27,8 +27,7 @@ export default {
   },
 
   fragpath(path) {
-    return path.replace(/\/$/, '')
-      .replace(_basepath, '');
+    return path.replace(/\/$/, '').replace(_basepath, '');
   },
 
   shortShip(ship) {

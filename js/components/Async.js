@@ -65,6 +65,10 @@ export default function(queries, Child, load) {
       };
     },
 
+    // merge old query responses with new query responses
+    // should move to tree store.
+    // takes the data we have and merges it with the new data
+    // using the queries object as a map for what to update
     mergeWith(have, fresh, _queries) {
       if (have == null) {
         have = {};
@@ -122,6 +126,10 @@ export default function(queries, Child, load) {
     filterQueries() {
       return this.filterWith(this.state.got, queries);
     },
+
+    // have is the current state of the store for the current query
+    // _queries is a queryobject
+    // this produces a pared down queryobject that needs to be fetched
     filterWith(have, _queries) {
       if (have == null) {
         return _queries;
