@@ -39,7 +39,7 @@ function tree(state = {}, action) {
         }
         return _tree;
       }
-      return Object.asssign({}, loadValuesTree(state, action.data))
+      return Object.assign({}, loadValuesTree(state, action.data))
     default:
       return state;
   }
@@ -49,11 +49,10 @@ function data(state = {}, action) {
   switch (action.type) {
     case LOAD_PATH:
       function loadValues(_state, _path, _data) {
-        let old = _state[path] != null ? _state[path] : {};
+        let old = _state[_path] != null ? _state[_path] : {};
+
         Object.keys(_data).forEach((k) => {
-          if (QUERIES[k]) {
-            old[k] = _data[k];
-          }
+          if (QUERIES[k]) { old[k] = _data[k]; }
         });
 
         if (_data.kids) {
@@ -63,7 +62,7 @@ function data(state = {}, action) {
             if (__path === '/') {
               __path = '';
             }
-            this.loadValues(`${__path}/${k}`, v);
+            return this.loadValues(`${__path}/${k}`, v);
           });
         }
 
@@ -71,7 +70,9 @@ function data(state = {}, action) {
           old.kids = false;
         }
 
-        _state[path] = old;
+        _state[_path] = old;
+
+        return _state;
       }
       return loadValues(Object.assign({}, state), action.path, action.data);
     default:

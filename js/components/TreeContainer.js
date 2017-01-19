@@ -15,8 +15,8 @@ function containerFactory(query, Child, Loading = Spinner) {
     render() {
       return (
         (this.props.query !== null) ?
-          <Loading /> :
-          <Child />
+          (React.createFactory(Loading)({}, '')) :
+          (React.createFactory(Child)(this.props.data, ''))
       );
     }
   }

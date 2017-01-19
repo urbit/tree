@@ -146,9 +146,7 @@ export default (query) => {
     // _query is a queryobject
     // this produces a pared down queryobject that needs to be fetched
     function filterWith(have, _query) {
-      if (have == null) {
-        return _query;
-      }
+      if (have == null) { return _query; }
       const request = {};
       Object.keys(_query).forEach((k) => {
         if (k !== 'kids') {

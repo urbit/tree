@@ -1,6 +1,7 @@
 import clas from 'classnames';
 
 import load from './LoadComponent.js';
+import Factory from './TreeContainer.js';
 import query from './Async.js';
 import reactify from './Reactify.js';
 
@@ -99,7 +100,7 @@ let extras = {
   })
 };
 
-export default query({
+export default Factory({
   body:'r',
   name:'t',
   path:'t',

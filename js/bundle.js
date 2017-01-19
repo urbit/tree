@@ -3009,7 +3009,7 @@ function tree() {
         };
 
         return {
-          v: Object.asssign({}, loadValuesTree(state, action.data))
+          v: Object.assign({}, loadValuesTree(state, action.data))
         };
       default:
         return {
@@ -3030,7 +3030,8 @@ function data() {
       var loadValues = function loadValues(_state, _path, _data) {
         var _this = this;
 
-        var old = _state[path] != null ? _state[path] : {};
+        var old = _state[_path] != null ? _state[_path] : {};
+
         Object.keys(_data).forEach(function (k) {
           if (QUERIES[k]) {
             old[k] = _data[k];
@@ -3044,7 +3045,7 @@ function data() {
             if (__path === '/') {
               __path = '';
             }
-            _this.loadValues(__path + '/' + k, v);
+            return _this.loadValues(__path + '/' + k, v);
           });
         }
 
@@ -3052,7 +3053,9 @@ function data() {
           old.kids = false;
         }
 
-        _state[path] = old;
+        _state[_path] = old;
+
+        return _state;
       };
 
       return loadValues(Object.assign({}, state), action.path, action.data);
@@ -3070,7 +3073,73 @@ var mainReducer = (0, _redux.combineReducers)({
 exports.default = mainReducer;
 
 /***/ },
-/* 34 */,
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _reactRedux = __webpack_require__(19);
+
+var _react = __webpack_require__(7);
+
+var _TreeActions = __webpack_require__(36);
+
+var _TreeContainerMap = __webpack_require__(93);
+
+var _TreeContainerMap2 = _interopRequireDefault(_TreeContainerMap);
+
+var _LoadComponent = __webpack_require__(37);
+
+var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function containerFactory(query, Child) {
+  var Loading = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _LoadComponent2.default;
+
+  var TreeContainer = function (_Component) {
+    _inherits(TreeContainer, _Component);
+
+    function TreeContainer() {
+      _classCallCheck(this, TreeContainer);
+
+      return _possibleConstructorReturn(this, (TreeContainer.__proto__ || Object.getPrototypeOf(TreeContainer)).apply(this, arguments));
+    }
+
+    _createClass(TreeContainer, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.props.dispatch((0, _TreeActions.sendQuery)(this.props.path, this.props.query));
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        return this.props.query !== null ? React.createFactory(Loading)({}, '') : React.createFactory(Child)(this.props.data, '');
+      }
+    }]);
+
+    return TreeContainer;
+  }(_react.Component);
+
+  return (0, _reactRedux.connect)((0, _TreeContainerMap2.default)(query))(TreeContainer);
+}
+
+exports.default = containerFactory;
+
+/***/ },
 /* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -8225,6 +8294,10 @@ var _LoadComponent = __webpack_require__(37);
 
 var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
 
+var _TreeContainer = __webpack_require__(34);
+
+var _TreeContainer2 = _interopRequireDefault(_TreeContainer);
+
 var _Async = __webpack_require__(81);
 
 var _Async2 = _interopRequireDefault(_Async);
@@ -8365,7 +8438,7 @@ var extras = {
   })
 };
 
-exports.default = (0, _Async2.default)({
+exports.default = (0, _TreeContainer2.default)({
   body: 'r',
   name: 't',
   path: 't',
@@ -8591,6 +8664,241 @@ exports.default = (0, _Async2.default)({ comt: 'j', path: 't', spur: 't', meta: 
 function __guard__(value, transform) {
   return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
+
+/***/ },
+/* 93 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(40);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _TreeReducer = __webpack_require__(33);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (query) {
+  return function (state, props) {
+    function pathFromRelative(src, basePath) {
+      var path = _util2.default.basepath(basePath);
+      if (path.slice(-1) !== '/') {
+        path += '/';
+      }
+      var base = new URL(path, document.location);
+
+      var _ref = new URL(src, base),
+          pathname = _ref.pathname;
+
+      return _util2.default.fragpath(pathname);
+    }
+
+    function getPath() {
+      var path = props.dataPath;
+      var base = props.basePath != null ? props.basePath : state.path;
+      if (path == null) {
+        if (props.src == null) {
+          path = base;
+        } else {
+          path = pathFromRelative(props.src, base);
+        }
+      }
+      if (path.slice(-1) === '/') {
+        return path.slice(0, -1);
+      }
+      return path;
+    }
+
+    // either create an object from a path
+    // or get the value in _tree at a particular path
+    // /a/b/c, true -> _tree += a:b:c:{}; return {};
+    // /a/b/c -> return {};
+    function getTree(_path) {
+      var tree = state.tree;
+      var parts = Array.from(_path);
+      for (var i = 0; i < parts.length; i += 1) {
+        var sub = parts[i];
+        if (sub) {
+          // ignore empty elements
+          if (tree[sub] == null) {
+            return {};
+          }
+          tree = tree[sub];
+        }
+      }
+      return tree;
+    }
+
+    function getSiblings() {
+      var path = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state.path;
+
+      var curr = path.split('/');
+      curr.pop();
+      if (curr.length !== 0) {
+        return this.getTree(curr);
+      }return {};
+    }
+
+    function getPrev() {
+      var path = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state.path;
+
+      var sibs = _.keys(getSiblings(path)).sort();
+      if (sibs.length < 2) {
+        return null;
+      }
+      var par = path.split('/');
+      var key = par.pop();
+      var ind = sibs.indexOf(key);
+      var win = ind - 1 >= 0 ? sibs[ind - 1] : sibs[sibs.length - 1];
+      par.push(win);
+      return par.join('/');
+    }
+
+    function getNext() {
+      var path = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state.path;
+
+      var sibs = _.keys(getSiblings(path)).sort();
+      if (sibs.length < 2) {
+        return null;
+      }
+      var par = path.split('/');
+      var key = par.pop();
+      var ind = sibs.indexOf(key);
+      var win = ind + 1 < sibs.length ? sibs[ind + 1] : sibs[0];
+      par.push(win);
+      return par.join('/');
+    }
+
+    function getPare() {
+      var path = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state.path;
+
+      var _path = path.split('/');
+      if (_path.length > 1) {
+        _path.pop();
+        _path = _path.join('/');
+        if (_path === '') {
+          _path = '/';
+        }
+        return _path;
+      }return null;
+    }
+
+    function fulfillLocal(path, _query) {
+      var data = {};
+      if (_query.path) {
+        data.path = path;
+      }
+      if (_query.name) {
+        data.name = path.split('/').pop();
+      }
+      if (_query.sein) {
+        data.sein = getPare(path);
+      }
+      if (_query.next) {
+        data.next = getNext(path);
+      }
+      if (_query.prev) {
+        data.prev = getPrev(path);
+      }
+      return data;
+    }
+
+    function fulfillAt(tree, path, _query) {
+      var _this = this;
+
+      var data = fulfillLocal(path, _query);
+      var have = state.data[path];
+      if (have != null) {
+        if (_query) {
+          Object.keys(_query).forEach(function (k) {
+            var t = _query[k];
+            if (_TreeReducer.QUERIES[k]) {
+              if (t !== _TreeReducer.QUERIES[k]) {
+                throw TypeError('Wrong _query type: ' + k + ', \'' + t + '\'');
+              }
+              data[k] = have[k];
+            }
+          });
+        }
+      }
+      if (_query.kids) {
+        if (have.kids === false) {
+          data.kids = {};
+        } else {
+          Object.keys(tree).forEach(function (k) {
+            var sub = tree[k];
+            if (data.kids == null) {
+              data.kids = {};
+            }
+            data.kids[k] = _this.fulfillAt(sub, path + '/' + k, _query.kids);
+          });
+        }
+      }
+      if (!_.isEmpty(data)) {
+        return data;
+      }
+    }
+
+    function fulfill(path, _query) {
+      if (path === '/') {
+        path = '';
+      }
+      return fulfillAt(getTree(path.split('/')), path, _query);
+    }
+
+    // have is the current state of the store for the current query
+    // _query is a queryobject
+    // this produces a pared down queryobject that needs to be fetched
+    function filterWith(have, _query) {
+      var _this2 = this;
+
+      if (have == null) {
+        return _query;
+      }
+      var request = {};
+      Object.keys(_query).forEach(function (k) {
+        if (k !== 'kids') {
+          if (have[k] === undefined) {
+            request[k] = _query[k];
+          }
+        }
+      });
+      if (_query.kids != null) {
+        if (have.kids == null) {
+          request.kids = _query.kids;
+        } else {
+          request.kids = {};
+          Object.keys(have.kids).forEach(function (k) {
+            var kid = have.kids[k];
+            _.merge(request.kids, _this2.filterWith(kid, _query.kids));
+          });
+          if (_.isEmpty(request.kids)) {
+            delete request.kids;
+          }
+        }
+      }
+      if (!_.isEmpty(request)) {
+        return request;
+      }
+      return null;
+    }
+
+    var data = fulfill(getPath(), query);
+
+    var childProps = {
+      data: data,
+      path: getPath(),
+      query: filterWith(data, query)
+    };
+    return childProps;
+  };
+};
 
 /***/ }
 /******/ ]);
