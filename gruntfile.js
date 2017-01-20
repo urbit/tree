@@ -6,7 +6,10 @@ module.exports = function (grunt) {
       js: {
         files: [
           { cwd: '.',
-            src: ['bundle.js'],
+            src: ['js/bundle.js'],
+            dest: config.arvo + 'web/tree/' },
+          { cwd: '.',
+            src: ['css/main.css'],
             dest: config.arvo + 'web/tree/' },
         ] },
       arvo: {
@@ -20,7 +23,7 @@ module.exports = function (grunt) {
     },
     watch: {
       scripts: {
-        files: ['bundle.js', config.arvo + '**'],
+        files: ['js/bundle.js', 'css/main.css', config.arvo + '**'],
         tasks: 'sync',
       },
     },

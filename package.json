@@ -27,11 +27,14 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-sync": "^0.6.2",
     "html-loader": "^0.4.4",
-    "webpack": "^2.2.0-rc.3"
+    "node-sass": "3.4.2",
+    "webpack": "^2.2.0"
   },
   "scripts": {
-    "build": "webpack",
-    "watch": "webpack -w",
+    "build-js": "webpack",
+    "watch-js": "webpack -w",
+    "build-css": "node-sass css/main.scss css/main.css",
+    "watch-css": "node-sass -w css/main.scss css/main.css",
     "lint": "./node_modules/.bin/eslint"
   },
   "repository": {
