@@ -1,7 +1,8 @@
 import clas from 'classnames';
 
-import Async from './Async';
-import Factory from './TreeContainer';
+import Container from './TreeContainer';
+import ContainerPropTypes from './TreeContainerPropTypes';
+
 import TreeStore from '../stores/TreeStore';
 import TreeActions from '../actions/TreeActions';
 import SibsComponent from './SibsComponent';
@@ -12,40 +13,47 @@ import Loading from './NavLoadingComponent';
 const Sibs = React.createFactory(SibsComponent);
 const Dpad = React.createFactory(DpadComponent);
 
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}
+
 class NavBody extends React.Component {
+  static toggleNav() { TreeActions.toggleNav(); }
+
+  static closeNav() { TreeActions.closeNav(); }
+
   constructor(props) {
     super(props);
     this.mounted = false;
     this.displayName = 'Links';
     this.state = TreeStore.getNav();
   }
-  // componentDidMount() {
-  //   this.mounted = true;
-  //   return TreeStore.addChangeListener(this._onChangeStore);
-  // }
-  // componentWillUnmount() {
-  //   this.mounted = false;
-  //   return TreeStore.removeChangeListener(this._onChangeStore);
-  // }
+
   onClick() { return this.toggleFocus(); }
+
   onMouseOver() { return this.toggleFocus(true); }
+
   onMouseOut() { return this.toggleFocus(false); }
+
   onTouchStart() { this.ts = Number(Date.now()); }
+
   onTouchEnd() { dt = this.ts - Number(Date.now()); }  // XX dt? unused.
+
   _onChangeStore() {
     if (this.mounted) {
       this.state = TreeStore.getNav();
     }
   }
+
   _home() {
     const home = this.props.meta.navhome ? this.props.meta.navhome : '/';
     return this.props.goTo(home);
   }
+
   toggleFocus(state) {
     return $(ReactDOM.findDOMNode(this)).toggleClass('focus', state);
   }
-  toggleNav() { TreeActions.toggleNav(); }
-  closeNav() { TreeActions.closeNav(); }
+
   render() {
     let attr = {
       onMouseOver: this.onMouseOver,
@@ -78,11 +86,11 @@ class NavBody extends React.Component {
     navClas = clas(navClas);
     const iconClass = clas({
       icon: true,
-      'col-md-1': (this.props.meta.navmode === 'navbar')
+      'col-md-1': (this.props.meta.navmode === 'navbar'),
     });
     const itemsClass = clas({
       items: true,
-      'col-md-11': (this.props.meta.navmode === 'navbar')
+      'col-md-11': (this.props.meta.navmode === 'navbar'),
     });
 
     attr = _.extend(attr, {
@@ -148,7 +156,9 @@ class NavBody extends React.Component {
   }
 }
 
-export default Factory({
+NavBody.propTypes = ContainerPropTypes;
+
+export default Container({
   path: 't',
   kids: {
     name: 't',
@@ -156,7 +166,3 @@ export default Factory({
     meta: 'j',
   },
 }, NavBody, Loading);
-
-function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
-}

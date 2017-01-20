@@ -1,12 +1,17 @@
 import clas from 'classnames';
 
-import Factory from './TreeContainer';
+import Container from './TreeContainer';
+import ContainerPropTypes from './TreeContainerPropTypes';
 import reactify from './Reactify';
 
 import Loading from './BodyLoadingComponent';
 import extras from './BodyExtras';
 
 const { div } = React.DOM;
+
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}
 
 class Body extends React.Component {
   constructor(props) {
@@ -22,7 +27,7 @@ class Body extends React.Component {
         }
         props.key = name;
         return React.createElement(extras[name], props);
-      }
+      } return null;
     };
 
     let innerClas = { body: true };
@@ -47,19 +52,19 @@ class Body extends React.Component {
 
     const parts = [
       extra('spam'),
-      extra('logo', {color: this.props.meta.logo}),
+      extra('logo', { color: this.props.meta.logo }),
       // extra 'plan'
       reactify(this.props.body, 'body'),
       extra('next', {
         dataPath: this.props.sein,
         curr: this.props.name,
-        meta: this.props.meta
+        meta: this.props.meta,
       }),
       extra('comments'),
       extra('footer', { container: this.props.meta.container }),
     ];
 
-    if (this.props.meta.type === "post") {
+    if (this.props.meta.type === 'post') {
       parts.splice(
         1,
         0,
@@ -67,17 +72,17 @@ class Body extends React.Component {
         extra('title'),
         extra('image'),
         extra('preview'),
-        extra('author')
+        extra('author'),
       );
     }
 
-    return div({ 'data-path':this.props.path, key:this.props.path }, [
+    return div({ 'data-path': this.props.path, key: this.props.path }, [
       div({
         className: innerClas,
         'data-path': this.props.path,
         key: 'body-inner' }, [
         (div({
-          key:`body${this.props.path}`,
+          key: `body${this.props.path}`,
           id: 'body',
           className: bodyClas }, parts)),
         ]),
@@ -85,14 +90,12 @@ class Body extends React.Component {
   }
 }
 
-export default Factory({
+Body.propTypes = ContainerPropTypes;
+
+export default Container({
   body: 'r',
   name: 't',
   path: 't',
   meta: 'j',
   sein: 't',
 }, Body, Loading);
-
-function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
-}

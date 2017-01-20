@@ -8,6 +8,9 @@ module.exports = function (grunt) {
           { cwd: './js/',
             src: ['bundle.js'],
             dest: config.arvo + 'web/tree/' },
+        ] },
+      css: {
+        files: [
           { cwd: './css/',
             src: ['main.css'],
             dest: config.arvo + 'web/tree/' },

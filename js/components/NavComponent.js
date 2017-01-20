@@ -1,140 +1,109 @@
 import clas from 'classnames';
 import util from '../utils/util';
 
-import Factory from './TreeContainer';
+import Container from './TreeContainer';
+import ContainerPropTypes from './TreeContainerPropTypes';
 import reactify from './Reactify';
-import TreeStore from '../stores/TreeStore';
+
 import TreeActions from '../actions/TreeActions';
 
 import NavBody from './NavBodyComponent';
 
 const { div } = React.DOM;
 
-const Nav = React.createClass({
-  displayName: 'Nav',
-  stateFromStore() {
-    return TreeStore.getNav();
-  },
-  getInitialState() {
-    return _.extend(this.stateFromStore(), {
-      url: window.location.pathname
-    });
-  },
-  _onChangeStore() {
-    if (this.isMounted()) {
-      return this.setState(this.stateFromStore());
-    }
-  },
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
-    $('body').off('click', 'a');
-    return TreeStore.removeChangeListener(this._onChangeStore);
-  },
+class Nav extends React.Component {
+  static reset() {
+    return $('html,body').animate({ scrollTop: 0 });
+  }
 
-  componentDidUpdate() {
-    this.setTitle();
-    return this.checkRedirect();
-  },
+  constructor(props) {
+    super(props);
+    this.displayName = 'Nav';
+    this.state = { url: window.location.pathname };
+  }
 
   componentDidMount() {
     this.setTitle();
 
     window.onpopstate = this.pullPath;
 
-    TreeStore.addChangeListener(this._onChangeStore);
+    // TreeStore.addChangeListener(this._onChangeStore);
 
-    let _this = this;
-    $('body').on('click', 'a', function(e) {
-      // allow cmd+click
-      if (e.shiftKey || e.ctrlKey || e.metaKey) {
-        return true;
-      }
-      let href = $(this).attr('href');
-      if (__guard__(href, x => x[0]) === "#") {
-        return true;
-      }
+    const _this = this;
+    $('body').on('click', 'a', function click(e) {
+      if (e.shiftKey || e.ctrlKey || e.metaKey) { return true; } // allow cmd+click
+      const href = $(this).attr('href');
+      if (__guard__(href, x => x[0]) === '#') { return true; } // ignore # links
       if (href && !/^https?:\/\//i.test(href)) {
-        let url = new URL(this.href);
-        if (!/http/.test(url.protocol)) { // mailto: bitcoin: etc.
-          return;
-        }
+        const url = new URL(this.href);
+        if (!/http/.test(url.protocol)) { return true; } // mailto: bitcoin: etc.
         e.preventDefault();
-        let {
-          basepath
-        } = urb.util;
-        if (basepath("", url.pathname) !== basepath("", document.location.pathname)) {
+        const { basepath } = urb.util;
+        if (basepath('', url.pathname) !== basepath('', document.location.pathname)) {
           document.location = this.href;
-          return;
+          return true;
         }
-        if (url.pathname.substr(-1) !== "/") {
-          url.pathname += "/";
-        }
+        if (url.pathname.substr(-1) !== '/') { url.pathname += '/'; }
         return _this.goTo(url.pathname + url.search + url.hash);
-      }
+      } return null;
     });
     return this.checkRedirect();
-  },
+  }
 
-  checkRedirect() {
-    if (this.props.meta.redirect) {
-      return setTimeout((() => (this.goTo(this.props.meta.redirect))), 0);
-    }
-  },
+  componentDidUpdate() {
+    this.setTitle();
+    return this.checkRedirect();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+    $('body').off('click', 'a');
+  }
 
   setTitle() {
     let title = $('#body h1').first().text() || this.props.name;
     if (__guard__(this.props.meta, x => x.title)) {
-      ({
-        title
-      } = this.props.meta);
+      ({ title } = this.props.meta);
     }
-    let {
-      path
-    } = this.props;
-    if (path === "") {
-      path = "/";
-    }
-    return document.title = `${title} - ${path}`;
-  },
-
-  pullPath() {
-    let l = document.location;
-    let path = l.pathname + l.search + l.hash;
-    return this.setPath(path, false);
-  },
+    let { path } = this.props;
+    if (path === '') { path = '/'; }
+    document.title = `${title} - ${path}`;
+  }
 
   setPath(path, hist) {
-    if (hist !== false) {
-      history.pushState({}, "", path);
-    }
-    let next = util.fragpath(path.split('#')[0]);
+    if (hist !== false) { history.pushState({}, '', path); }
+    const next = util.fragpath(path.split('#')[0]);
     if (next !== this.props.path) {
       return TreeActions.setCurr(next);
-    }
-  },
+    } return null;
+  }
 
-  reset() {
-    return $("html,body").animate({
-      scrollTop: 0
-    });
-  },
-  // $('#nav').attr 'style',''
-  // $('#nav').removeClass 'scrolling m-up'
-  // $('#nav').addClass 'm-down m-fixed'
+  pullPath() {
+    const l = document.location;
+    const path = l.pathname + l.search + l.hash;
+    return this.setPath(path, false);
+  }
+
+  checkRedirect() {
+    if (this.props.meta.redirect) {
+      return setTimeout((() => (this.goTo(this.props.meta.redirect))), 0);
+    } return null;
+  }
 
   goTo(path) {
     this.reset();
     return this.setPath(path);
-  },
+  }
 
   render() {
-    if (this.props.meta.anchor === 'none') {
-      return (div({}, ""));
-    }
+    if (this.props.meta.anchor === 'none') { return (<div />); }
 
-    let navClas = clas({
-      container: this.props.meta.container === 'false'
+    const navClas = clas({
+      container: this.props.meta.container === 'false',
     });
 
     let kidsPath = this.props.sein;
@@ -142,17 +111,17 @@ const Nav = React.createClass({
       kidsPath = this.props.meta.navpath;
     }
 
-    let kids = [];
+    const kids = [];
 
     if (this.state.subnav) {
       kids.push(reactify({
         gn: this.state.subnav,
         ga: {
           open: this.state.open,
-          toggle: TreeActions.toggleNav
+          toggle: TreeActions.toggleNav,
         },
-        c: []
-      }, "subnav"));
+        c: [],
+      }, 'subnav'));
     }
 
     return (<div id="head" className={navClas}>
@@ -165,17 +134,15 @@ const Nav = React.createClass({
         key="nav"
       />
       {kids}
-    </div>)
+    </div>);
   }
-})
+}
 
-export default Factory({
+Nav.propTypes = ContainerPropTypes;
+
+export default Container({
   sein: 't',
   path: 't',
   name: 't',
   meta: 'j',
 }, Nav);
-
-function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
-}

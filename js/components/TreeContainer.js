@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { sendQuery } from '../TreeActions';
 import TreeContainerMap from '../stores/TreeContainerMap';
 
+import propTypes from './TreeContainerPropTypes';
+
 import Spinner from './LoadComponent';
 
 function containerFactory(query, Child, Loading = Spinner) {
@@ -21,10 +23,12 @@ function containerFactory(query, Child, Loading = Spinner) {
       if (this.props.query !== null) {
         return (React.createFactory(Loading)({}, ''));
       }
-      const childProps = Object.assign({}, this.props.data, this.props)
+      const childProps = Object.assign({}, this.props.data, this.props);
       return (React.createFactory(Child)(childProps, ''));
     }
   }
+
+  TreeContainer.propTypes = propTypes;
 
   return connect(TreeContainerMap(query))(TreeContainer);
 }

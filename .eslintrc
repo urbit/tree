@@ -3,6 +3,11 @@
   "env": {
     "browser": true
   },
+  "rules": {
+    "no-param-reassign": 0,
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"]}],
+    "no-underscore-dangle": 0
+  },
   "globals": {
       "React": false,
       "ReactDOM": false,
