@@ -121,7 +121,7 @@ export default (query) => {
         }
       }
       if (_query.kids) {
-        if (have.kids === false) {
+        if (__guard__(have, x => x.kids) === false) {
           data.kids = {};
         } else {
           Object.keys(tree).forEach((k) => {
@@ -170,13 +170,19 @@ export default (query) => {
       return null;
     }
 
-    const data = fulfill(getPath(), query);
+    const childPath = getPath();
+    const childData = fulfill(childPath, query);
+    const childQuery = filterWith(childData, query);
 
     const childProps = {
-      data,
-      path: getPath(),
-      query: filterWith(data, query),
+      data: childData,
+      path: childPath,
+      query: childQuery,
     };
     return childProps;
   };
 };
+
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}

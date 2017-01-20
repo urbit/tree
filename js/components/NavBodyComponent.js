@@ -1,31 +1,32 @@
 import clas from 'classnames';
-import query from './Async';
+
+import Async from './Async';
+import Factory from './TreeContainer';
 import TreeStore from '../stores/TreeStore';
 import TreeActions from '../actions/TreeActions';
 import SibsComponent from './SibsComponent';
 import DpadComponent from './DpadComponent';
 
-import loading from './NavLoadingComponent';
+import Loading from './NavLoadingComponent';
 
 const Sibs = React.createFactory(SibsComponent);
 const Dpad = React.createFactory(DpadComponent);
 
-// const body = React.createClass({
-class body extends React.Component {
+class NavBody extends React.Component {
   constructor(props) {
     super(props);
     this.mounted = false;
     this.displayName = 'Links';
     this.state = TreeStore.getNav();
   }
-  componentDidMount() {
-    this.mounted = true;
-    return TreeStore.addChangeListener(this._onChangeStore);
-  }
-  componentWillUnmount() {
-    this.mounted = false;
-    return TreeStore.removeChangeListener(this._onChangeStore);
-  }
+  // componentDidMount() {
+  //   this.mounted = true;
+  //   return TreeStore.addChangeListener(this._onChangeStore);
+  // }
+  // componentWillUnmount() {
+  //   this.mounted = false;
+  //   return TreeStore.removeChangeListener(this._onChangeStore);
+  // }
   onClick() { return this.toggleFocus(); }
   onMouseOver() { return this.toggleFocus(true); }
   onMouseOut() { return this.toggleFocus(false); }
@@ -147,14 +148,14 @@ class body extends React.Component {
   }
 }
 
-export default React.createFactory(query({
+export default Factory({
   path: 't',
   kids: {
     name: 't',
     head: 'r',
     meta: 'j',
   },
-}, body, loading));
+}, NavBody, Loading);
 
 function __guard__(value, transform) {
   return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;

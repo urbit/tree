@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { Component } from 'react';
 
 import { sendQuery } from '../TreeActions';
 import TreeContainerMap from '../stores/TreeContainerMap';
@@ -7,9 +6,15 @@ import TreeContainerMap from '../stores/TreeContainerMap';
 import Spinner from './LoadComponent';
 
 function containerFactory(query, Child, Loading = Spinner) {
-  class TreeContainer extends Component {
+  class TreeContainer extends React.Component {
     componentWillMount() {
       this.props.dispatch(sendQuery(this.props.path, this.props.query));
+    }
+
+    componentDidUpdate() {
+      if (this.props.query !== null) {
+        this.props.dispatch(sendQuery(this.props.path, this.props.query));
+      }
     }
 
     render() {

@@ -142,14 +142,7 @@ const Nav = React.createClass({
       kidsPath = this.props.meta.navpath;
     }
 
-    let kids = [(NavBody({
-      curr: this.props.name,
-      dataPath: kidsPath,
-      meta: this.props.meta,
-      sein: this.props.sein,
-      goTo: this.goTo,
-      key: "nav"
-    }, "div"))];
+    let kids = [];
 
     if (this.state.subnav) {
       kids.push(reactify({
@@ -162,10 +155,17 @@ const Nav = React.createClass({
       }, "subnav"));
     }
 
-    return div({
-      id: 'head',
-      className: navClas
-    }, kids);
+    return (<div id="head" className={navClas}>
+      <NavBody
+        curr={this.props.name}
+        dataPath={kidsPath}
+        meta={this.props.meta}
+        sein={this.props.sein}
+        goTo={this.goTo}
+        key="nav"
+      />
+      {kids}
+    </div>)
   }
 })
 
@@ -173,7 +173,7 @@ export default Factory({
   sein: 't',
   path: 't',
   name: 't',
-  meta: 'j'
+  meta: 'j',
 }, Nav);
 
 function __guard__(value, transform) {

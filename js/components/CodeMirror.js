@@ -1,13 +1,16 @@
-let recl = React.createClass;
-let {div,textarea} = React.DOM;
+const { div, textarea } = React.DOM;
 
-export default recl({
-  render() { return div({}, textarea({ref:'ed', value:this.props.value})); },
+class CodeMirror extends React.Component {
   componentDidMount() {
     return CodeMirror.fromTextArea(ReactDOM.findDOMNode(this.refs.ed), {
-      readOnly:true,
-      lineNumbers:true
-    }
-    );
+      readOnly: true,
+      lineNumbers: true,
+    });
   }
-});
+  render() {
+    return div({},
+      textarea({ ref: 'ed', value: this.props.value }));
+  }
+}
+
+export default CodeMirror;

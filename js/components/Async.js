@@ -18,10 +18,7 @@ function fragsrc (src, basePath) {
   } return null;
 }
 
-export default function(queries, Child, load) {
-  if (load == null) {
-    load = _load;
-  }
+export default function(queries, Child, load = _load) {
   return React.createClass({
     displayName: 'Async',
 

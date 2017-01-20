@@ -5,11 +5,11 @@ module.exports = function (grunt) {
     sync: {
       js: {
         files: [
-          { cwd: '.',
-            src: ['js/bundle.js'],
+          { cwd: './js/',
+            src: ['bundle.js'],
             dest: config.arvo + 'web/tree/' },
-          { cwd: '.',
-            src: ['css/main.css'],
+          { cwd: './css/',
+            src: ['main.css'],
             dest: config.arvo + 'web/tree/' },
         ] },
       arvo: {
