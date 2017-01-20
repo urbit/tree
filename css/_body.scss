@@ -1,10 +1,10 @@
-#tree > div > .container {
+#tree > .container {
   padding-top: 3rem;
   padding-bottom: 6rem;
 }
 
 @include media-breakpoint-down(sm) {
-  #tree > div > .container { padding-top: 0; }
+  #tree > .container { padding-top: 0; }
   #body { padding-top: 4rem; }
 }
 
