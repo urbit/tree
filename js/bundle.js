@@ -2156,8 +2156,10 @@ module.exports = ReactCurrentOwner;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ADD_COMPONENTS = exports.LOAD_PATH = exports.SET_PATH = undefined;
+exports.ADD_COMPONENTS = exports.LOAD_PATH = exports.SET_NAV = exports.CLOSE_NAV = exports.TOGGLE_NAV = exports.SET_PATH = undefined;
 exports.addComponents = addComponents;
+exports.toggleNav = toggleNav;
+exports.closeNav = closeNav;
 exports.setCurrentPath = setCurrentPath;
 exports.loadParent = loadParent;
 exports.clearData = clearData;
@@ -2171,6 +2173,9 @@ var _TreePersistence2 = _interopRequireDefault(_TreePersistence);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var SET_PATH = exports.SET_PATH = 'SET_PATH';
+var TOGGLE_NAV = exports.TOGGLE_NAV = 'TOGGLE_NAV';
+var CLOSE_NAV = exports.CLOSE_NAV = 'CLOSE_NAV';
+var SET_NAV = exports.SET_NAV = 'SET_NAV';
 var LOAD_PATH = exports.LOAD_PATH = 'LOAD_PATH';
 var ADD_COMPONENTS = exports.ADD_COMPONENTS = 'ADD_COMPONENT';
 
@@ -2179,6 +2184,14 @@ function addComponents(components) {
     type: ADD_COMPONENTS,
     components: components
   };
+}
+
+function toggleNav() {
+  return { type: TOGGLE_NAV };
+}
+
+function closeNav() {
+  return { type: CLOSE_NAV };
 }
 
 function setCurrentPath(path) {
@@ -3185,91 +3198,113 @@ function path() {
   }
 }
 
+var initialNavState = {
+  title: '',
+  dpad: true,
+  sibs: null,
+  subnav: null,
+  open: false
+};
+
+function nav() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialNavState;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case _TreeActions.TOGGLE_NAV:
+      return Object.assign({}, { open: !state.open }, state);
+    case _TreeActions.CLOSE_NAV:
+      return Object.assign({}, { open: false }, state);
+    case _TreeActions.SET_NAV:
+      return Object.assign({}, {
+        title: action.title,
+        dpad: action.dpad,
+        sibs: action.sibs,
+        subnav: action.subnav,
+        open: action.open
+      });
+    default:
+      return state;
+  }
+}
+
 function tree() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments[1];
 
-  var _ret = function () {
-    switch (action.type) {
-      case _TreeActions.LOAD_PATH:
-        var stateAtPath = state;
-        Array.from(action.path.split('/')).forEach(function (sub) {
-          if (!sub) {
-            return;
-          } // discard empty path elements
-          if (stateAtPath[sub] == null) {
-            stateAtPath[sub] = {};
-          }
-          stateAtPath = stateAtPath[sub];
-        });
-        if (action.data.kids) {
-          Object.keys(action.data.kids).forEach(function (k) {
-            var v = action.data.kids[k];
-            if (stateAtPath[k] == null) {
-              stateAtPath[k] = {};
+  switch (action.type) {
+    case _TreeActions.LOAD_PATH:
+      {
+        var _ret = function () {
+          var stateAtPath = state;
+          Array.from(action.path.split('/')).forEach(function (sub) {
+            if (!sub) {
+              return;
+            } // discard empty path elements
+            if (stateAtPath[sub] == null) {
+              stateAtPath[sub] = {};
             }
+            stateAtPath = stateAtPath[sub];
           });
-        }
-        return {
-          v: Object.assign({}, state)
-        };
-      default:
-        return {
-          v: state
-        };
-    }
-  }();
+          if (action.data.kids) {
+            Object.keys(action.data.kids).forEach(function (k) {
+              // const v = action.data.kids[k];
+              if (stateAtPath[k] == null) {
+                stateAtPath[k] = {};
+              }
+            });
+          }
+          return {
+            v: Object.assign({}, state)
+          };
+        }();
 
-  if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+      }
+    default:
+      return state;
+  }
 }
 
 function data() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments[1];
 
-  var _ret2 = function () {
-    switch (action.type) {
-      case _TreeActions.LOAD_PATH:
-        var loadValues = function loadValues(_state, _path, _data) {
-          var old = _state[_path] != null ? _state[_path] : {};
+  function loadValues(_state, _path, _data) {
+    var old = _state[_path] != null ? _state[_path] : {};
 
-          Object.keys(_data).forEach(function (k) {
-            if (QUERIES[k]) {
-              old[k] = _data[k];
-            }
-          });
+    Object.keys(_data).forEach(function (k) {
+      if (QUERIES[k]) {
+        old[k] = _data[k];
+      }
+    });
 
-          if (_data.kids) {
-            Object.keys(_data.kids).forEach(function (k) {
-              var v = _data.kids[k];
-              var __path = _path;
-              if (__path === '/') {
-                __path = '';
-              }
-              loadValues(_state, __path + '/' + k, v);
-            });
-          }
-
-          if (_data.kids && _.isEmpty(_data.kids)) {
-            old.kids = false;
-          }
-
-          _state[_path] = old;
-
-          return _state;
-        };
-
-        return {
-          v: loadValues(Object.assign({}, state), action.path, action.data)
-        };
-      default:
-        return {
-          v: state
-        };
+    if (_data.kids) {
+      Object.keys(_data.kids).forEach(function (k) {
+        var v = _data.kids[k];
+        var __path = _path;
+        if (__path === '/') {
+          __path = '';
+        }
+        loadValues(_state, __path + '/' + k, v);
+      });
     }
-  }();
 
-  if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
+    if (_data.kids && _.isEmpty(_data.kids)) {
+      old.kids = false;
+    }
+
+    _state[_path] = old;
+
+    return _state;
+  }
+
+  switch (action.type) {
+    case _TreeActions.LOAD_PATH:
+      return loadValues(Object.assign({}, state), action.path, action.data);
+    default:
+      return state;
+  }
 }
 
 function components() {
@@ -3289,6 +3324,7 @@ var mainReducer = (0, _redux.combineReducers)({
   path: path,
   data: data,
   tree: tree,
+  nav: nav,
   components: components
 });
 
@@ -4668,6 +4704,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _classnames = __webpack_require__(2);
 
 var _classnames2 = _interopRequireDefault(_classnames);
@@ -4675,6 +4713,10 @@ var _classnames2 = _interopRequireDefault(_classnames);
 var _TreeContainer = __webpack_require__(11);
 
 var _TreeContainer2 = _interopRequireDefault(_TreeContainer);
+
+var _TreeContainerPropTypes = __webpack_require__(110);
+
+var _TreeContainerPropTypes2 = _interopRequireDefault(_TreeContainerPropTypes);
 
 var _NavComponent = __webpack_require__(61);
 
@@ -4686,31 +4728,55 @@ var _BodyComponent2 = _interopRequireDefault(_BodyComponent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var head = React.createFactory(_NavComponent2.default);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 // top level tree component should get rendered to document.body
 // and only render two components, head and nav
 // each one can determine whether or not it's a container.
 
-var body = React.createFactory(_BodyComponent2.default);
+var Tree = function (_React$Component) {
+  _inherits(Tree, _React$Component);
 
-var div = React.DOM.div;
+  function Tree(props) {
+    _classCallCheck(this, Tree);
+
+    var _this = _possibleConstructorReturn(this, (Tree.__proto__ || Object.getPrototypeOf(Tree)).call(this, props));
+
+    _this.displayName = 'Tree';
+    return _this;
+  }
+
+  _createClass(Tree, [{
+    key: 'render',
+    value: function render() {
+      var treeClas = (0, _classnames2.default)({
+        container: this.props.meta.container !== 'false' });
+
+      return React.createElement(
+        'div',
+        { className: treeClas },
+        React.createElement(_NavComponent2.default, { key: 'head-contanier' }),
+        React.createElement(_BodyComponent2.default, { key: 'body-contanier' })
+      );
+    }
+  }]);
+
+  return Tree;
+}(React.Component);
+
+Tree.propTypes = _TreeContainerPropTypes2.default;
+
 exports.default = (0, _TreeContainer2.default)({
   body: 'r',
   name: 't',
   path: 't',
   meta: 'j',
   sein: 't'
-}, React.createClass({
-  displayName: "Tree",
-
-  render: function render() {
-    var treeClas = (0, _classnames2.default)({
-      container: this.props.meta.container !== 'false' });
-
-    return div({ className: treeClas }, [head({ key: 'head-container' }, ""), body({ key: 'body-container' }, "")]);
-  }
-}));
+}, Tree);
 
 /***/ }),
 /* 48 */
@@ -5787,9 +5853,7 @@ var _TreeStore = __webpack_require__(13);
 
 var _TreeStore2 = _interopRequireDefault(_TreeStore);
 
-var _TreeActions = __webpack_require__(5);
-
-var _TreeActions2 = _interopRequireDefault(_TreeActions);
+var _TreeActions = __webpack_require__(16);
 
 var _SibsComponent = __webpack_require__(68);
 
@@ -5820,18 +5884,6 @@ function __guard__(value, transform) {
 
 var NavBody = function (_React$Component) {
   _inherits(NavBody, _React$Component);
-
-  _createClass(NavBody, null, [{
-    key: 'toggleNav',
-    value: function toggleNav() {
-      _TreeActions2.default.toggleNav();
-    }
-  }, {
-    key: 'closeNav',
-    value: function closeNav() {
-      _TreeActions2.default.closeNav();
-    }
-  }]);
 
   function NavBody(props) {
     _classCallCheck(this, NavBody);
@@ -5870,6 +5922,16 @@ var NavBody = function (_React$Component) {
       dt = this.ts - Number(Date.now());
     } // XX dt? unused.
 
+  }, {
+    key: 'toggleNav',
+    value: function toggleNav() {
+      this.props.dispatch((0, _TreeActions.toggleNav)());
+    }
+  }, {
+    key: 'closeNav',
+    value: function closeNav() {
+      this.props.dispatch((0, _TreeActions.closeNav)());
+    }
   }, {
     key: '_onChangeStore',
     value: function _onChangeStore() {
@@ -6052,9 +6114,7 @@ var _Reactify = __webpack_require__(4);
 
 var _Reactify2 = _interopRequireDefault(_Reactify);
 
-var _TreeActions = __webpack_require__(5);
-
-var _TreeActions2 = _interopRequireDefault(_TreeActions);
+var _TreeActions = __webpack_require__(16);
 
 var _NavBodyComponent = __webpack_require__(60);
 
@@ -6100,9 +6160,7 @@ var Nav = function (_React$Component) {
     value: function componentDidMount() {
       this.setTitle();
 
-      window.onpopstate = this.pullPath;
-
-      // TreeStore.addChangeListener(this._onChangeStore);
+      window.onpopstate = this.pullPath.bind(this);
 
       var _this = this;
       $('body').on('click', 'a', function click(e) {
@@ -6130,7 +6188,7 @@ var Nav = function (_React$Component) {
           if (url.pathname.substr(-1) !== '/') {
             url.pathname += '/';
           }
-          return _this.goTo(url.pathname + url.search + url.hash);
+          return _this.goTo.bind(_this)(url.pathname + url.search + url.hash);
         }return null;
       });
       return this.checkRedirect();
@@ -6171,7 +6229,7 @@ var Nav = function (_React$Component) {
       }
       var next = _util2.default.fragpath(path.split('#')[0]);
       if (next !== this.props.path) {
-        return _TreeActions2.default.setCurr(next);
+        return this.props.dispatch((0, _TreeActions.setCurrentPath)(next));
       }return null;
     }
   }, {
@@ -6195,8 +6253,13 @@ var Nav = function (_React$Component) {
   }, {
     key: 'goTo',
     value: function goTo(path) {
-      this.reset();
+      Nav.reset();
       return this.setPath(path);
+    }
+  }, {
+    key: 'toggleNav',
+    value: function toggleNav() {
+      this.props.dispatch((0, _TreeActions.toggleNav)());
     }
   }, {
     key: 'render',
@@ -6220,8 +6283,8 @@ var Nav = function (_React$Component) {
         kids.push((0, _Reactify2.default)({
           gn: this.state.subnav,
           ga: {
-            open: this.state.open,
-            toggle: _TreeActions2.default.toggleNav
+            open: this.props.open,
+            toggle: this.toggleNav
           },
           c: []
         }, 'subnav'));

@@ -5,7 +5,7 @@ import Container from './TreeContainer';
 import ContainerPropTypes from './TreeContainerPropTypes';
 import reactify from './Reactify';
 
-import TreeActions from '../actions/TreeActions';
+import { setCurrentPath, toggleNav } from '../TreeActions';
 
 import NavBody from './NavBodyComponent';
 
@@ -29,9 +29,7 @@ class Nav extends React.Component {
   componentDidMount() {
     this.setTitle();
 
-    window.onpopstate = this.pullPath;
-
-    // TreeStore.addChangeListener(this._onChangeStore);
+    window.onpopstate = this.pullPath.bind(this);
 
     const _this = this;
     $('body').on('click', 'a', function click(e) {
@@ -48,7 +46,7 @@ class Nav extends React.Component {
           return true;
         }
         if (url.pathname.substr(-1) !== '/') { url.pathname += '/'; }
-        return _this.goTo(url.pathname + url.search + url.hash);
+        return _this.goTo.bind(_this)(url.pathname + url.search + url.hash);
       } return null;
     });
     return this.checkRedirect();
@@ -78,7 +76,7 @@ class Nav extends React.Component {
     if (hist !== false) { history.pushState({}, '', path); }
     const next = util.fragpath(path.split('#')[0]);
     if (next !== this.props.path) {
-      return TreeActions.setCurr(next);
+      return this.props.dispatch(setCurrentPath(next));
     } return null;
   }
 
@@ -95,8 +93,12 @@ class Nav extends React.Component {
   }
 
   goTo(path) {
-    this.reset();
+    Nav.reset();
     return this.setPath(path);
+  }
+
+  toggleNav() {
+    this.props.dispatch(toggleNav());
   }
 
   render() {
@@ -117,8 +119,8 @@ class Nav extends React.Component {
       kids.push(reactify({
         gn: this.state.subnav,
         ga: {
-          open: this.state.open,
-          toggle: TreeActions.toggleNav,
+          open: this.props.open,
+          toggle: this.toggleNav,
         },
         c: [],
       }, 'subnav'));

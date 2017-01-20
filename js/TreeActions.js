@@ -1,6 +1,9 @@
 import TreePersistence from './persistence/TreePersistence';
 
 export const SET_PATH = 'SET_PATH';
+export const TOGGLE_NAV = 'TOGGLE_NAV';
+export const CLOSE_NAV = 'CLOSE_NAV';
+export const SET_NAV = 'SET_NAV';
 export const LOAD_PATH = 'LOAD_PATH';
 export const ADD_COMPONENTS = 'ADD_COMPONENT';
 
@@ -9,6 +12,14 @@ export function addComponents(components) {
     type: ADD_COMPONENTS,
     components,
   };
+}
+
+export function toggleNav() {
+  return { type: TOGGLE_NAV };
+}
+
+export function closeNav() {
+  return { type: CLOSE_NAV };
 }
 
 export function setCurrentPath(path, initialLoad = false) {

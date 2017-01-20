@@ -4,33 +4,35 @@ import clas from 'classnames';
 // and only render two components, head and nav
 // each one can determine whether or not it's a container.
 
-import Factory from './TreeContainer';
+import Container from './TreeContainer';
+import ContainerPropTypes from './TreeContainerPropTypes';
 
 import Nav from './NavComponent';
 import Body from './BodyComponent';
 
-const head = React.createFactory(Nav);
-const body = React.createFactory(Body);
-
-const { div } = React.DOM;
-
-export default Factory({
-  body:'r',
-  name:'t',
-  path:'t',
-  meta:'j',
-  sein:'t'
-}, (React.createClass({
-  displayName: "Tree",
+class Tree extends React.Component {
+  constructor(props) {
+    super(props);
+    this.displayName = 'Tree';
+  }
 
   render() {
     const treeClas = clas({
       container: this.props.meta.container !== 'false' });
 
-    return (div({ className: treeClas }, [
-      (head({key:'head-container'}, "")),
-      (body({key:'body-container'}, ""))
-    ]));
+    return (<div className={treeClas}>
+      <Nav key="head-contanier" />
+      <Body key="body-contanier" />
+    </div>);
   }
-}))
-);
+}
+
+Tree.propTypes = ContainerPropTypes;
+
+export default Container({
+  body: 'r',
+  name: 't',
+  path: 't',
+  meta: 'j',
+  sein: 't',
+}, Tree);

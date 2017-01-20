@@ -4,7 +4,7 @@ import Container from './TreeContainer';
 import ContainerPropTypes from './TreeContainerPropTypes';
 
 import TreeStore from '../stores/TreeStore';
-import TreeActions from '../actions/TreeActions';
+import { toggleNav, closeNav } from '../TreeActions';
 import SibsComponent from './SibsComponent';
 import DpadComponent from './DpadComponent';
 
@@ -18,10 +18,6 @@ function __guard__(value, transform) {
 }
 
 class NavBody extends React.Component {
-  static toggleNav() { TreeActions.toggleNav(); }
-
-  static closeNav() { TreeActions.closeNav(); }
-
   constructor(props) {
     super(props);
     this.mounted = false;
@@ -38,6 +34,10 @@ class NavBody extends React.Component {
   onTouchStart() { this.ts = Number(Date.now()); }
 
   onTouchEnd() { dt = this.ts - Number(Date.now()); }  // XX dt? unused.
+
+  toggleNav() { this.props.dispatch(toggleNav()); }
+
+  closeNav() { this.props.dispatch(closeNav()); }
 
   _onChangeStore() {
     if (this.mounted) {
