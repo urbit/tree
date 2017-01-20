@@ -1,5 +1,7 @@
-import TreeStore from '../stores/TreeStore.js';
+import TreeStore from '../stores/TreeStore';
 import LoadComponent from './LoadComponent';
+
+import { connect } from 'react-redux';
 
 const recl = React.createClass;
 const rele = React.createElement;
@@ -39,47 +41,7 @@ const walk = (root, _nil, _str, _comp) => {
   return step(root);
 };
 
-const DynamicVirtual = recl({
-  displayName: 'DynamicVirtual',
-  getInitialState() {
-    return this.stateFromStore();
-  },
-
-  stateFromStore() {
-    return {
-      components: TreeStore.getVirtualComponents(),
-    };
-  },
-
-  onChangeStore() {
-    if (this.isMounted()) {
-      return this.setState(this.stateFromStore());
-    }
-    return null;
-  },
-
-  componentDidMount() {
-    return TreeStore.addChangeListener(this.onChangeStore);
-  },
-
-  componentWillUnmount() {
-    return TreeStore.removeChangeListener(this.onChangeStore);
-  },
-
-  render() {
-    return (Virtual(
-      _.extend({}, this.props, {
-        components: this.state.components,
-      }),
-    ));
-  },
-});
-
-const Virtual = name('Virtual', ({
-    manx,
-    components,
-    basePath,
-  }) =>
+const Virtual = name('Virtual', ({ manx, components, basePath }) =>
   walk(manx,
     () => load({}, ''),
     str => str,
@@ -101,8 +63,10 @@ const Virtual = name('Virtual', ({
     }),
 );
 
-const reactify = (manx, key, param) => {
-  if (param == null) { param = {}; }
+function mapStateToProps(state) { return { components: state.components }; }
+const DynamicVirtual = connect(mapStateToProps)(Virtual);
+
+const reactify = (manx, key, param = {}) => {
   const { basePath, components } = param;
   let component = {};
   if (components != null) {

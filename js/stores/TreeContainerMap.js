@@ -35,8 +35,7 @@ export default (query) => {
       const parts = Array.from(_path);
       for (let i = 0; i < parts.length; i += 1) {
         const sub = parts[i];
-        if (sub) {  // ignore empty elements
-          if (tree[sub] == null) { return {}; }
+        if (sub && tree[sub] != null) {  // ignore empty elements
           tree = tree[sub];
         }
       }
@@ -127,10 +126,8 @@ export default (query) => {
         } else {
           Object.keys(tree).forEach((k) => {
             const sub = tree[k];
-            if (data.kids == null) {
-              data.kids = {};
-            }
-            data.kids[k] = this.fulfillAt(sub, `${path}/${k}`, _query.kids);
+            if (data.kids == null) { data.kids = {}; }
+            data.kids[k] = fulfillAt(sub, `${path}/${k}`, _query.kids);
           });
         }
       }
@@ -162,7 +159,7 @@ export default (query) => {
           request.kids = {};
           Object.keys(have.kids).forEach((k) => {
             const kid = have.kids[k];
-            _.merge(request.kids, this.filterWith(kid, _query.kids));
+            _.merge(request.kids, filterWith(kid, _query.kids));
           });
           if (_.isEmpty(request.kids)) {
             delete request.kids;

@@ -2995,21 +2995,26 @@ function tree() {
   var _ret = function () {
     switch (action.type) {
       case _TreeActions.LOAD_PATH:
-        var loadValuesTree = function loadValuesTree(_tree, _data) {
-          if (_data.kids) {
-            Object.keys(_data.kids).forEach(function (k) {
-              var v = _data.kids[k];
-              if (_tree[k] == null) {
-                _tree[k] = {};
-              }
-              loadValuesTree(_tree[k], v);
-            });
+        var stateAtPath = state;
+        Array.from(action.path.split('/')).forEach(function (sub) {
+          if (!sub) {
+            return;
+          } // discard empty path elements
+          if (stateAtPath[sub] == null) {
+            stateAtPath[sub] = {};
           }
-          return _tree;
-        };
-
+          stateAtPath = stateAtPath[sub];
+        });
+        if (action.data.kids) {
+          Object.keys(action.data.kids).forEach(function (k) {
+            var v = action.data.kids[k];
+            if (stateAtPath[k] == null) {
+              stateAtPath[k] = {};
+            }
+          });
+        }
         return {
-          v: Object.assign({}, loadValuesTree(state, action.data))
+          v: Object.assign({}, state)
         };
       default:
         return {
@@ -3025,40 +3030,59 @@ function data() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments[1];
 
-  switch (action.type) {
-    case _TreeActions.LOAD_PATH:
-      var loadValues = function loadValues(_state, _path, _data) {
-        var _this = this;
+  var _ret2 = function () {
+    switch (action.type) {
+      case _TreeActions.LOAD_PATH:
+        var loadValues = function loadValues(_state, _path, _data) {
+          var old = _state[_path] != null ? _state[_path] : {};
 
-        var old = _state[_path] != null ? _state[_path] : {};
-
-        Object.keys(_data).forEach(function (k) {
-          if (QUERIES[k]) {
-            old[k] = _data[k];
-          }
-        });
-
-        if (_data.kids) {
-          Object.keys(_data.kids).forEach(function (k) {
-            var v = _data.kids[k];
-            var __path = _path;
-            if (__path === '/') {
-              __path = '';
+          Object.keys(_data).forEach(function (k) {
+            if (QUERIES[k]) {
+              old[k] = _data[k];
             }
-            return _this.loadValues(__path + '/' + k, v);
           });
-        }
 
-        if (_data.kids && _.isEmpty(_data.kids)) {
-          old.kids = false;
-        }
+          if (_data.kids) {
+            Object.keys(_data.kids).forEach(function (k) {
+              var v = _data.kids[k];
+              var __path = _path;
+              if (__path === '/') {
+                __path = '';
+              }
+              loadValues(_state, __path + '/' + k, v);
+            });
+          }
 
-        _state[_path] = old;
+          if (_data.kids && _.isEmpty(_data.kids)) {
+            old.kids = false;
+          }
 
-        return _state;
-      };
+          _state[_path] = old;
 
-      return loadValues(Object.assign({}, state), action.path, action.data);
+          return _state;
+        };
+
+        return {
+          v: loadValues(Object.assign({}, state), action.path, action.data)
+        };
+      default:
+        return {
+          v: state
+        };
+    }
+  }();
+
+  if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
+}
+
+function components() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments[1];
+
+  switch (action.type) {
+    case _TreeActions.ADD_COMPONENTS:
+      _.extend(state, action.components);
+      return state;
     default:
       return state;
   }
@@ -3067,7 +3091,8 @@ function data() {
 var mainReducer = (0, _redux.combineReducers)({
   path: path,
   data: data,
-  tree: tree
+  tree: tree,
+  components: components
 });
 
 exports.default = mainReducer;
@@ -3127,7 +3152,11 @@ function containerFactory(query, Child) {
     }, {
       key: 'render',
       value: function render() {
-        return this.props.query !== null ? React.createFactory(Loading)({}, '') : React.createFactory(Child)(this.props.data, '');
+        if (this.props.query !== null) {
+          return React.createFactory(Loading)({}, '');
+        }
+        var childProps = Object.assign({}, this.props.data, this.props);
+        return React.createFactory(Child)(childProps, '');
       }
     }]);
 
@@ -3178,7 +3207,8 @@ exports['default'] = thunk;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.LOAD_PATH = exports.SET_PATH = undefined;
+exports.ADD_COMPONENTS = exports.LOAD_PATH = exports.SET_PATH = undefined;
+exports.addComponents = addComponents;
 exports.setCurrentPath = setCurrentPath;
 exports.loadParent = loadParent;
 exports.clearData = clearData;
@@ -3193,6 +3223,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var SET_PATH = exports.SET_PATH = 'SET_PATH';
 var LOAD_PATH = exports.LOAD_PATH = 'LOAD_PATH';
+var ADD_COMPONENTS = exports.ADD_COMPONENTS = 'ADD_COMPONENT';
+
+function addComponents(components) {
+  return {
+    type: ADD_COMPONENTS,
+    components: components
+  };
+}
 
 function setCurrentPath(path) {
   var initialLoad = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -6988,9 +7026,13 @@ var _TreeReducer2 = _interopRequireDefault(_TreeReducer);
 
 var _TreeActions = __webpack_require__(36);
 
-var _BodyComponent = __webpack_require__(91);
+var _Components = __webpack_require__(95);
 
-var _BodyComponent2 = _interopRequireDefault(_BodyComponent);
+var _Components2 = _interopRequireDefault(_Components);
+
+var _TreeComponent = __webpack_require__(108);
+
+var _TreeComponent2 = _interopRequireDefault(_TreeComponent);
 
 var _util = __webpack_require__(40);
 
@@ -6999,15 +7041,18 @@ var _util2 = _interopRequireDefault(_util);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var store = (0, _redux.createStore)(_TreeReducer2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default));
+// import Nav from './components/NavComponent';
+// import Body from './components/BodyComponent';
 
 $(function () {
   var frag = _util2.default.fragpath(window.location.pathname.replace(/\.[^\/]*$/, ''));
   store.dispatch((0, _TreeActions.setCurrentPath)(frag, true));
+  store.dispatch((0, _TreeActions.addComponents)(_Components2.default));
 
   ReactDOM.render(React.createElement(
     _reactRedux.Provider,
     { store: store },
-    React.createElement(_BodyComponent2.default, null)
+    React.createElement(_TreeComponent2.default, null)
   ), document.getElementById('tree'));
 });
 
@@ -7800,6 +7845,8 @@ var _LoadComponent = __webpack_require__(37);
 
 var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
 
+var _reactRedux = __webpack_require__(19);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var recl = React.createClass;
@@ -7847,35 +7894,6 @@ var walk = function walk(root, _nil, _str, _comp) {
   return step(root);
 };
 
-var DynamicVirtual = recl({
-  displayName: 'DynamicVirtual',
-  getInitialState: function getInitialState() {
-    return this.stateFromStore();
-  },
-  stateFromStore: function stateFromStore() {
-    return {
-      components: _TreeStore2.default.getVirtualComponents()
-    };
-  },
-  onChangeStore: function onChangeStore() {
-    if (this.isMounted()) {
-      return this.setState(this.stateFromStore());
-    }
-    return null;
-  },
-  componentDidMount: function componentDidMount() {
-    return _TreeStore2.default.addChangeListener(this.onChangeStore);
-  },
-  componentWillUnmount: function componentWillUnmount() {
-    return _TreeStore2.default.removeChangeListener(this.onChangeStore);
-  },
-  render: function render() {
-    return Virtual(_.extend({}, this.props, {
-      components: this.state.components
-    }));
-  }
-});
-
 var Virtual = name('Virtual', function (_ref) {
   var manx = _ref.manx,
       components = _ref.components,
@@ -7906,13 +7924,15 @@ var Virtual = name('Virtual', function (_ref) {
   });
 });
 
-var reactify = function reactify(manx, key, param) {
-  if (param == null) {
-    param = {};
-  }
-  var _param = param,
-      basePath = _param.basePath,
-      components = _param.components;
+function mapStateToProps(state) {
+  return { components: state.components };
+}
+var DynamicVirtual = (0, _reactRedux.connect)(mapStateToProps)(Virtual);
+
+var reactify = function reactify(manx, key) {
+  var param = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  var basePath = param.basePath,
+      components = param.components;
 
   var component = {};
   if (components != null) {
@@ -7963,11 +7983,738 @@ exports.default = _.extend(new Flux.Dispatcher(), {
 });
 
 /***/ },
-/* 85 */,
-/* 86 */,
-/* 87 */,
-/* 88 */,
-/* 89 */,
+/* 85 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classnames = __webpack_require__(82);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _util = __webpack_require__(40);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _TreeContainer = __webpack_require__(34);
+
+var _TreeContainer2 = _interopRequireDefault(_TreeContainer);
+
+var _Reactify = __webpack_require__(83);
+
+var _Reactify2 = _interopRequireDefault(_Reactify);
+
+var _TreeStore = __webpack_require__(79);
+
+var _TreeStore2 = _interopRequireDefault(_TreeStore);
+
+var _TreeActions = __webpack_require__(80);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+var _NavBodyComponent = __webpack_require__(87);
+
+var _NavBodyComponent2 = _interopRequireDefault(_NavBodyComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var div = React.DOM.div;
+
+
+var Nav = React.createClass({
+  displayName: 'Nav',
+  stateFromStore: function stateFromStore() {
+    return _TreeStore2.default.getNav();
+  },
+  getInitialState: function getInitialState() {
+    return _.extend(this.stateFromStore(), {
+      url: window.location.pathname
+    });
+  },
+  _onChangeStore: function _onChangeStore() {
+    if (this.isMounted()) {
+      return this.setState(this.stateFromStore());
+    }
+  },
+  componentWillUnmount: function componentWillUnmount() {
+    clearInterval(this.interval);
+    $('body').off('click', 'a');
+    return _TreeStore2.default.removeChangeListener(this._onChangeStore);
+  },
+  componentDidUpdate: function componentDidUpdate() {
+    this.setTitle();
+    return this.checkRedirect();
+  },
+  componentDidMount: function componentDidMount() {
+    this.setTitle();
+
+    window.onpopstate = this.pullPath;
+
+    _TreeStore2.default.addChangeListener(this._onChangeStore);
+
+    var _this = this;
+    $('body').on('click', 'a', function (e) {
+      // allow cmd+click
+      if (e.shiftKey || e.ctrlKey || e.metaKey) {
+        return true;
+      }
+      var href = $(this).attr('href');
+      if (__guard__(href, function (x) {
+        return x[0];
+      }) === "#") {
+        return true;
+      }
+      if (href && !/^https?:\/\//i.test(href)) {
+        var url = new URL(this.href);
+        if (!/http/.test(url.protocol)) {
+          // mailto: bitcoin: etc.
+          return;
+        }
+        e.preventDefault();
+        var basepath = urb.util.basepath;
+
+        if (basepath("", url.pathname) !== basepath("", document.location.pathname)) {
+          document.location = this.href;
+          return;
+        }
+        if (url.pathname.substr(-1) !== "/") {
+          url.pathname += "/";
+        }
+        return _this.goTo(url.pathname + url.search + url.hash);
+      }
+    });
+    return this.checkRedirect();
+  },
+  checkRedirect: function checkRedirect() {
+    var _this2 = this;
+
+    if (this.props.meta.redirect) {
+      return setTimeout(function () {
+        return _this2.goTo(_this2.props.meta.redirect);
+      }, 0);
+    }
+  },
+  setTitle: function setTitle() {
+    var title = $('#body h1').first().text() || this.props.name;
+    if (__guard__(this.props.meta, function (x) {
+      return x.title;
+    })) {
+      title = this.props.meta.title;
+    }
+    var path = this.props.path;
+
+    if (path === "") {
+      path = "/";
+    }
+    return document.title = title + ' - ' + path;
+  },
+  pullPath: function pullPath() {
+    var l = document.location;
+    var path = l.pathname + l.search + l.hash;
+    return this.setPath(path, false);
+  },
+  setPath: function setPath(path, hist) {
+    if (hist !== false) {
+      history.pushState({}, "", path);
+    }
+    var next = _util2.default.fragpath(path.split('#')[0]);
+    if (next !== this.props.path) {
+      return _TreeActions2.default.setCurr(next);
+    }
+  },
+  reset: function reset() {
+    return $("html,body").animate({
+      scrollTop: 0
+    });
+  },
+
+  // $('#nav').attr 'style',''
+  // $('#nav').removeClass 'scrolling m-up'
+  // $('#nav').addClass 'm-down m-fixed'
+
+  goTo: function goTo(path) {
+    this.reset();
+    return this.setPath(path);
+  },
+  render: function render() {
+    if (this.props.meta.anchor === 'none') {
+      return div({}, "");
+    }
+
+    var navClas = (0, _classnames2.default)({
+      container: this.props.meta.container === 'false'
+    });
+
+    var kidsPath = this.props.sein;
+    if (this.props.meta.navpath) {
+      kidsPath = this.props.meta.navpath;
+    }
+
+    var kids = [(0, _NavBodyComponent2.default)({
+      curr: this.props.name,
+      dataPath: kidsPath,
+      meta: this.props.meta,
+      sein: this.props.sein,
+      goTo: this.goTo,
+      key: "nav"
+    }, "div")];
+
+    if (this.state.subnav) {
+      kids.push((0, _Reactify2.default)({
+        gn: this.state.subnav,
+        ga: {
+          open: this.state.open,
+          toggle: _TreeActions2.default.toggleNav
+        },
+        c: []
+      }, "subnav"));
+    }
+
+    return div({
+      id: 'head',
+      className: navClas
+    }, kids);
+  }
+});
+
+exports.default = (0, _TreeContainer2.default)({
+  sein: 't',
+  path: 't',
+  name: 't',
+  meta: 'j'
+}, Nav);
+
+
+function __guard__(value, transform) {
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
+}
+
+/***/ },
+/* 86 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(40);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Dpad = void 0;
+
+
+var recl = React.createClass;
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    a = _React$DOM.a;
+
+
+var Arrow = function Arrow(name, path) {
+  var href = _util2.default.basepath(path);
+  return a({ href: href, key: "" + name, className: "" + name }, "");
+};
+
+exports.default = Dpad = function Dpad(_ref) {
+  var sein = _ref.sein,
+      curr = _ref.curr,
+      kids = _ref.kids,
+      meta = _ref.meta;
+
+  var keys = void 0,
+      next = void 0,
+      prev = void 0;
+  var arrowUp = sein ? meta.navuptwo ? Arrow("up", sein.replace(/\/[^\/]*$/, "")) // strip last path element
+  : Arrow("up", sein) : undefined;
+
+  var arrowSibs = (keys = _util2.default.getKeys(kids, meta.navsort), function () {
+    if (keys.length > 1) {
+      var index = keys.indexOf(curr);
+      prev = index - 1;
+      next = index + 1;
+      if (prev < 0) {
+        prev = keys.length - 1;
+      }
+      if (next === keys.length) {
+        next = 0;
+      }
+      prev = keys[prev];
+      return next = keys[next];
+    }
+  }(), function () {
+    if (sein) {
+      var _arrow = void 0;
+      if (sein === "/") {
+        sein = "";
+      }
+      if (prev) {
+        _arrow = Arrow("prev", sein + "/" + prev);
+      }
+      if (next) {
+        _arrow = Arrow("next", sein + "/" + next);
+      }
+      return div({}, _arrow);
+    }
+  }());
+
+  return div({ className: 'dpad', key: 'dpad' }, arrowUp, arrowSibs);
+};
+
+/***/ },
+/* 87 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _classnames = __webpack_require__(82);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _Async = __webpack_require__(81);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+var _TreeStore = __webpack_require__(79);
+
+var _TreeStore2 = _interopRequireDefault(_TreeStore);
+
+var _TreeActions = __webpack_require__(80);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+var _SibsComponent = __webpack_require__(89);
+
+var _SibsComponent2 = _interopRequireDefault(_SibsComponent);
+
+var _DpadComponent = __webpack_require__(86);
+
+var _DpadComponent2 = _interopRequireDefault(_DpadComponent);
+
+var _NavLoadingComponent = __webpack_require__(88);
+
+var _NavLoadingComponent2 = _interopRequireDefault(_NavLoadingComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Sibs = React.createFactory(_SibsComponent2.default);
+var Dpad = React.createFactory(_DpadComponent2.default);
+
+// const body = React.createClass({
+
+var body = function (_React$Component) {
+  _inherits(body, _React$Component);
+
+  function body(props) {
+    _classCallCheck(this, body);
+
+    var _this = _possibleConstructorReturn(this, (body.__proto__ || Object.getPrototypeOf(body)).call(this, props));
+
+    _this.mounted = false;
+    _this.displayName = 'Links';
+    _this.state = _TreeStore2.default.getNav();
+    return _this;
+  }
+
+  _createClass(body, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.mounted = true;
+      return _TreeStore2.default.addChangeListener(this._onChangeStore);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this.mounted = false;
+      return _TreeStore2.default.removeChangeListener(this._onChangeStore);
+    }
+  }, {
+    key: 'onClick',
+    value: function onClick() {
+      return this.toggleFocus();
+    }
+  }, {
+    key: 'onMouseOver',
+    value: function onMouseOver() {
+      return this.toggleFocus(true);
+    }
+  }, {
+    key: 'onMouseOut',
+    value: function onMouseOut() {
+      return this.toggleFocus(false);
+    }
+  }, {
+    key: 'onTouchStart',
+    value: function onTouchStart() {
+      this.ts = Number(Date.now());
+    }
+  }, {
+    key: 'onTouchEnd',
+    value: function onTouchEnd() {
+      dt = this.ts - Number(Date.now());
+    } // XX dt? unused.
+
+  }, {
+    key: '_onChangeStore',
+    value: function _onChangeStore() {
+      if (this.mounted) {
+        this.state = _TreeStore2.default.getNav();
+      }
+    }
+  }, {
+    key: '_home',
+    value: function _home() {
+      var home = this.props.meta.navhome ? this.props.meta.navhome : '/';
+      return this.props.goTo(home);
+    }
+  }, {
+    key: 'toggleFocus',
+    value: function toggleFocus(state) {
+      return $(ReactDOM.findDOMNode(this)).toggleClass('focus', state);
+    }
+  }, {
+    key: 'toggleNav',
+    value: function toggleNav() {
+      _TreeActions2.default.toggleNav();
+    }
+  }, {
+    key: 'closeNav',
+    value: function closeNav() {
+      _TreeActions2.default.closeNav();
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var attr = {
+        onMouseOver: this.onMouseOver,
+        onMouseOut: this.onMouseOut,
+        onClick: this.onClick,
+        onTouchStart: this.onTouchStart,
+        onTouchEnd: this.onTouchEnd,
+        'data-path': this.props.dataPath
+      };
+      if (_.keys(window).indexOf('ontouchstart') !== -1) {
+        delete attr.onMouseOver;
+        delete attr.onMouseOut;
+      }
+
+      var linksClas = (0, _classnames2.default)({
+        links: true,
+        subnav: this.props.meta.navsub != null
+      });
+      var navClas = {
+        navbar: this.props.meta.navmode === 'navbar',
+        ctrl: true,
+        open: this.state.open === true
+      };
+      if (this.props.meta.layout) {
+        this.props.meta.layout.split(',').forEach(function (v) {
+          navClas[v.trim()] = true;
+          return true;
+        });
+      }
+      navClas = (0, _classnames2.default)(navClas);
+      var iconClass = (0, _classnames2.default)({
+        icon: true,
+        'col-md-1': this.props.meta.navmode === 'navbar'
+      });
+      var itemsClass = (0, _classnames2.default)({
+        items: true,
+        'col-md-11': this.props.meta.navmode === 'navbar'
+      });
+
+      attr = _.extend(attr, {
+        className: navClas,
+        key: 'nav'
+      });
+
+      var SubSibsComponent = void 0;
+      if (this.props.meta.navsub) {
+        var subprops = _.cloneDeep(this.props);
+        subprops.dataPath = subprops.meta.navsub;
+        delete subprops.meta.navselect;
+        subprops.className = 'subnav';
+        SubSibsComponent = Sibs(_.merge(subprops, {
+          toggleNav: this.toggleNav
+        }), '');
+      }
+
+      var toggleClas = (0, _classnames2.default)({
+        'navbar-toggler': true,
+        show: this.state.subnav != null
+      });
+
+      return React.createElement(
+        'div',
+        { className: navClas, key: 'nav' },
+        React.createElement(
+          'div',
+          { className: linksClas, key: 'links' },
+          React.createElement(
+            'div',
+            { className: iconClass },
+            React.createElement('div', { className: 'home', onClick: this._home }),
+            React.createElement(
+              'div',
+              { className: 'app' },
+              this.state.title ? this.state.title : ''
+            ),
+            this.state.dpad !== false && __guard__(this.props.meta, function (x) {
+              return x.navdpad;
+            }) !== "false" && React.createElement(Dpad, {
+              dataPath: this.props.dataPath,
+              sein: this.props.sein,
+              curr: this.props.curr,
+              kids: this.props.kids,
+              meta: this.props.meta
+            }),
+            React.createElement(
+              'button',
+              {
+                className: toggleClas,
+                type: 'button',
+                onClick: this.toggleNav
+              },
+              '\u2630'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: itemsClass },
+            this.state.sibs !== false && __guard__(this.props.meta, function (x1) {
+              return x1.navsibs;
+            }) !== "false" && React.createElement(Sibs, {
+              className: this.props.className,
+              dataPath: this.props.dataPath,
+              sein: this.props.sein,
+              curr: this.props.curr,
+              kids: this.props.kids,
+              meta: this.props.meta,
+              closeNav: this.closeNav
+            }),
+            this.props.meta.navsub && React.createElement(SubSibsComponent, null)
+          )
+        )
+      );
+    }
+  }]);
+
+  return body;
+}(React.Component);
+
+exports.default = React.createFactory((0, _Async2.default)({
+  path: 't',
+  kids: {
+    name: 't',
+    head: 'r',
+    meta: 'j'
+  }
+}, body, _NavLoadingComponent2.default));
+
+
+function __guard__(value, transform) {
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
+}
+
+/***/ },
+/* 88 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var loading = function (_React$Component) {
+  _inherits(loading, _React$Component);
+
+  function loading(props) {
+    _classCallCheck(this, loading);
+
+    var _this = _possibleConstructorReturn(this, (loading.__proto__ || Object.getPrototypeOf(loading)).call(this, props));
+
+    _this.displayName = 'Links_loading';
+    return _this;
+  }
+
+  _createClass(loading, [{
+    key: 'home',
+    value: function home() {
+      return this.props.goTo('/');
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return React.createElement(
+        'div',
+        {
+          className: 'ctrl loading',
+          'data-path': this.props.dataPath,
+          key: 'nav-loading'
+        },
+        React.createElement(
+          'div',
+          { className: 'links' },
+          React.createElement(
+            'div',
+            { className: 'icon' },
+            React.createElement('div', { className: 'home', onClick: this.home })
+          ),
+          React.createElement(
+            'ul',
+            { className: 'nav' },
+            React.createElement(
+              'li',
+              { className: 'nav-item selected' },
+              React.createElement(
+                'a',
+                { className: 'nav-link' },
+                this.props.curr
+              )
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return loading;
+}(React.Component);
+
+exports.default = loading;
+
+/***/ },
+/* 89 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(40);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _classnames = __webpack_require__(82);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _Reactify = __webpack_require__(83);
+
+var _Reactify2 = _interopRequireDefault(_Reactify);
+
+var _Async = __webpack_require__(81);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var recl = React.createClass;
+var _React$DOM = React.DOM,
+    ul = _React$DOM.ul,
+    li = _React$DOM.li,
+    a = _React$DOM.a;
+exports.default = (0, _Async2.default)({
+  kids: {
+    head: 'r',
+    meta: 'j',
+    name: 't',
+    path: 't',
+    bump: 't'
+  }
+}, recl({
+  displayName: "Siblings",
+  toText: function toText(elem) {
+    return _Reactify2.default.walk(elem, function () {
+      return '';
+    }, function (s) {
+      return s;
+    }, function (_ref) {
+      var c = _ref.c;
+      return (c != null ? c : []).join('');
+    });
+  },
+  render: function render() {
+    var _this = this;
+
+    var kids = _util2.default.sortKids(this.props.kids, this.props.meta.navsort);
+
+    var navClas = {
+      nav: true,
+      'col-md-12': this.props.meta.navmode === 'navbar'
+    };
+    if (this.props.className) {
+      navClas[this.props.className] = true;
+    }
+    navClas = (0, _classnames2.default)(navClas);
+
+    return ul({ className: navClas }, kids.map(function (_ref2) {
+      var head = _ref2.head,
+          _ref2$meta = _ref2.meta,
+          meta = _ref2$meta === undefined ? {} : _ref2$meta,
+          name = _ref2.name,
+          path = _ref2.path;
+
+      var selected = name === _this.props.curr;
+      if (_this.props.meta.navselect) {
+        selected = name === _this.props.meta.navselect;
+      }
+      var href = _util2.default.basepath(path);
+      head = meta.title;
+      if (head == null) {
+        head = _this.toText(head);
+      }
+      if (!head) {
+        head = name;
+      }
+      var className = (0, _classnames2.default)({
+        "nav-item": true,
+        selected: selected
+      });
+      if (meta.sibsclass) {
+        className += ' ' + (0, _classnames2.default)(meta.sibsclass.split(","));
+      }
+      return li({ className: className, key: name }, a({ className: "nav-link", href: href, onClick: _this.props.closeNav }, head));
+    }));
+  }
+}));
+
+/***/ },
 /* 90 */
 /***/ function(module, exports) {
 
@@ -8298,146 +9045,23 @@ var _TreeContainer = __webpack_require__(34);
 
 var _TreeContainer2 = _interopRequireDefault(_TreeContainer);
 
-var _Async = __webpack_require__(81);
-
-var _Async2 = _interopRequireDefault(_Async);
-
 var _Reactify = __webpack_require__(83);
 
 var _Reactify2 = _interopRequireDefault(_Reactify);
-
-var _TreeActions = __webpack_require__(80);
-
-var _TreeActions2 = _interopRequireDefault(_TreeActions);
 
 var _TreeStore = __webpack_require__(79);
 
 var _TreeStore2 = _interopRequireDefault(_TreeStore);
 
-var _CommentsComponent = __webpack_require__(92);
+var _BodyExtras = __webpack_require__(94);
 
-var _CommentsComponent2 = _interopRequireDefault(_CommentsComponent);
-
-var _util = __webpack_require__(40);
-
-var _util2 = _interopRequireDefault(_util);
+var _BodyExtras2 = _interopRequireDefault(_BodyExtras);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var name = function name(displayName, component) {
-  return _.extend(component, { displayName: displayName });
-};
-// Plan        = require './PlanComponent.js'
-
 var recl = React.createClass;
 var rele = React.createElement;
-var _React$DOM = React.DOM,
-    div = _React$DOM.div,
-    h1 = _React$DOM.h1,
-    h3 = _React$DOM.h3,
-    p = _React$DOM.p,
-    img = _React$DOM.img,
-    a = _React$DOM.a,
-    input = _React$DOM.input;
-
-// named = (x,f)->  f.displayName = x; f
-
-var extras = {
-  spam: name("Spam", function () {
-    if (document.location.hostname !== 'urbit.org') {
-      return div({});
-    }
-    return div({ className: 'spam' }, a({ href: "http://urbit.org#sign-up" }, "Sign up"), " for our newsletter.");
-  }),
-
-  logo: name("Logo", function (_ref) {
-    var color = _ref.color;
-
-    var src = void 0;
-    if (color === "white" || color === "black") {
-      // else?
-      src = '//media.urbit.org/logo/logo-' + color + '-100x100.png';
-    }
-    return a({ href: "http://urbit.org", style: { border: "none" } }, img({ src: src, className: "logo first" }));
-  }),
-
-  date: name("Date", function (_ref2) {
-    var date = _ref2.date;
-    return div({ className: 'date' }, date);
-  }),
-
-  title: name("Title", function (_ref3) {
-    var title = _ref3.title;
-    return h1({ className: 'title' }, title);
-  }),
-  image: name("Image", function (_ref4) {
-    var image = _ref4.image;
-    return img({ src: image });
-  }),
-  preview: name("Preview", function (_ref5) {
-    var preview = _ref5.preview;
-    return p({ className: 'preview' }, preview);
-  }),
-  author: name("Author", function (_ref6) {
-    var author = _ref6.author;
-    return h3({ className: 'author' }, author);
-  }),
-
-  // plan: Plan
-
-
-  next: (0, _Async2.default)({
-    path: 't',
-    kids: {
-      name: 't',
-      head: 'r',
-      meta: 'j',
-      bump: 't'
-    }
-  }, name("Next", function (_ref7) {
-    var curr = _ref7.curr,
-        meta = _ref7.meta,
-        path = _ref7.path,
-        kids = _ref7.kids;
-
-    if (__guard__(__guard__(kids[curr], function (x1) {
-      return x1.meta;
-    }), function (x) {
-      return x.next;
-    })) {
-      var keys = _util2.default.getKeys(kids, meta.navsort);
-      if (keys.length > 1) {
-        var index = keys.indexOf(curr);
-        var next = index + 1;
-        if (next === keys.length) {
-          next = 0;
-        }
-        next = keys[next];
-        next = kids[next];
-
-        if (next) {
-          return div({ className: "link-next" }, a({ href: path + '/' + next.name }, 'Next: ' + next.meta.title));
-        }
-      }
-    }
-    return div({}, "");
-  })),
-
-  comments: _CommentsComponent2.default,
-
-  footer: name("Footer", function (_ref8) {
-    var container = _ref8.container;
-
-    var containerClas = (0, _classnames2.default)({
-      footer: true,
-      container: container === 'false'
-    });
-    var footerClas = (0, _classnames2.default)({
-      'col-md-12': container === 'false' });
-    return div({ className: containerClas, key: 'footer-container' }, [div({ className: footerClas, key: 'footer-inner' }, ["This page was made by Urbit. Feedback: ", a({ href: "mailto:urbit@urbit.org" }, "urbit@urbit.org"), " ", a({ href: "https://twitter.com/urbit_" }, "@urbit_")])]);
-  })
-};
-
+var div = React.DOM.div;
 exports.default = (0, _TreeContainer2.default)({
   body: 'r',
   name: 't',
@@ -8446,33 +9070,19 @@ exports.default = (0, _TreeContainer2.default)({
   sein: 't'
 }, recl({
   displayName: "Body",
-  stateFromStore: function stateFromStore() {
-    return { curr: _TreeStore2.default.getCurr() };
-  },
-  getInitialState: function getInitialState() {
-    return this.stateFromStore();
-  },
-  _onChangeStore: function _onChangeStore() {
-    if (this.isMounted()) {
-      return this.setState(this.stateFromStore());
-    }
-  },
-  componentDidMount: function componentDidMount() {
-    return _TreeStore2.default.addChangeListener(this._onChangeStore);
-  },
+
   render: function render() {
     var _this = this;
 
-    var extra = function extra(name, props) {
-      if (props == null) {
-        props = {};
-      }
+    var extra = function extra(name) {
+      var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
       if (_this.props.meta[name] != null) {
         if (_.keys(props).length === 0) {
           props[name] = _this.props.meta[name];
         }
         props.key = name;
-        return React.createElement(extras[name], props);
+        return React.createElement(_BodyExtras2.default[name], props);
       }
     };
 
@@ -8502,7 +9112,7 @@ exports.default = (0, _TreeContainer2.default)({
       parts.splice(1, 0, extra('date'), extra('title'), extra('image'), extra('preview'), extra('author'));
     }
 
-    return div({ 'data-path': this.state.curr, key: this.state.curr }, [div({ className: innerClas, 'data-path': this.props.path, key: 'body-inner' }, [div({
+    return div({ 'data-path': this.props.path, key: this.props.path }, [div({ className: innerClas, 'data-path': this.props.path, key: 'body-inner' }, [div({
       key: 'body' + this.props.path,
       id: 'body',
       className: bodyClas
@@ -8724,11 +9334,8 @@ exports.default = function (query) {
       var parts = Array.from(_path);
       for (var i = 0; i < parts.length; i += 1) {
         var sub = parts[i];
-        if (sub) {
+        if (sub && tree[sub] != null) {
           // ignore empty elements
-          if (tree[sub] == null) {
-            return {};
-          }
           tree = tree[sub];
         }
       }
@@ -8810,8 +9417,6 @@ exports.default = function (query) {
     }
 
     function fulfillAt(tree, path, _query) {
-      var _this = this;
-
       var data = fulfillLocal(path, _query);
       var have = state.data[path];
       if (have != null) {
@@ -8836,7 +9441,7 @@ exports.default = function (query) {
             if (data.kids == null) {
               data.kids = {};
             }
-            data.kids[k] = _this.fulfillAt(sub, path + '/' + k, _query.kids);
+            data.kids[k] = fulfillAt(sub, path + '/' + k, _query.kids);
           });
         }
       }
@@ -8856,8 +9461,6 @@ exports.default = function (query) {
     // _query is a queryobject
     // this produces a pared down queryobject that needs to be fetched
     function filterWith(have, _query) {
-      var _this2 = this;
-
       if (have == null) {
         return _query;
       }
@@ -8876,7 +9479,7 @@ exports.default = function (query) {
           request.kids = {};
           Object.keys(have.kids).forEach(function (k) {
             var kid = have.kids[k];
-            _.merge(request.kids, _this2.filterWith(kid, _query.kids));
+            _.merge(request.kids, filterWith(kid, _query.kids));
           });
           if (_.isEmpty(request.kids)) {
             delete request.kids;
@@ -8899,6 +9502,1560 @@ exports.default = function (query) {
     return childProps;
   };
 };
+
+/***/ },
+/* 94 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classnames = __webpack_require__(82);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _TreeContainer = __webpack_require__(34);
+
+var _TreeContainer2 = _interopRequireDefault(_TreeContainer);
+
+var _CommentsComponent = __webpack_require__(92);
+
+var _CommentsComponent2 = _interopRequireDefault(_CommentsComponent);
+
+var _util = __webpack_require__(40);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var name = function name(displayName, component) {
+  return _.extend(component, { displayName: displayName });
+};
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    h1 = _React$DOM.h1,
+    h3 = _React$DOM.h3,
+    p = _React$DOM.p,
+    img = _React$DOM.img,
+    a = _React$DOM.a;
+
+
+var extras = {
+  spam: name('Spam', function () {
+    if (document.location.hostname !== 'urbit.org') {
+      return React.createElement('div', null);
+    }
+    return React.createElement(
+      'div',
+      { className: 'spam' },
+      React.createElement(
+        'a',
+        { href: 'http://urbit.org#sign-up' },
+        'Sign up'
+      ),
+      ' for our newsletter.'
+    );
+  }),
+
+  logo: name('Logo', function (_ref) {
+    var color = _ref.color;
+
+    var src = void 0;
+    if (color === 'white' || color === 'black') {
+      // else?
+      src = '//media.urbit.org/logo/logo-' + color + '-100x100.png';
+    }
+    return a({ href: 'http://urbit.org', style: { border: 'none' } }, img({ src: src, className: 'logo first' }));
+  }),
+
+  date: name('Date', function (_ref2) {
+    var date = _ref2.date;
+    return div({ className: 'date' }, date);
+  }),
+
+  title: name('Title', function (_ref3) {
+    var title = _ref3.title;
+    return h1({ className: 'title' }, title);
+  }),
+  image: name('Image', function (_ref4) {
+    var image = _ref4.image;
+    return img({ src: image });
+  }),
+  preview: name('Preview', function (_ref5) {
+    var preview = _ref5.preview;
+    return p({ className: 'preview' }, preview);
+  }),
+  author: name('Author', function (_ref6) {
+    var author = _ref6.author;
+    return h3({ className: 'author' }, author);
+  }),
+
+  // plan: Plan
+
+
+  next: (0, _TreeContainer2.default)({
+    path: 't',
+    kids: {
+      name: 't',
+      head: 'r',
+      meta: 'j',
+      bump: 't'
+    }
+  }, name('Next', function (_ref7) {
+    var curr = _ref7.curr,
+        meta = _ref7.meta,
+        path = _ref7.path,
+        kids = _ref7.kids;
+
+    if (__guard__(__guard__(kids[curr], function (x1) {
+      return x1.meta;
+    }), function (x) {
+      return x.next;
+    })) {
+      var keys = _util2.default.getKeys(kids, meta.navsort);
+      if (keys.length > 1) {
+        var index = keys.indexOf(curr);
+        var next = index + 1;
+        if (next === keys.length) {
+          next = 0;
+        }
+        next = keys[next];
+        next = kids[next];
+
+        if (next) {
+          return div({ className: 'link-next' }, a({ href: path + '/' + next.name }, 'Next: ' + next.meta.title));
+        }
+      }
+    }
+    return div({}, '');
+  })),
+
+  comments: _CommentsComponent2.default,
+
+  footer: name('Footer', function (_ref8) {
+    var container = _ref8.container;
+
+    var containerClas = (0, _classnames2.default)({
+      footer: true,
+      container: container === 'false'
+    });
+    var footerClas = (0, _classnames2.default)({
+      'col-md-12': container === 'false' });
+    return div({ className: containerClas, key: 'footer-container' }, [div({ className: footerClas, key: 'footer-inner' }, ['This page was made by Urbit. Feedback: ', a({ href: 'mailto:urbit@urbit.org' }, 'urbit@urbit.org'), ' ', a({ href: 'https://twitter.com/urbit_' }, '@urbit_')])]);
+  })
+};
+
+exports.default = extras;
+
+/***/ },
+/* 95 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _CodeMirror = __webpack_require__(96);
+
+var _CodeMirror2 = _interopRequireDefault(_CodeMirror);
+
+var _SearchComponent = __webpack_require__(106);
+
+var _SearchComponent2 = _interopRequireDefault(_SearchComponent);
+
+var _ListComponent = __webpack_require__(100);
+
+var _ListComponent2 = _interopRequireDefault(_ListComponent);
+
+var _KidsComponent = __webpack_require__(99);
+
+var _KidsComponent2 = _interopRequireDefault(_KidsComponent);
+
+var _TocComponent = __webpack_require__(107);
+
+var _TocComponent2 = _interopRequireDefault(_TocComponent);
+
+var _EmailComponent = __webpack_require__(97);
+
+var _EmailComponent2 = _interopRequireDefault(_EmailComponent);
+
+var _ModuleComponent = __webpack_require__(101);
+
+var _ModuleComponent2 = _interopRequireDefault(_ModuleComponent);
+
+var _ScriptComponent = __webpack_require__(105);
+
+var _ScriptComponent2 = _interopRequireDefault(_ScriptComponent);
+
+var _PlanComponent = __webpack_require__(103);
+
+var _PlanComponent2 = _interopRequireDefault(_PlanComponent);
+
+var _PanelComponent = __webpack_require__(102);
+
+var _PanelComponent2 = _interopRequireDefault(_PanelComponent);
+
+var _PostComponent = __webpack_require__(104);
+
+var _PostComponent2 = _interopRequireDefault(_PostComponent);
+
+var _ImagepanelComponent = __webpack_require__(98);
+
+var _ImagepanelComponent2 = _interopRequireDefault(_ImagepanelComponent);
+
+var _LoadComponent = __webpack_require__(37);
+
+var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
+
+var _ShipComponent = __webpack_require__(38);
+
+var _ShipComponent2 = _interopRequireDefault(_ShipComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  codemirror: _CodeMirror2.default,
+  search: _SearchComponent2.default,
+  list: _ListComponent2.default,
+  kids: _KidsComponent2.default,
+  toc: _TocComponent2.default,
+  email: _EmailComponent2.default,
+  module: _ModuleComponent2.default,
+  script: _ScriptComponent2.default,
+  plan: _PlanComponent2.default,
+  panel: _PanelComponent2.default,
+  post: _PostComponent2.default,
+  imagepanel: _ImagepanelComponent2.default,
+  load: _LoadComponent2.default,
+  ship: _ShipComponent2.default,
+  lost: React.createClass({
+    displayName: 'lost',
+    render: function render() {
+      return React.createElement(
+        'lost',
+        null,
+        this.props.children
+      );
+    }
+  })
+};
+
+/***/ },
+/* 96 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var recl = React.createClass;
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    textarea = _React$DOM.textarea;
+exports.default = recl({
+  render: function render() {
+    return div({}, textarea({ ref: 'ed', value: this.props.value }));
+  },
+  componentDidMount: function componentDidMount() {
+    return CodeMirror.fromTextArea(ReactDOM.findDOMNode(this.refs.ed), {
+      readOnly: true,
+      lineNumbers: true
+    });
+  }
+});
+
+/***/ },
+/* 97 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var recl = React.createClass;
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    p = _React$DOM.p,
+    button = _React$DOM.button,
+    input = _React$DOM.input;
+exports.default = recl({
+  displayName: "email",
+
+  getInitialState: function getInitialState() {
+    return { submit: false, email: "" };
+  },
+  onClick: function onClick() {
+    return this.submit();
+  },
+  onChange: function onChange(e) {
+    var email = e.target.value;
+    this.setState({ email: e.target.value });
+    var valid = email.indexOf('@') !== -1 && email.indexOf('.') !== -1 && email.length > 7 && email.split(".")[1].length > 1 && email.split("@")[0].length > 0 && email.split("@")[1].length > 4;
+    this.$email.toggleClass('valid', valid);
+    this.$email.removeClass('error');
+    if (e.keyCode === 13) {
+      if (valid === true) {
+        this.submit();
+        e.stopPropagation();
+        e.preventDefault();
+        return false;
+      } else {
+        return this.$email.addClass('error');
+      }
+    }
+  },
+  submit: function submit() {
+    var _this = this;
+
+    return $.post(this.props.dataPath, { email: this.$email.val() }, function () {
+      return _this.setState({ submit: true });
+    });
+  },
+  componentDidMount: function componentDidMount() {
+    return this.$email = $('input.email');
+  },
+  render: function render() {
+    var cont = void 0;
+    if (this.state.submit === false) {
+      var submit = this.props.submit != null ? this.props.submit : "Sign up";
+      cont = [input({ key: "field", className: "email", placeholder: "your@email.com", onChange: this.onChange, value: this.state.email }), button({ key: "submit", className: "submit btn", onClick: this.onClick }, submit)];
+    } else {
+      cont = [div({ className: "submitted" }, "Got it. Thanks!")];
+    }
+    return p({ className: "email", id: "sign-up" }, cont);
+  }
+});
+
+/***/ },
+/* 98 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var recl = React.createClass;
+var name = function name(displayName, component) {
+  return _.extend(component, { displayName: displayName });
+};
+var div = React.DOM.div;
+exports.default = name("ImagePanel", function (_ref) {
+  var src = _ref.src;
+  return div({
+    className: "image-container",
+    style: { backgroundImage: "url('" + src + "')" }
+  });
+});
+
+/***/ },
+/* 99 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classnames = __webpack_require__(82);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _util = __webpack_require__(40);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _Reactify = __webpack_require__(83);
+
+var _Reactify2 = _interopRequireDefault(_Reactify);
+
+var _Async = __webpack_require__(81);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var recl = React.createClass;
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    a = _React$DOM.a,
+    ul = _React$DOM.ul,
+    li = _React$DOM.li,
+    hr = _React$DOM.hr;
+exports.default = (0, _Async2.default)({ kids: { name: 't', bump: 't', body: 'r', meta: 'j', path: 't' } }, recl({
+  displayName: "Kids",
+  render: function render() {
+    var kids = _util2.default.sortKids(this.props.kids, this.props.sortBy);
+
+    var kidsClas = (0, _classnames2.default)({ kids: true }, this.props.className);
+
+    var kidClas = (0, _classnames2.default)({
+      "col-md-4": this.props.grid === 'true' });
+
+    var _kids = [];
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = Array.from(kids)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var elem = _step.value;
+
+        var body = (0, _Reactify2.default)(elem.body, null, { basePath: elem.path });
+        _kids.push([div({ key: elem.name, id: elem.name, className: kidClas }, body), hr({})]);
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+
+    return div({ className: kidsClas, key: "kids" }, _kids);
+  }
+}));
+
+/***/ },
+/* 100 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classnames = __webpack_require__(82);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _Reactify = __webpack_require__(83);
+
+var _Reactify2 = _interopRequireDefault(_Reactify);
+
+var _TreeContainer = __webpack_require__(34);
+
+var _TreeContainer2 = _interopRequireDefault(_TreeContainer);
+
+var _util = __webpack_require__(40);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var recl = React.createClass;
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    pre = _React$DOM.pre,
+    span = _React$DOM.span,
+    a = _React$DOM.a,
+    ul = _React$DOM.ul,
+    li = _React$DOM.li,
+    h1 = _React$DOM.h1;
+exports.default = (0, _TreeContainer2.default)({
+  path: 't',
+  kids: {
+    snip: 'r',
+    head: 'r',
+    meta: 'j',
+    bump: 't',
+    name: 't'
+  }
+}, recl({
+  displayName: "List",
+
+  render: function render() {
+    var k = (0, _classnames2.default)({ list: true }, this.props.dataType, { default: this.props['data-source'] === 'default' }, this.props.className);
+    var kids = this.renderList(_util2.default.sortKids(this.props.kids, this.props.sortBy));
+    if (kids.length !== 0 || this.props.is404 == null) {
+      return ul({ className: k }, kids);
+    }
+
+    return div({ className: k }, h1({ className: 'red inverse block error' }, 'Error: Empty path'), div({}, pre({}, this.props.path), span({}, 'is either empty or does not exist.')));
+  },
+  renderList: function renderList(elems) {
+    var _this = this;
+
+    return function () {
+      var result = [];
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = Array.from(elems)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var elem = _step.value;
+
+          var linked, preview;
+          var item = elem.name;
+          var meta = elem.meta != null ? elem.meta : {};
+          var path = _this.props.path + "/" + item;
+          if (meta.hide != null) {
+            continue;
+          }
+          var href = _util2.default.basepath(path);
+          if (_this.props.linkToFragments != null) {
+            href = '#' + item;
+          }
+          if (_this.props.childIsFragment != null) {
+            href = _util2.default.basepath(_this.props.path) + "#" + item;
+          }
+          if (meta.link) {
+            href = meta.link;
+          }
+          var parts = [];
+          var title = null;
+
+          if (meta.title) {
+            if (_this.props.dataType === 'post') {
+              title = {
+                gn: 'a',
+                ga: { href: href },
+                c: [{
+                  gn: 'h1',
+                  ga: { className: 'title' },
+                  c: [meta.title]
+                }]
+              };
+            } else {
+              title = {
+                gn: 'h1',
+                ga: { className: 'title' },
+                c: [meta.title]
+              };
+            }
+          }
+          if (!title && elem.head.c.length > 0) {
+            title = elem.head;
+          }
+          if (!title) {
+            title = {
+              gn: 'h1',
+              ga: { className: 'title' },
+              c: [item]
+            };
+          }
+
+          if (!_this.props.titlesOnly) {
+            // date
+            var _date = meta.date;
+            if (!_date || _date.length === 0) {
+              _date = "";
+            }
+            var date = {
+              gn: 'div',
+              ga: { className: 'date' },
+              c: [_date]
+            };
+            parts.push(date);
+          }
+
+          parts.push(title);
+
+          if (!_this.props.titlesOnly) {
+            // metadata
+            if (_this.props.dataType === 'post') {
+              if (meta.image) {
+                // image
+                var image = {
+                  gn: 'a',
+                  ga: { href: href },
+                  c: [{
+                    gn: 'img',
+                    ga: {
+                      src: meta.image
+                    }
+                  }]
+                };
+                parts.push(image);
+              }
+            }
+            if (_this.props.dataPreview) {
+              // preview
+              if (!meta.preview) {
+                parts.push.apply(parts, _toConsumableArray(elem.snip.c.slice(0, 2)));
+              } else {
+                if (meta.preview) {
+                  preview = {
+                    gn: 'p',
+                    ga: { className: 'preview' },
+                    c: [meta.preview]
+                  };
+                } else {
+                  preview = elem.snip;
+                }
+                parts.push(preview);
+              }
+            }
+            if (_this.props.dataType === 'post') {
+              if (meta.author) {
+                // author
+                var author = {
+                  gn: 'h3',
+                  ga: { className: 'author' },
+                  c: [meta.author]
+                };
+                parts.push(author);
+              }
+              var cont = {
+                gn: 'a',
+                ga: { className: 'continue', href: href },
+                c: ['Read more']
+              };
+              parts.push(cont);
+              linked = true;
+            }
+          }
+
+          var node = (0, _Reactify2.default)({ gn: 'div', c: parts });
+          if (linked == null) {
+            node = a({
+              href: href,
+              className: (0, _classnames2.default)({ preview: _this.props.dataPreview != null })
+            }, node);
+          }
+
+          result.push(li({ key: item }, node));
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      return result;
+    }();
+  }
+}));
+
+/***/ },
+/* 101 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _TreeActions = __webpack_require__(80);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var recl = React.createClass;
+var div = React.DOM.div;
+exports.default = recl({
+  displayName: "Module",
+
+  componentDidMount: function componentDidMount() {
+    var _this = this;
+
+    return setTimeout(function () {
+      return _TreeActions2.default.setNav({
+        title: _this.props["nav:title"],
+        dpad: _this.props["nav:no-dpad"] != null ? false : undefined,
+        sibs: _this.props["nav:no-sibs"] != null ? false : undefined,
+        subnav: _this.props["nav:subnav"]
+      }, 0);
+    }); // XX dispatch while dispatching
+  },
+  componentWillUnmount: function componentWillUnmount() {
+    // reset tree store state
+    return setTimeout(function () {
+      return _TreeActions2.default.clearNav();
+    }, 0);
+  },
+  render: function render() {
+    return div({ className: "module" }, this.props.children);
+  }
+});
+
+/***/ },
+/* 102 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var recl = React.createClass;
+var rele = React.createElement;
+var _React$DOM = React.DOM,
+    nav = _React$DOM.nav,
+    ul = _React$DOM.ul,
+    li = _React$DOM.li,
+    a = _React$DOM.a;
+exports.default = recl({
+  getInitialState: function getInitialState() {
+    return { loaded: urb.ship != null };
+  },
+  componentDidMount: function componentDidMount() {
+    var _this = this;
+
+    return urb.init(function () {
+      return _this.setState({ 'loaded': 'loaded' });
+    });
+  },
+  render: function render() {
+    if (urb.user == null || urb.user !== urb.ship) {
+      return nav({ className: "navbar panel" }, [ul({ className: "nav navbar-nav" }, [li({ className: 'nav-item pull-right' }, a({ href: "/~~" }, "Log in"))])]);
+    } else {
+      return nav({ className: "navbar panel" }, [ul({ className: "nav navbar-nav" }, [li({ className: "nav-item" }, a({ href: "/~~/talk" }, "Talk")), li({ className: "nav-item" }, a({ href: "/~~/dojo" }, "Dojo")), li({ className: "nav-item" }, a({ href: "/~~/static" }, "Static")), li({ className: 'nav-item pull-right' }, a({ href: "/~/away" }, "Log out"))])]);
+    }
+  }
+});
+
+/***/ },
+/* 103 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _LoadComponent = __webpack_require__(37);
+
+var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
+
+var _Async = __webpack_require__(81);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+var _TreeActions = __webpack_require__(80);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var recl = React.createClass;
+var rele = React.createElement;
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    textarea = _React$DOM.textarea,
+    button = _React$DOM.button,
+    input = _React$DOM.input,
+    a = _React$DOM.a,
+    h6 = _React$DOM.h6,
+    code = _React$DOM.code,
+    span = _React$DOM.span;
+var _React$DOM2 = React.DOM,
+    table = _React$DOM2.table,
+    tbody = _React$DOM2.tbody,
+    tr = _React$DOM2.tr,
+    td = _React$DOM2.td; // XX flexbox?
+
+var Grid = function Grid(props) {
+  // Grid [[1,2],null,[3,4],[5,6]]
+  var _td = function _td(x) {
+    return div({ className: "td" }, x);
+  };
+  var _tr = function _tr(x) {
+    if (x != null) {
+      return div.apply(undefined, [{ className: "tr" }].concat(_toConsumableArray(x.map(_td))));
+    }
+  };
+
+  for (var _len = arguments.length, rows = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    rows[_key - 1] = arguments[_key];
+  }
+
+  return div.apply(undefined, [props].concat(_toConsumableArray(rows.map(_tr))));
+};
+
+exports.default = (0, _Async2.default)({
+  plan: 'j',
+  beak: 't',
+  path: 't'
+}, recl({
+  displayName: "Plan",
+  getInitialState: function getInitialState() {
+    return {
+      edit: false,
+      plan: this.props.plan,
+      focus: null,
+      loaded: urb.ship != null
+    };
+  },
+  componentDidMount: function componentDidMount() {
+    var _this = this;
+
+    return urb.init(function () {
+      return _this.setState({ 'loaded': 'loaded' });
+    });
+  },
+  componentWillReceiveProps: function componentWillReceiveProps(props) {
+    if (_.isEqual(this.props.plan, this.state.plan)) {
+      return this.setState({ plan: props.plan });
+    }
+  },
+  refInput: function refInput(ref) {
+    var _this2 = this;
+
+    return function (node) {
+      _this2[ref] = node;
+      if (ref === _this2.state.focus) {
+        return __guard__(node, function (x) {
+          return x.focus();
+        });
+      }
+    };
+  },
+  saveInfo: function saveInfo() {
+    var plan = { who: this.who.value, loc: this.loc.value, acc: __guard__(this.props.plan, function (x) {
+        return x.acc;
+      }) };
+    if (!_.isEqual(plan, this.state.plan)) {
+      _TreeActions2.default.setPlanInfo(plan);
+      this.setState({ plan: plan });
+    }
+    return this.setState({ edit: false, focus: null });
+  },
+  render: function render() {
+    var _this3 = this;
+
+    var accounts = void 0,
+        editable = void 0,
+        editButton = void 0;
+    if (!this.state.loaded) {
+      return div({ className: "plan" }, "Loading authentication info");
+    }
+    var _props = this.props,
+        beak = _props.beak,
+        path = _props.path;
+
+    var _ref = this.state.plan != null ? this.state.plan : {},
+        acc = _ref.acc,
+        loc = _ref.loc,
+        who = _ref.who;
+
+    var issuedBy = urb.sein !== urb.ship ? '~' + urb.sein : "self";
+
+    if (urb.user !== urb.ship) {
+      editButton = null;
+      editable = function editable(ref, val, placeholder) {
+        return val != null ? val : placeholder;
+      };
+    } else if (this.state.edit) {
+      editButton = button({
+        className: 'edit',
+        onClick: function onClick() {
+          return _this3.saveInfo();
+        }
+      }, "Save");
+      editable = function editable(ref, val, placeholder) {
+        return input({
+          placeholder: placeholder,
+          defaultValue: val,
+          ref: _this3.refInput(ref),
+          onKeyDown: function onKeyDown(_ref2) {
+            var keyCode = _ref2.keyCode;
+
+            if (keyCode === 13) {
+              return _this3.saveInfo();
+            }
+          }
+        });
+      };
+    } else {
+      editButton = button({
+        className: 'edit',
+        onClick: function onClick() {
+          return _this3.setState({ edit: true });
+        }
+      }, "Edit");
+      editable = function editable(ref, val, placeholder) {
+        var value = val != null ? val : placeholder;
+        if (__guard__(_this3.props.plan, function (x) {
+          return x[ref];
+        }) !== __guard__(_this3.state.plan, function (x1) {
+          return x1[ref];
+        })) {
+          value = rele(_LoadComponent2.default, {});
+        }
+        return span({
+          onClick: function onClick() {
+            return _this3.setState({ edit: true, focus: ref });
+          }
+        }, value);
+      };
+    }
+
+    if (!_.isEmpty(acc)) {
+      accounts = ["Connected to:", div({}, function () {
+        var result = [];
+        for (var key in acc) {
+          var val;
+          var _acc$key = acc[key],
+              usr = _acc$key.usr,
+              url = _acc$key.url;
+
+          if (url == null) {
+            val = key + "/" + usr;
+          } else {
+            val = a({ href: url }, key + "/" + usr);
+          }
+          result.push(div({ key: key, className: 'service' }, val));
+        }
+        return result;
+      }())];
+    } else {
+      accounts = "";
+    }
+
+    return div({ className: "plan" }, div({ className: "home" }, ""), div({ className: "mono" }, '~' + urb.ship), who != null || this.state.edit ? h6({}, editable('who', who, "Sun Tzu")) : undefined, Grid({ className: "grid" }, ["Location:", editable('loc', loc, "Unknown")], ["Issued by:", a({ href: '//' + urb.sein + '.urbit.org' }, issuedBy)], ["Immutable link:", a({ href: beak + "/web" + path }, beak)], accounts), editButton);
+  }
+}));
+
+
+function __guard__(value, transform) {
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
+}
+
+/***/ },
+/* 104 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classnames = __webpack_require__(82);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _LoadComponent = __webpack_require__(37);
+
+var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
+
+var _Async = __webpack_require__(81);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+var _Reactify = __webpack_require__(83);
+
+var _Reactify2 = _interopRequireDefault(_Reactify);
+
+var _TreeActions = __webpack_require__(80);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+var _util = __webpack_require__(40);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _ShipComponent = __webpack_require__(38);
+
+var _ShipComponent2 = _interopRequireDefault(_ShipComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var recl = React.createClass;
+var rele = React.createElement;
+var _React$DOM = React.DOM,
+    div = _React$DOM.div,
+    p = _React$DOM.p,
+    h2 = _React$DOM.h2,
+    img = _React$DOM.img,
+    a = _React$DOM.a,
+    form = _React$DOM.form,
+    textarea = _React$DOM.textarea,
+    input = _React$DOM.input,
+    code = _React$DOM.code;
+
+
+var DEFER_USER = false;
+
+exports.default = (0, _Async2.default)({ comt: 'j', path: 't', spur: 't' }, recl({
+  displayName: "Post",
+  getInitialState: function getInitialState() {
+    return {
+      loading: null,
+      value: "",
+      user: urb.user != null ? urb.user : ""
+    };
+  },
+  componentDidMount: function componentDidMount() {
+    var _this = this;
+
+    if (!DEFER_USER) {
+      return urb.init(function () {
+        return _this.setState({ user: urb.user });
+      });
+    }
+  },
+  componentDidUpdate: function componentDidUpdate(_props) {
+    if (urb.user && !this.state.user) {
+      this.setState({ user: urb.user != null ? urb.user : "" });
+    }
+    if (this.props.comt.length > _props.comt.length) {
+      return this.setState({ loading: null });
+    }
+  },
+  onSubmit: function onSubmit(e) {
+    var title = this.refs.in.title.value;
+    var comment = this.refs.in.comment.value;
+    var path = this.props.path || "/"; // XX deal with root path
+    _TreeActions2.default.addPost(path, this.props.spur, title, comment);
+    return e.preventDefault();
+  },
+  onChange: function onChange(e) {
+    return this.setState({ value: e.target.value });
+  },
+  render: function render() {
+    var _attr = {};
+    if (this.state.loading === true) {
+      _attr.disabled = "true";
+    }
+    var titleInput = input(_.create(_attr, {
+      type: "text",
+      name: "title",
+      placeholder: "Title"
+    }));
+    var bodyTextArea = textarea(_.create(_attr, {
+      type: "text",
+      name: "comment",
+      value: this.state.value,
+      onChange: this.onChange
+    }));
+    var postButton = input(_.create(_attr, {
+      type: "submit",
+      value: "Post",
+      className: "btn btn-primary"
+    }));
+
+    return div({}, div({ className: "add-post" }, form({ ref: "in", onSubmit: this.onSubmit }, rele(_ShipComponent2.default, { ship: this.state.user }), titleInput, bodyTextArea, postButton)));
+  }
+}));
+
+/***/ },
+/* 105 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _TreeActions = __webpack_require__(80);
+
+var _TreeActions2 = _interopRequireDefault(_TreeActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var recl = React.createClass;
+var rele = React.createElement;
+
+var waitingScripts = null; // null = none waiting, [] = one in flight, [...] = blocked
+var appendNext = function appendNext() {
+  if (waitingScripts == null) {
+    return;
+  }
+  if (waitingScripts.length === 0) {
+    return waitingScripts = null;
+  } else {
+    return document.body.appendChild(waitingScripts.shift());
+  }
+};
+
+// Script eval shim
+exports.default = recl({
+  displayName: "Script",
+  componentDidMount: function componentDidMount() {
+    var s = document.createElement('script');
+    _.assign(s, this.props);
+    _TreeActions2.default.registerScriptElement(s);
+    s.onload = appendNext;
+    this.js = s;
+    if (waitingScripts != null) {
+      return waitingScripts.push(s);
+    } else {
+      waitingScripts = [s];
+      return appendNext();
+    }
+  },
+  componentWillUnmount: function componentWillUnmount() {
+    if (this.js.parentNode === document.body) {
+      return document.body.removeChild(this.js);
+    }
+  },
+  render: function render() {
+    return rele("script", this.props);
+  }
+});
+
+/***/ },
+/* 106 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Async = __webpack_require__(81);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+var _Reactify = __webpack_require__(83);
+
+var _Reactify2 = _interopRequireDefault(_Reactify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var recl = React.createClass;
+var _React$DOM = React.DOM,
+    a = _React$DOM.a,
+    div = _React$DOM.div,
+    input = _React$DOM.input;
+exports.default = (0, _Async2.default)({ name: 't', kids: { sect: 'j' }
+}, recl({
+  hash: null,
+  displayName: "Search",
+  getInitialState: function getInitialState() {
+    return { search: 'wut' };
+  },
+  onKeyUp: function onKeyUp(e) {
+    return this.setState({ search: e.target.value });
+  },
+  wrap: function wrap(elem, dir, path) {
+    var c = void 0,
+        ga = void 0,
+        gn = void 0;
+    if (path.slice(-1) === "/") {
+      path = path.slice(0, -1);
+    }
+    var href = this.props.name + "/" + dir + path;
+    if (__guard__(__guard__(elem, function (x1) {
+      return x1.ga;
+    }), function (x) {
+      return x.id;
+    })) {
+      var _elem = elem;
+      gn = _elem.gn;
+      ga = _elem.ga;
+      c = _elem.c;
+
+      ga = _.clone(ga);
+      href += '#' + ga.id;
+      delete ga.id;
+      elem = { gn: gn, ga: ga, c: c };
+    }
+    return { gn: 'div', c: [{ gn: 'a', ga: { href: href }, c: [elem] }] };
+  },
+  render: function render() {
+    var _this = this;
+
+    return div({}, input({ onKeyUp: this.onKeyUp, ref: 'inp', defaultValue: 'wut' }), _(this.props.kids).map(function (_ref, dir) {
+      var sect = _ref.sect;
+      return function () {
+        var result = [];
+        for (var path in sect) {
+          var heds = sect[path];
+          result.push(Array.from(heds).map(function (h) {
+            return _this.wrap(h, dir, path);
+          }));
+        }
+        return result;
+      }();
+    }).flatten().flatten().map(this.highlight).filter().take(50).map(_Reactify2.default).value());
+  },
+  highlight: function highlight(e) {
+    var _this2 = this;
+
+    if (!this.state.search) {
+      return e;
+    }
+    var got = false;
+    var res = _Reactify2.default.walk(e, function () {
+      return null;
+    }, function (s) {
+      var m = s.split(_this2.state.search);
+      if (m[1] == null) {
+        return [s];
+      }
+      var lit = { gn: 'span', c: [_this2.state.search], ga: { style: { background: '#ff6'
+          }
+        } };
+      got = true;
+      return [m[0]].concat(_toConsumableArray(_.flatten(function () {
+        var result = [];
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = Array.from(m.slice(1))[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            s = _step.value;
+            result.push([lit, s]);
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+
+        return result;
+      }())));
+    }, function (_ref2) {
+      var gn = _ref2.gn,
+          ga = _ref2.ga,
+          c = _ref2.c;
+      return { gn: gn, ga: ga, c: _.flatten(c) };
+    });
+    if (got) {
+      return res;
+    }
+  }
+}));
+
+
+function __guard__(value, transform) {
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
+}
+
+/***/ },
+/* 107 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _Async = __webpack_require__(81);
+
+var _Async2 = _interopRequireDefault(_Async);
+
+var _Reactify = __webpack_require__(83);
+
+var _Reactify2 = _interopRequireDefault(_Reactify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var recl = React.createClass;
+var div = React.DOM.div;
+exports.default = (0, _Async2.default)({ body: 'r' }, recl({
+  hash: null,
+  displayName: "TableOfContents",
+
+  _click: function _click(id) {
+    return function () {
+      if (id) {
+        return document.location.hash = id;
+      }
+    };
+  },
+  componentDidMount: function componentDidMount() {
+    this.int = setInterval(this.checkHash, 100);
+    this.st = $(window).scrollTop();
+    // $(window).on 'scroll',@checkScroll
+    return this.$headers = $('#toc').children('h1,h2,h3,h4').filter('[id]');
+  },
+  checkScroll: function checkScroll() {
+    var _this = this;
+
+    var st = $(window).scrollTop();
+    if (Math.abs(this.st - st) > 10) {
+      var _ret = function () {
+        var hash = null;
+        _this.st = st;
+        return {
+          v: function () {
+            var result = [];
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+              for (var _iterator = Array.from(_this.$headers)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var v = _step.value;
+
+                var item = void 0;
+                if (v.tagName === undefined) {
+                  continue;
+                }
+                var $h = $(v);
+                var hst = $h.offset().top - $h.outerHeight(true) + 10;
+                if (hst < st) {
+                  hash = $h.attr('id');
+                }
+                if (hst > st && hash !== _this.hash && hash !== null) {
+                  _this.hash = '#' + hash;
+                  document.location.hash = hash;
+                  break;
+                }
+                result.push(item);
+              }
+            } catch (err) {
+              _didIteratorError = true;
+              _iteratorError = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                  _iterator.return();
+                }
+              } finally {
+                if (_didIteratorError) {
+                  throw _iteratorError;
+                }
+              }
+            }
+
+            return result;
+          }()
+        };
+      }();
+
+      if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+    }
+  },
+  checkHash: function checkHash() {
+    var _this2 = this;
+
+    if (__guard__(document.location.hash, function (x) {
+      return x.length;
+    }) > 0 && document.location.hash !== this.hash) {
+      var _ret2 = function () {
+        var hash = document.location.hash.slice(1);
+        return {
+          v: function () {
+            var result = [];
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+              for (var _iterator2 = Array.from(_this2.$headers)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                var v = _step2.value;
+
+                var item = void 0;
+                var $h = $(v);
+                if (hash === $h.attr('id')) {
+                  _this2.hash = document.location.hash;
+                  var offset = $h.offset().top - $h.outerHeight(true);
+                  setTimeout(function () {
+                    return $(window).scrollTop(offset, 10);
+                  });
+                  break;
+                }
+                result.push(item);
+              }
+            } catch (err) {
+              _didIteratorError2 = true;
+              _iteratorError2 = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                  _iterator2.return();
+                }
+              } finally {
+                if (_didIteratorError2) {
+                  throw _iteratorError2;
+                }
+              }
+            }
+
+            return result;
+          }()
+        };
+      }();
+
+      if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
+    }
+  },
+  componentWillUnmount: function componentWillUnmount() {
+    return clearInterval(this.int);
+  },
+  collectHeader: function collectHeader(_ref) {
+    var gn = _ref.gn,
+        ga = _ref.ga,
+        c = _ref.c;
+
+    var comp = void 0;
+    if (this.props.match) {
+      comp = gn === this.props.match;
+    } else {
+      comp = gn && gn[0] === 'h' && parseInt(gn[1]) !== NaN;
+    }
+    if (comp) {
+      ga = _.clone(ga);
+      ga.onClick = this._click(ga.id);
+      delete ga.id;
+      return { gn: gn, ga: ga, c: c };
+    }
+  },
+  parseHeaders: function parseHeaders() {
+    if (this.props.body.c) {
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        for (var _iterator3 = Array.from(this.props.body.c)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var v = _step3.value;
+
+          if (v.gn === 'div' && __guard__(v.ga, function (x) {
+            return x.id;
+          }) === "toc") {
+            var contents = [{ gn: "h1", ga: { className: "t" }, c: ["Table of contents"] }].concat(_toConsumableArray(_.filter(v.c.map(this.collectHeader))));
+            if (this.props.noHeader) {
+              contents.shift();
+            }
+            return {
+              gn: "div",
+              ga: { className: "toc" },
+              c: contents
+            };
+          }
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
+    }
+  },
+  render: function render() {
+    return (0, _Reactify2.default)(this.parseHeaders());
+  }
+}));
+
+
+function __guard__(value, transform) {
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
+}
+
+/***/ },
+/* 108 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classnames = __webpack_require__(82);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _TreeContainer = __webpack_require__(34);
+
+var _TreeContainer2 = _interopRequireDefault(_TreeContainer);
+
+var _NavComponent = __webpack_require__(85);
+
+var _NavComponent2 = _interopRequireDefault(_NavComponent);
+
+var _BodyComponent = __webpack_require__(91);
+
+var _BodyComponent2 = _interopRequireDefault(_BodyComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var head = React.createFactory(_NavComponent2.default);
+
+// top level tree component should get rendered to document.body
+// and only render two components, head and nav
+// each one can determine whether or not it's a container.
+
+var body = React.createFactory(_BodyComponent2.default);
+
+var div = React.DOM.div;
+exports.default = (0, _TreeContainer2.default)({
+  body: 'r',
+  name: 't',
+  path: 't',
+  meta: 'j',
+  sein: 't'
+}, React.createClass({
+  displayName: "Tree",
+
+  render: function render() {
+    var treeClas = (0, _classnames2.default)({
+      container: this.props.meta.container !== 'false' });
+
+    return div({ className: treeClas }, [head({ key: 'head-container' }, ""), body({ key: 'body-container' }, "")]);
+  }
+}));
 
 /***/ }
 /******/ ]);

@@ -13,9 +13,6 @@ import imagepanel from './ImagepanelComponent';
 import load from './LoadComponent';
 import ship from './ShipComponent';
 
-const recl = React.createClass;
-const { div } = React.DOM;
-
 export default {
   codemirror,
   search,
@@ -31,5 +28,8 @@ export default {
   imagepanel,
   load,
   ship,
-  lost:       recl({render() { return (div({}, "<lost(", this.props.children, ")>")); }})
+  lost: React.createClass({
+    render() {
+      return (<lost>{this.props.children}</lost>);
+    } })
 };

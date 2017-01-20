@@ -13,11 +13,11 @@ function containerFactory(query, Child, Loading = Spinner) {
     }
 
     render() {
-      return (
-        (this.props.query !== null) ?
-          (React.createFactory(Loading)({}, '')) :
-          (React.createFactory(Child)(this.props.data, ''))
-      );
+      if (this.props.query !== null) {
+        return (React.createFactory(Loading)({}, ''));
+      }
+      const childProps = Object.assign({}, this.props.data, this.props)
+      return (React.createFactory(Child)(childProps, ''));
     }
   }
 

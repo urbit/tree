@@ -4,7 +4,7 @@ import clas from 'classnames';
 // and only render two components, head and nav
 // each one can determine whether or not it's a container.
 
-import query from './Async';
+import Factory from './TreeContainer';
 
 import Nav from './NavComponent';
 import Body from './BodyComponent';
@@ -14,7 +14,7 @@ const body = React.createFactory(Body);
 
 const { div } = React.DOM;
 
-export default query({
+export default Factory({
   body:'r',
   name:'t',
   path:'t',

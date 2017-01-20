@@ -1,9 +1,11 @@
 import clas from 'classnames';
 import util from '../utils/util';
-import query from './Async';
+
+import Factory from './TreeContainer';
 import reactify from './Reactify';
 import TreeStore from '../stores/TreeStore';
 import TreeActions from '../actions/TreeActions';
+
 import NavBody from './NavBodyComponent';
 
 const { div } = React.DOM;
@@ -167,7 +169,7 @@ const Nav = React.createClass({
   }
 })
 
-export default query({
+export default Factory({
   sein: 't',
   path: 't',
   name: 't',

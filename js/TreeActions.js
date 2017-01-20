@@ -2,6 +2,14 @@ import TreePersistence from './persistence/TreePersistence';
 
 export const SET_PATH = 'SET_PATH';
 export const LOAD_PATH = 'LOAD_PATH';
+export const ADD_COMPONENTS = 'ADD_COMPONENT';
+
+export function addComponents(components) {
+  return {
+    type: ADD_COMPONENTS,
+    components,
+  };
+}
 
 export function setCurrentPath(path, initialLoad = false) {
   return {

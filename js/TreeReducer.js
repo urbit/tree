@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-import { SET_PATH, LOAD_PATH } from './TreeActions';
+import { SET_PATH, LOAD_PATH, ADD_COMPONENTS } from './TreeActions';
 
 export const QUERIES = {
   body: 'r', // reactJSON
@@ -27,19 +27,23 @@ function path(state = '', action) {
 function tree(state = {}, action) {
   switch (action.type) {
     case LOAD_PATH:
-      function loadValuesTree(_tree, _data) {
-        if (_data.kids) {
-          Object.keys(_data.kids).forEach((k) => {
-            const v = _data.kids[k];
-            if (_tree[k] == null) {
-              _tree[k] = {};
-            }
-            loadValuesTree(_tree[k], v);
-          });
+      let stateAtPath = state;
+      Array.from(action.path.split('/')).forEach((sub) => {
+        if (!sub) { return; } // discard empty path elements
+        if (stateAtPath[sub] == null) {
+          stateAtPath[sub] = {};
         }
-        return _tree;
+        stateAtPath = stateAtPath[sub];
+      });
+      if (action.data.kids) {
+        Object.keys(action.data.kids).forEach((k) => {
+          const v = action.data.kids[k];
+          if (stateAtPath[k] == null) {
+            stateAtPath[k] = {};
+          }
+        });
       }
-      return Object.assign({}, loadValuesTree(state, action.data))
+      return Object.assign({}, state)
     default:
       return state;
   }
@@ -59,16 +63,12 @@ function data(state = {}, action) {
           Object.keys(_data.kids).forEach((k) => {
             const v = _data.kids[k];
             let __path = _path;
-            if (__path === '/') {
-              __path = '';
-            }
-            return this.loadValues(`${__path}/${k}`, v);
+            if (__path === '/') { __path = ''; }
+            loadValues(_state, `${__path}/${k}`, v);
           });
         }
 
-        if (_data.kids && _.isEmpty(_data.kids)) {
-          old.kids = false;
-        }
+        if (_data.kids && _.isEmpty(_data.kids)) { old.kids = false; }
 
         _state[_path] = old;
 
@@ -80,10 +80,21 @@ function data(state = {}, action) {
   }
 }
 
+function components(state = {}, action) {
+  switch (action.type) {
+    case ADD_COMPONENTS:
+      _.extend(state, action.components);
+      return state;
+    default:
+      return state;
+  }
+}
+
 const mainReducer = combineReducers({
   path,
   data,
   tree,
+  components,
 });
 
 export default mainReducer;
