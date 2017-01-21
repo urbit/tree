@@ -5515,12 +5515,12 @@ function Dpad(_ref) {
     "div",
     { className: "dpad", key: "dpad" },
     arrowUp,
-    sein && prev && React.createElement("a", {
+    typeof sein === 'string' && prev && React.createElement("a", {
       href: _util2.default.basepath(sein + "/" + prev),
       key: "prev",
       className: "prev"
     }),
-    sein && next && React.createElement("a", {
+    typeof sein === 'string' && next && React.createElement("a", {
       href: _util2.default.basepath(sein + "/" + next),
       key: "next",
       className: "next"

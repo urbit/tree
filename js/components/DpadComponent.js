@@ -40,13 +40,13 @@ function Dpad({ sein, curr, kids, meta }) {
 
   return (<div className="dpad" key="dpad">
     {arrowUp}
-    { (sein && prev) &&
+    { (typeof sein === 'string' && prev) &&
       <a
         href={util.basepath(`${sein}/${prev}`)}
         key="prev"
         className="prev"
       /> }
-    { (sein && next) &&
+    { (typeof sein === 'string' && next) &&
       <a
         href={util.basepath(`${sein}/${next}`)}
         key="next"
