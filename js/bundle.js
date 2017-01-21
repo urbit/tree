@@ -5547,59 +5547,115 @@ exports.default = Dpad;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var recl = React.createClass;
-var _React$DOM = React.DOM,
-    div = _React$DOM.div,
-    p = _React$DOM.p,
-    button = _React$DOM.button,
-    input = _React$DOM.input;
-exports.default = recl({
-  displayName: "email",
 
-  getInitialState: function getInitialState() {
-    return { submit: false, email: "" };
-  },
-  onClick: function onClick() {
-    return this.submit();
-  },
-  onChange: function onChange(e) {
-    var email = e.target.value;
-    this.setState({ email: e.target.value });
-    var valid = email.indexOf('@') !== -1 && email.indexOf('.') !== -1 && email.length > 7 && email.split(".")[1].length > 1 && email.split("@")[0].length > 0 && email.split("@")[1].length > 4;
-    this.$email.toggleClass('valid', valid);
-    this.$email.removeClass('error');
-    if (e.keyCode === 13) {
-      if (valid === true) {
-        this.submit();
-        e.stopPropagation();
-        e.preventDefault();
-        return false;
-      } else {
-        return this.$email.addClass('error');
-      }
-    }
-  },
-  submit: function submit() {
-    var _this = this;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-    return $.post(this.props.dataPath, { email: this.$email.val() }, function () {
-      return _this.setState({ submit: true });
-    });
-  },
-  componentDidMount: function componentDidMount() {
-    return this.$email = $('input.email');
-  },
-  render: function render() {
-    var cont = void 0;
-    if (this.state.submit === false) {
-      var submit = this.props.submit != null ? this.props.submit : "Sign up";
-      cont = [input({ key: "field", className: "email", placeholder: "your@email.com", onChange: this.onChange, value: this.state.email }), button({ key: "submit", className: "submit btn", onClick: this.onClick }, submit)];
-    } else {
-      cont = [div({ className: "submitted" }, "Got it. Thanks!")];
-    }
-    return p({ className: "email", id: "sign-up" }, cont);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Email = function (_React$Component) {
+  _inherits(Email, _React$Component);
+
+  function Email(props) {
+    _classCallCheck(this, Email);
+
+    var _this = _possibleConstructorReturn(this, (Email.__proto__ || Object.getPrototypeOf(Email)).call(this, props));
+
+    _this.displayName = 'email';
+    _this.state = { submit: false, email: '' };
+    return _this;
   }
-});
+
+  _createClass(Email, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.$email = $('input.email');
+    }
+  }, {
+    key: 'onClick',
+    value: function onClick() {
+      return this.submit();
+    }
+  }, {
+    key: 'onChange',
+    value: function onChange(e) {
+      var email = e.target.value;
+      this.setState({ email: e.target.value });
+      var valid = email.indexOf('@') !== -1 && email.indexOf('.') !== -1 && email.length > 7 && email.split('.')[1].length > 1 && email.split('@')[0].length > 0 && email.split('@')[1].length > 4;
+      this.$email.toggleClass('valid', valid);
+      this.$email.removeClass('error');
+      if (e.keyCode === 13) {
+        if (valid === true) {
+          this.submit();
+          e.stopPropagation();
+          e.preventDefault();
+          return false;
+        }
+        return this.$email.addClass('error');
+      }return null;
+    }
+  }, {
+    key: 'submit',
+    value: function submit() {
+      var _this2 = this;
+
+      return $.post(this.props.dataPath, { email: this.$email.val() }, function () {
+        _this2.setState({ submit: true });
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var cont = void 0;
+      if (this.state.submit === false) {
+        var submit = this.props.submit != null ? this.props.submit : 'Sign up';
+        cont = React.createElement(
+          'span',
+          null,
+          React.createElement('input', {
+            key: 'field',
+            className: 'email',
+            placeholder: 'your@email.com',
+            onChange: this.onChange,
+            value: this.state.email
+          }),
+          React.createElement(
+            'button',
+            {
+              key: 'submit',
+              className: 'submit btn',
+              onClick: this.onClick
+            },
+            submit
+          )
+        );
+      } else {
+        cont = React.createElement(
+          'div',
+          { className: 'submitted' },
+          'Got it. Thanks!'
+        );
+      }
+      return React.createElement(
+        'p',
+        { className: 'email', id: 'sign-up' },
+        cont
+      );
+    }
+  }]);
+
+  return Email;
+}(React.Component);
+
+Email.propTypes = {
+  dataPath: React.PropTypes.string,
+  submit: React.PropTypes.string
+};
+
+exports.default = Email;
 
 /***/ }),
 /* 56 */
