@@ -30,3 +30,4 @@ $ ->
 
   main = React.createFactory require './components/TreeComponent.coffee'
   rend (main {}, ""),document.getElementById('tree')
+

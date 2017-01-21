@@ -7,7 +7,7 @@ waspWait = []
 module.exports =
   refresh: -> dedup = {}
   get: (path,query="no-query",cb) ->
-    url = "#{util.basepath(path)}.tree-json?#{@encode query}"
+    url = "/_tree-json#{util.basepath(path)}?#{@encode query}"
     return if dedup[url]
     dedup[url] = true
     pending[url] = true
