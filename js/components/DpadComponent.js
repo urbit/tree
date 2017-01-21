@@ -1,50 +1,65 @@
-let Dpad;
-import util from '../utils/util.js';
+import util from '../utils/util';
 
 let recl = React.createClass;
 let {div,a} = React.DOM;
 
-let Arrow = function(name,path){
-  let href = util.basepath(path);
-  return (a({href,key:`${name}`,className:`${name}`},""));
+function Arrow(name, path) {
+  const href = util.basepath(path);
+  return (<a href={href} key={name} className={name}></a>);
+}
+
+function Dpad({ sein, curr, kids, meta }) {
+  const keys = util.getKeys(kids, meta.navsort);
+  let next;
+  let prev;
+  let arrowUp;
+
+  if (sein) {
+    arrowUp = (<a href={util.basepath(sein)} key="up" className="up" />);
+    if (meta.navuptwo) {
+      const _path = sein.replace(/\/[^\/]*$/, "")
+      arrowUp = (<a
+        href={util.basepath(_path)}
+        key="up"
+        className="up"
+      />);
+    }
+  }
+
+  if (keys.length > 1) {
+    const index = keys.indexOf(curr);
+    prev = index - 1;
+    next = index + 1;
+    if (prev < 0) { prev = keys.length - 1; }
+    if (next === keys.length) { next = 0; }
+    prev = keys[prev];
+    next = keys[next];
+  }
+
+  if (sein) { if (sein === '/') { sein = ''; } }
+
+  return (<div className="dpad" key="dpad">
+    {arrowUp}
+    { (sein && prev) &&
+      <a
+        href={util.basepath(`${sein}/${prev}`)}
+        key="prev"
+        className="prev"
+      /> }
+    { (sein && next) &&
+      <a
+        href={util.basepath(`${sein}/${next}`)}
+        key="next"
+        className="next"
+      /> }
+  </div>);
+}
+
+Dpad.propTypes = {
+  sein: React.PropTypes.string,
+  curr: React.PropTypes.string,
+  kids: React.PropTypes.object,
+  meta: React.PropTypes.object,
 };
 
-export default Dpad = function({sein,curr,kids,meta}){
-  let keys, next, prev;
-  let arrowUp =
-    sein ?
-      meta.navuptwo ?
-        Arrow("up", sein.replace(/\/[^\/]*$/, "")) // strip last path element
-      :
-        Arrow("up", sein) : undefined;
-
-  let arrowSibs = (
-    keys = util.getKeys(kids, meta.navsort),
-    (() => {
-      if (keys.length > 1) {
-      let index = keys.indexOf(curr);
-      prev = index-1;
-      next = index+1;
-      if (prev < 0) { prev = keys.length-1; }
-      if (next === keys.length) { next = 0; }
-      prev = keys[prev];
-      return next = keys[next];
-    }
-    })(),
-    (() => {
-      if (sein) {
-      let _arrow;
-      if (sein === "/") { sein = ""; }
-      if (prev) {
-        _arrow = Arrow("prev", `${sein}/${prev}`);
-      }
-      if (next) {
-        _arrow = Arrow("next", `${sein}/${next}`);
-      }
-      return div({}, _arrow);
-    }
-    })()
-  );
-
-  return (div({className:'dpad',key:'dpad'}, arrowUp, arrowSibs));
-};
+export default Dpad;

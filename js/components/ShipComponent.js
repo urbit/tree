@@ -1,12 +1,14 @@
-let recl   = React.createClass;
-let {div}  = React.DOM;
+import util from '../utils/util';
 
-export default recl({
-  render() {
-    let attr = {
-      "data-alias":`~${window.tree.util.shortShip(this.props.ship)}`,
-      className:'ship'
-    };
-    return (div(attr,"~",this.props.ship));
-  }
-});
+const Ship = function render(props) {
+  return (<div
+    data-alias={`~${util.shortShip(props.ship)}`}
+    className="ship"
+  >
+    {props.ship}
+  </div>);
+};
+
+Ship.propTypes = { ship: React.PropTypes.string };
+
+export default Ship;

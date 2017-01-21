@@ -1675,17 +1675,27 @@ exports.default = containerFactory;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var recl = React.createClass;
-var div = React.DOM.div;
-exports.default = recl({
-  render: function render() {
-    var attr = {
-      "data-alias": "~" + window.tree.util.shortShip(this.props.ship),
-      className: 'ship'
-    };
-    return div(attr, "~", this.props.ship);
-  }
-});
+
+var _util = __webpack_require__(1);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Ship = function render(props) {
+  return React.createElement(
+    "div",
+    {
+      "data-alias": "~" + _util2.default.shortShip(props.ship),
+      className: "ship"
+    },
+    props.ship
+  );
+};
+
+Ship.propTypes = { ship: React.PropTypes.string };
+
+exports.default = Ship;
 
 /***/ }),
 /* 13 */
@@ -2165,6 +2175,8 @@ exports.loadParent = loadParent;
 exports.clearData = clearData;
 exports.loadPath = loadPath;
 exports.sendQuery = sendQuery;
+exports.addComment = addComment;
+exports.addPost = addPost;
 
 var _TreePersistence = __webpack_require__(32);
 
@@ -2229,7 +2241,7 @@ function loadPath(path, data) {
 }
 
 function sendQuery(path, query) {
-  return function (dispatch, getState) {
+  return function (dispatch) {
     if (query == null) {
       return null;
     }
@@ -2241,6 +2253,37 @@ function sendQuery(path, query) {
         throw err;
       }
       dispatch(loadPath(path, res));
+    });
+  };
+}
+
+function addComment(path, spur, value) {
+  return function (dispatch) {
+    return _TreePersistence2.default.put({
+      pax: path,
+      sup: spur,
+      txt: value
+    }, 'talk-comment', 'talk', function (err) {
+      if (err == null) {
+        dispatch(clearData());
+      }
+    });
+  };
+}
+
+function addPost(path, spur, title, value) {
+  return function (dispatch) {
+    return _TreePersistence2.default.put({
+      pax: path,
+      sup: spur,
+      hed: title,
+      txt: value
+    }, 'talk-fora-post', 'talk', function (err) {
+      if (err == null) {
+        dispatch(clearData());
+        history.pushState({}, '', '..');
+        dispatch(setCurrentPath(path));
+      }
     });
   };
 }
@@ -5179,29 +5222,25 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _classnames = __webpack_require__(2);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _LoadComponent = __webpack_require__(7);
+var _TreeContainer = __webpack_require__(11);
 
-var _LoadComponent2 = _interopRequireDefault(_LoadComponent);
+var _TreeContainer2 = _interopRequireDefault(_TreeContainer);
 
-var _Async = __webpack_require__(6);
+var _TreeContainerPropTypes = __webpack_require__(110);
 
-var _Async2 = _interopRequireDefault(_Async);
+var _TreeContainerPropTypes2 = _interopRequireDefault(_TreeContainerPropTypes);
 
 var _Reactify = __webpack_require__(4);
 
 var _Reactify2 = _interopRequireDefault(_Reactify);
 
-var _TreeActions = __webpack_require__(5);
-
-var _TreeActions2 = _interopRequireDefault(_TreeActions);
-
-var _util = __webpack_require__(1);
-
-var _util2 = _interopRequireDefault(_util);
+var _TreeActions = __webpack_require__(16);
 
 var _ShipComponent = __webpack_require__(12);
 
@@ -5209,18 +5248,18 @@ var _ShipComponent2 = _interopRequireDefault(_ShipComponent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var recl = React.createClass;
-var rele = React.createElement;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var _React$DOM = React.DOM,
     div = _React$DOM.div,
-    p = _React$DOM.p,
     h2 = _React$DOM.h2,
-    img = _React$DOM.img,
-    a = _React$DOM.a,
     form = _React$DOM.form,
     textarea = _React$DOM.textarea,
-    input = _React$DOM.input,
-    code = _React$DOM.code;
+    input = _React$DOM.input;
 
 
 var DEFER_USER = true;
@@ -5231,83 +5270,170 @@ var Comment = function Comment(_ref) {
       body = _ref.body,
       _ref$loading = _ref.loading,
       loading = _ref$loading === undefined ? false : _ref$loading;
-  return div({ className: (0, _classnames2.default)("comment", { loading: loading }) }, '' + window.urb.util.toDate(new Date(time)), h2({}, rele(_ShipComponent2.default, { ship: user })), (0, _Reactify2.default)(body, "comt", { components: {} }));
+
+  var commentClas = (0, _classnames2.default)('comment', { loading: loading });
+  var comment = (0, _Reactify2.default)(body, 'comt', { components: {} });
+  return React.createElement(
+    'div',
+    { className: commentClas },
+    React.createElement(
+      'span',
+      null,
+      window.urb.util.toDate(new Date(time))
+    ),
+    React.createElement(
+      'h2',
+      null,
+      React.createElement(_ShipComponent2.default, { ship: user })
+    ),
+    comment
+  );
 };
 
-exports.default = (0, _Async2.default)({ comt: 'j', path: 't', spur: 't', meta: 'j' }, recl({
-  displayName: "Comments",
-  getInitialState: function getInitialState() {
-    return {
-      loading: null,
-      value: "",
-      user: urb.user != null ? urb.user : ""
+Comment.propTypes = {
+  time: React.PropTypes.number,
+  user: React.PropTypes.string,
+  body: React.PropTypes.object,
+  loading: React.PropTypes.bool
+};
+
+var Comments = function (_React$Component) {
+  _inherits(Comments, _React$Component);
+
+  function Comments(props) {
+    _classCallCheck(this, Comments);
+
+    var _this = _possibleConstructorReturn(this, (Comments.__proto__ || Object.getPrototypeOf(Comments)).call(this, props));
+
+    _this.displayName = 'Comments';
+    _this.state = {
+      loading: false,
+      value: '',
+      user: urb.user != null ? urb.user : ''
     };
-  },
-  componentDidMount: function componentDidMount() {
-    var _this = this;
-
-    if (!DEFER_USER) {
-      return urb.init(function () {
-        return _this.setState({ user: urb.user });
-      });
-    }
-  },
-  componentDidUpdate: function componentDidUpdate(_props) {
-    if (urb.user && !this.state.user) {
-      this.setState({ user: urb.user != null ? urb.user : "" });
-    }
-    if (this.props.comt.length > _props.comt.length) {
-      return this.setState({ loading: null });
-    }
-  },
-  onSubmit: function onSubmit(e) {
-    var value = this.refs.in.comment.value;
-
-    _TreeActions2.default.addComment(this.props.path, this.props.spur, value);
-    this.setState({
-      value: "",
-      loading: { 'loading': 'loading', body: { gn: 'p', c: [value] }, time: Date.now() } });
-    return e.preventDefault();
-  },
-  onChange: function onChange(e) {
-    return this.setState({ value: e.target.value });
-  },
-  render: function render() {
-    var left = void 0;
-    var _attr = {};
-    if (this.state.loading === true) {
-      _attr.disabled = "true";
-    }
-    var textareaAttr = _.create(_attr, {
-      type: "text",
-      name: "comment",
-      value: this.state.value,
-      onChange: this.onChange
-    });
-    var inputAttr = _.create(_attr, {
-      type: "submit",
-      value: "Add comment",
-      className: "btn btn-primary"
-    });
-
-    var addComment = div({ key: 'add-comment', className: "add-comment" }, form({ ref: "in", onSubmit: this.onSubmit }, rele(_ShipComponent2.default, { ship: this.state.user }), textarea(textareaAttr), input(inputAttr)));
-
-    var comments = this.props.comt.map(function (props, key) {
-      return rele(Comment, _.extend({ key: key }, props));
-    });
-
-    comments.unshift(this.state.loading != null ? rele(Comment, _.extend({ key: 'loading' }, this.state.loading, { user: this.state.user })) : undefined);
-
-    if (Array.from((left = __guard__(this.props.meta.comments, function (x) {
-      return x.split(" ");
-    })) != null ? left : []).includes("reverse")) {
-      comments = comments.reverse();
-      return div({}, [div({ key: 'comments', className: "comments" }, comments), addComment]);
-    } else {
-      return div({}, [addComment, div({ key: 'comments', className: "comments" }, comments)]);
-    }
+    _this.onSubmit = _this.onSubmit.bind(_this);
+    _this.onChange = _this.onChange.bind(_this);
+    return _this;
   }
-}));
+
+  _createClass(Comments, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      if (!DEFER_USER) {
+        return urb.init(function () {
+          return _this2.setState({ user: urb.user });
+        });
+      }return null;
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(_props) {
+      if (urb.user && !this.state.user) {
+        this.setState({ user: urb.user != null ? urb.user : '' });
+      }
+      if (this.props.comt.length > _props.comt.length) {
+        return this.setState({ loading: false });
+      }
+    }
+  }, {
+    key: 'onSubmit',
+    value: function onSubmit(e) {
+      this.props.dispatch((0, _TreeActions.addComment)(this.props.path, this.props.spur, this.state.value));
+      this.setState({
+        value: '',
+        loading: {
+          loading: true,
+          body: {
+            gn: 'p',
+            c: [this.state.value] },
+          time: Date.now()
+        }
+      });
+      e.preventDefault();
+      return false;
+    }
+  }, {
+    key: 'onChange',
+    value: function onChange(e) {
+      return this.setState({ value: e.target.value });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var addCommentForm = React.createElement(
+        'div',
+        { key: 'add-comment', className: 'add-comment' },
+        React.createElement(
+          'form',
+          { onSubmit: this.onSubmit },
+          React.createElement(_ShipComponent2.default, { ship: this.state.user }),
+          React.createElement('textarea', {
+            disabled: this.state.loading,
+            type: 'text',
+            name: 'comment',
+            value: this.state.value,
+            onChange: this.onChange
+          }),
+          React.createElement('input', {
+            disabled: this.state.loading,
+            type: 'submit',
+            value: 'Add comment',
+            className: 'btn btn-primary'
+          })
+        )
+      );
+
+      var comments = this.props.comt.map(function (props, key) {
+        return React.createElement(Comment, _.extend({ key: key }, props));
+      });
+      if (this.state.loading !== false) {
+        var newComment = React.createElement(Comment, _.extend({ key: 'loading' }, this.state.loading, { user: this.state.user }));
+        comments.unshift(newComment);
+      }
+
+      var reverse = false;
+      if (this.props.meta.comments) {
+        reverse = Array.from(this.props.meta.comments.split(' ')).includes('reverse');
+      }
+
+      if (reverse) {
+        comments = comments.reverse();
+        return React.createElement(
+          'div',
+          null,
+          React.createElement(
+            'div',
+            { key: 'comments', className: 'comments' },
+            comments,
+            addCommentForm
+          )
+        );
+      }
+      return React.createElement(
+        'div',
+        null,
+        React.createElement(
+          'div',
+          { key: 'comments', className: 'comments' },
+          addCommentForm,
+          comments
+        )
+      );
+    }
+  }]);
+
+  return Comments;
+}(React.Component);
+
+Comments.propTypes = _TreeContainerPropTypes2.default;
+
+exports.default = (0, _TreeContainer2.default)({
+  comt: 'j',
+  path: 't',
+  spur: 't',
+  meta: 'j' }, Comments);
 
 
 function __guard__(value, transform) {
@@ -5331,64 +5457,85 @@ var _util2 = _interopRequireDefault(_util);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Dpad = void 0;
-
-
 var recl = React.createClass;
 var _React$DOM = React.DOM,
     div = _React$DOM.div,
     a = _React$DOM.a;
 
 
-var Arrow = function Arrow(name, path) {
+function Arrow(name, path) {
   var href = _util2.default.basepath(path);
-  return a({ href: href, key: "" + name, className: "" + name }, "");
-};
+  return React.createElement("a", { href: href, key: name, className: name });
+}
 
-exports.default = Dpad = function Dpad(_ref) {
+function Dpad(_ref) {
   var sein = _ref.sein,
       curr = _ref.curr,
       kids = _ref.kids,
       meta = _ref.meta;
 
-  var keys = void 0,
-      next = void 0,
-      prev = void 0;
-  var arrowUp = sein ? meta.navuptwo ? Arrow("up", sein.replace(/\/[^\/]*$/, "")) // strip last path element
-  : Arrow("up", sein) : undefined;
+  var keys = _util2.default.getKeys(kids, meta.navsort);
+  var next = void 0;
+  var prev = void 0;
+  var arrowUp = void 0;
 
-  var arrowSibs = (keys = _util2.default.getKeys(kids, meta.navsort), function () {
-    if (keys.length > 1) {
-      var index = keys.indexOf(curr);
-      prev = index - 1;
-      next = index + 1;
-      if (prev < 0) {
-        prev = keys.length - 1;
-      }
-      if (next === keys.length) {
-        next = 0;
-      }
-      prev = keys[prev];
-      return next = keys[next];
+  if (sein) {
+    arrowUp = React.createElement("a", { href: _util2.default.basepath(sein), key: "up", className: "up" });
+    if (meta.navuptwo) {
+      var _path = sein.replace(/\/[^\/]*$/, "");
+      arrowUp = React.createElement("a", {
+        href: _util2.default.basepath(_path),
+        key: "up",
+        className: "up"
+      });
     }
-  }(), function () {
-    if (sein) {
-      var _arrow = void 0;
-      if (sein === "/") {
-        sein = "";
-      }
-      if (prev) {
-        _arrow = Arrow("prev", sein + "/" + prev);
-      }
-      if (next) {
-        _arrow = Arrow("next", sein + "/" + next);
-      }
-      return div({}, _arrow);
-    }
-  }());
+  }
 
-  return div({ className: 'dpad', key: 'dpad' }, arrowUp, arrowSibs);
+  if (keys.length > 1) {
+    var index = keys.indexOf(curr);
+    prev = index - 1;
+    next = index + 1;
+    if (prev < 0) {
+      prev = keys.length - 1;
+    }
+    if (next === keys.length) {
+      next = 0;
+    }
+    prev = keys[prev];
+    next = keys[next];
+  }
+
+  if (sein) {
+    if (sein === '/') {
+      sein = '';
+    }
+  }
+
+  return React.createElement(
+    "div",
+    { className: "dpad", key: "dpad" },
+    arrowUp,
+    sein && prev && React.createElement("a", {
+      href: _util2.default.basepath(sein + "/" + prev),
+      key: "prev",
+      className: "prev"
+    }),
+    sein && next && React.createElement("a", {
+      href: _util2.default.basepath(sein + "/" + next),
+      key: "next",
+      className: "next"
+    })
+  );
+}
+
+Dpad.propTypes = {
+  sein: React.PropTypes.string,
+  curr: React.PropTypes.string,
+  kids: React.PropTypes.object,
+  meta: React.PropTypes.object
 };
+
+exports.default = Dpad;
 
 /***/ }),
 /* 55 */

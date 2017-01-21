@@ -55,12 +55,43 @@ export function loadPath(path, data) {
 }
 
 export function sendQuery(path, query) {
-  return (dispatch,getState) => {
+  return (dispatch) => {
     if (query == null) { return null; }
     if (path.slice(-1) === '/') { path = path.slice(0, -1); }
     return TreePersistence.get(path, query, (err, res) => {
       if (err != null) { throw err; }
       dispatch(loadPath(path, res));
+    });
+  };
+}
+
+export function addComment(path, spur, value) {
+  return (dispatch) => {
+    return TreePersistence.put({
+      pax: path,
+      sup: spur,
+      txt: value,
+    }, 'talk-comment', 'talk', (err) => {
+      if (err == null) {
+        dispatch(clearData());
+      }
+    });
+  };
+}
+
+export function addPost(path, spur, title, value) {
+  return (dispatch) => {
+    return TreePersistence.put({
+      pax: path,
+      sup: spur,
+      hed: title,
+      txt: value,
+    }, 'talk-fora-post', 'talk', (err) => {
+      if (err == null) {
+        dispatch(clearData());
+        history.pushState({}, '', '..');
+        dispatch(setCurrentPath(path));
+      }
     });
   };
 }
