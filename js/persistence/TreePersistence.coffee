@@ -31,7 +31,9 @@ module.exports =
       urb.waspElem a
     
   encode: (list)->
-    list = for k,v of list # compatibility
+    # convert {spur:'t', {kids:{plan:'t', snip:'r'}}} old format
+    #  to ['spur' {kids:['plan' 'snip']}] new format
+    list = for k,v of list 
       if _.isString v
         k
       else
