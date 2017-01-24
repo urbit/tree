@@ -2,7 +2,13 @@ util        = require '../utils/util.coffee'
 dedup = {}  # XX wrong layer
 
 pending = {}
-waspWait = []
+delayedDependencies = []
+
+window.urb.dependencyHandlers["data"] = (dep)-> # move to persistence?
+  for type, dat of window.urb.dependencies
+    if type is "data"
+      window.urb.delDependency(dat)
+  window.tree.actions.clearData()
 
 module.exports =
   refresh: -> dedup = {}
@@ -16,10 +22,10 @@ module.exports =
       if urb.wasp?
         dep = urb.getXHRWasp(xhr)
         urb.sources[dep] = url # debugging info
-        waspWait.push dep
+        delayedDependencies.push dep
         if _.isEmpty pending
-          waspWait.map urb.waspData
-          waspWait = []
+          delayedDependencies.map urb.addDataDependency
+          delayedDependencies = []
       if cb then cb null,data
     
   put: (data,mark,appl,cb)->
@@ -27,8 +33,8 @@ module.exports =
     urb.init -> urb.send data, {mark,appl}, cb
 
   waspElem: (a)->
-    if urb.wasp?
-      urb.waspElem a
+    if urb.dependOnElem?
+      urb.dependOnElem a
     
   encode: (list)->
     # convert {spur:'t', {kids:{plan:'t', snip:'r'}}} old format
