@@ -1,35 +1,48 @@
 import clas from 'classnames';
+import util from '../utils/util';
 
-import util from '../utils/util.js';
+import Container from './TreeContainer';
+import ContainerPropTypes from './TreeContainerPropTypes';
+import reactify from './Reactify';
 
-import reactify from './Reactify.js';
-import query from './Async.js';
+class Kids extends React.Component {
+  constructor(props) {
+    super(props);
+    this.displayName = 'Kids';
+  }
 
-let recl = React.createClass;
-let {div,a,ul,li,hr} = React.DOM;
-
-export default query({kids: {name:'t', bump:'t', body:'r', meta:'j', path:'t'}}, recl({
-  displayName: "Kids",
   render() {
-    let kids = util.sortKids(this.props.kids, this.props.sortBy);
+    const kids = util.sortKids(this.props.kids, this.props.sortBy);
 
-    let kidsClas = clas(
-      {kids:true},
+    const kidsClas = clas(
+      { kids: true },
       this.props.className);
 
-    let kidClas = clas({
-      "col-md-4":(this.props.grid === 'true')});
+    const kidClas = clas({
+      'col-md-4': (this.props.grid === 'true'),
+    });
 
-    let _kids = [];
-    for (let elem of Array.from(kids)) {
-      let body = (reactify(elem.body, null, {basePath:elem.path}));
-      _kids.push([
-        (div({key:elem.name,id:elem.name,className:kidClas}, body)),
-        (hr({}))
-      ]);
-    }
+    const _kids = [];
+    Array.from(kids).forEach((elem) => {
+      const body = (reactify(elem.body, null, { basePath: elem.path }));
+      _kids.push(
+        (<div key={elem.name} id={elem.name} className={kidClas}>
+          {body}
+        </div>));
+      _kids.push(<hr />);
+    });
 
-    return div({className:kidsClas,key:"kids"}, _kids);
+    return <div className={kidsClas} key="kids">{_kids}</div>;
   }
-})
-);
+}
+
+Kids.propTypes = ContainerPropTypes;
+
+export default Container({
+  kids: {
+    name: 't',
+    bump: 't',
+    body: 'r',
+    meta: 'j',
+    path: 't',
+  } }, Kids);
