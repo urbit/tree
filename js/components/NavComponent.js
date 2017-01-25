@@ -54,7 +54,7 @@ class Nav extends React.Component {
 
   componentDidUpdate() {
     this.setTitle();
-    return this.checkRedirect();
+    this.checkRedirect();
   }
 
   componentWillUnmount() {
@@ -97,9 +97,7 @@ class Nav extends React.Component {
     return this.setPath(path);
   }
 
-  toggleNav() {
-    this.props.dispatch(toggleNav());
-  }
+  toggleNav() { this.props.dispatch(toggleNav()); }
 
   render() {
     if (this.props.meta.anchor === 'none') { return (<div />); }
@@ -115,21 +113,28 @@ class Nav extends React.Component {
 
     const kids = [];
 
-    if (this.state.subnav) {
+    if (this.props.nav.subnav) {
       kids.push(reactify({
-        gn: this.state.subnav,
+        gn: this.props.nav.subnav,
         ga: {
-          open: this.props.open,
+          open: this.props.nav.open,
           toggle: this.toggleNav,
         },
         c: [],
       }, 'subnav'));
     }
 
+    const { title, dpad, sibs, subnav } = this.props.nav;
+
     return (<div id="head" className={navClas}>
       <NavBody
         curr={this.props.name}
+        title={title}
+        dpad={dpad}
+        sibs={sibs}
+        subnav={subnav}
         dataPath={kidsPath}
+        dispatch={this.props.dispatch}
         meta={this.props.meta}
         sein={this.props.sein}
         goTo={this.goTo}

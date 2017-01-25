@@ -1,19 +1,28 @@
-let recl = React.createClass;
-let {span,div} = React.DOM;
+class Load extends React.Component {
+  constructor(props) {
+    super(props);
+    this.displayName = 'Load';
+    this.state = { anim: 0 };
+  }
 
-export default recl({ 
-  displayName: "Load",
-  getInitialState() { return {anim: 0}; },
-  
-  componentDidMount() { return this.interval = setInterval(this.setAnim, 100); },
+  componentDidMount() {
+    this.interval = setInterval(this.setAnim.bind(this), 100);
+  }
 
-  componentWillUnmount() { return clearInterval(this.interval); },
+  componentWillUnmount() {
+    return clearInterval(this.interval);
+  }
 
   setAnim() {
-    let anim = this.state.anim+1;
+    let anim = this.state.anim + 1;
     if (anim > 3) { anim = 0; }
-    return this.setState({anim});
-  },
+    return this.setState({ anim });
+  }
 
-  render() { return (span({className:`loading state-${this.state.anim}`}, '')); }
-});
+  render() {
+    const clas = `loading state-${this.state.anim}`;
+    return (<span className={clas} />);
+  }
+}
+
+export default Load;

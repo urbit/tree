@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import TreeStore from './TreeReducer';
-import { setCurrentPath, addComponents } from './TreeActions';
+import { setCurrentPath, addComponents, actions } from './TreeActions';
 
 import components from './components/Components';
 import Tree from './components/TreeComponent'
@@ -15,6 +15,12 @@ import util from './utils/util';
 const store = createStore(TreeStore, applyMiddleware(thunk));
 
 $(() => {
+  window.tree.util = {
+    components,
+    store,
+    actions,
+  };
+
   const frag = util.fragpath(window.location.pathname.replace(/\.[^\/]*$/, ''));
   store.dispatch(setCurrentPath(frag, true));
   store.dispatch(addComponents(components));

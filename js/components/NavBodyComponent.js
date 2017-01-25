@@ -23,6 +23,7 @@ class NavBody extends React.Component {
     this.mounted = false;
     this.displayName = 'Links';
     this.state = TreeStore.getNav();
+    this.toggleNav = this.toggleNav.bind(this);
   }
 
   onClick() { return this.toggleFocus(); }
@@ -111,15 +112,15 @@ class NavBody extends React.Component {
 
     const toggleClas = clas({
       'navbar-toggler': true,
-      show: (this.state.subnav != null),
+      show: (this.props.subnav != null),
     });
 
     return (<div className={navClas} key="nav">
       <div className={linksClas} key="links">
         <div className={iconClass}>
           <div className="home" onClick={this._home} />
-          <div className="app">{this.state.title ? this.state.title : ''}</div>
-          {((this.state.dpad !== false) &&
+          <div className="app">{this.props.title ? this.props.title : ''}</div>
+          {((this.props.dpad !== false) &&
             (__guard__(this.props.meta, x => x.navdpad) !== "false")) &&
             <Dpad
               dataPath={this.props.dataPath}
@@ -137,7 +138,7 @@ class NavBody extends React.Component {
           </button>
         </div>
         <div className={itemsClass}>
-          {((this.state.sibs !== false) &&
+          {((this.props.sibs !== false) &&
             (__guard__(this.props.meta, x1 => x1.navsibs) !== "false")) &&
             <Sibs
               className={this.props.className}

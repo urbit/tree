@@ -4,13 +4,23 @@ export const SET_PATH = 'SET_PATH';
 export const TOGGLE_NAV = 'TOGGLE_NAV';
 export const CLOSE_NAV = 'CLOSE_NAV';
 export const SET_NAV = 'SET_NAV';
+export const CLEAR_NAV = 'CLEAR_NAV';
 export const LOAD_PATH = 'LOAD_PATH';
 export const ADD_COMPONENTS = 'ADD_COMPONENT';
+export const REGISTER_COMPONENT = 'REGISTER_COMPONENT';
 
 export function addComponents(components) {
   return {
     type: ADD_COMPONENTS,
     components,
+  };
+}
+
+export function registerComponent(name, component) {
+  return {
+    type: REGISTER_COMPONENT,
+    name,
+    component,
   };
 }
 
@@ -20,6 +30,20 @@ export function toggleNav() {
 
 export function closeNav() {
   return { type: CLOSE_NAV };
+}
+
+export function setNav(title, dpad, sibs, subnav) {
+  return {
+    type: SET_NAV,
+    title,
+    dpad,
+    sibs,
+    subnav,
+  };
+}
+
+export function clearNav() {
+  return { type: CLEAR_NAV };
 }
 
 export function setCurrentPath(path, initialLoad = false) {
@@ -95,3 +119,10 @@ export function addPost(path, spur, title, value) {
     });
   };
 }
+
+export const actions = {
+  addPost,
+  addComment,
+  sendQuery,
+  registerComponent,
+};

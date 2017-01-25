@@ -1,26 +1,28 @@
-let recl = React.createClass;
-let {div} = React.DOM;
+import { setNav, clearNav } from '../TreeActions';
 
-import TreeActions from '../actions/TreeActions.js';
+class Module extends React.Component {
+  constructor(props) {
+    super(props);
+    this.displayName = 'Module';
+  }
 
-export default recl({
-  displayName:"Module",
-  
   componentDidMount() {
-    return setTimeout(() => TreeActions.setNav({ 
-        title:this.props["nav:title"],
-        dpad:(this.props["nav:no-dpad"] != null) ? false : undefined,
-        sibs:(this.props["nav:no-sibs"] != null) ? false : undefined,
-        subnav:this.props["nav:subnav"]
-      }
-      , 0)
-    );  // XX dispatch while dispatching
-  },
+    setTimeout(() =>
+      this.props.dispatch(setNav(
+        this.props["nav:title"],
+        ((this.props["nav:no-dpad"] != null) ? false : undefined),
+        ((this.props["nav:no-sibs"] != null) ? false : undefined),
+        this.props["nav:subnav"])), 0);  // XX dispatch while dispatching
+  }
 
   componentWillUnmount() {
     // reset tree store state
-    return setTimeout((() => TreeActions.clearNav()), 0);
-  },
-    
-  render() {  return (div({className:"module"}, this.props.children)); }
-});
+    return setTimeout((() => clearNav()), 0);
+  }
+
+  render() {
+    return (<div className="module">{this.props.children}</div>);
+  }
+}
+
+export default Module;

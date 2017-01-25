@@ -3,9 +3,11 @@ import { combineReducers } from 'redux';
 import { SET_PATH,
         LOAD_PATH,
         ADD_COMPONENTS,
+        REGISTER_COMPONENT,
         TOGGLE_NAV,
         CLOSE_NAV,
         SET_NAV,
+        CLEAR_NAV,
       } from './TreeActions';
 
 export const QUERIES = {
@@ -41,17 +43,19 @@ const initialNavState = {
 function nav(state = initialNavState, action) {
   switch (action.type) {
     case TOGGLE_NAV:
-      return Object.assign({}, { open: !state.open }, state);
+      return Object.assign({}, state, { open: !state.open });
     case CLOSE_NAV:
-      return Object.assign({}, { open: false }, state);
+      return Object.assign({}, state, { open: false });
     case SET_NAV:
-      return Object.assign({}, {
+      return Object.assign({}, state, {
         title: action.title,
         dpad: action.dpad,
         sibs: action.sibs,
         subnav: action.subnav,
-        open: action.open
-      })
+        open: action.open,
+      });
+    case CLEAR_NAV:
+      return Object.assign({}, initialNavState)
     default:
       return state;
   }
@@ -120,6 +124,11 @@ function components(state = {}, action) {
     case ADD_COMPONENTS:
       _.extend(state, action.components);
       return state;
+    case REGISTER_COMPONENT: {
+      const _components = {};
+      _components[action.name] = action.component;
+      return Object.assign({}, _components, state);
+    }
     default:
       return state;
   }

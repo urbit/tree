@@ -178,6 +178,7 @@ export default (query) => {
       data: childData,
       path: childPath,
       query: childQuery,
+      nav: state.nav,
     };
     return childProps;
   };

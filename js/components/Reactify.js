@@ -1,9 +1,7 @@
-import TreeStore from '../stores/TreeStore';
-import LoadComponent from './LoadComponent';
-
 import { connect } from 'react-redux';
 
-const recl = React.createClass;
+import LoadComponent from './LoadComponent';
+
 const rele = React.createElement;
 const load = React.createFactory(LoadComponent);
 
@@ -31,7 +29,7 @@ const walk = (root, _nil, _str, _comp) => {
         return _comp.call(elem, {
           gn,
           ga,
-          c
+          c,
         }, key);
       }
       default:
@@ -41,7 +39,7 @@ const walk = (root, _nil, _str, _comp) => {
   return step(root);
 };
 
-const Virtual = name('Virtual', ({ manx, components, basePath }) =>
+const Virtual = name('Virtual', ({ manx, components, basePath, dispatch }) =>
   walk(manx,
     () => load({}, ''),
     str => str,
@@ -56,6 +54,7 @@ const Virtual = name('Virtual', ({ manx, components, basePath }) =>
       }
       if (components[gn]) {
         props.basePath = basePath;
+        props.dispatch = dispatch;
       }
       return rele((components[gn] != null ? components[gn] : gn),
         (_.extend(props, ga)),
@@ -63,7 +62,12 @@ const Virtual = name('Virtual', ({ manx, components, basePath }) =>
     }),
 );
 
-function mapStateToProps(state) { return { components: state.components }; }
+function mapStateToProps(state, props) {
+  return {
+    components: state.components,
+    dispatch: props.dispatch,
+  };
+}
 const DynamicVirtual = connect(mapStateToProps)(Virtual);
 
 const reactify = (manx, key, param = {}) => {
