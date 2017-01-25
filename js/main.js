@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import TreeStore from './TreeReducer';
-import { setCurrentPath, addComponents, actions } from './TreeActions';
+import { setCurrentPath, addComponents, clearData, actions } from './TreeActions';
 
 import components from './components/Components';
 import Tree from './components/TreeComponent'
@@ -24,6 +24,15 @@ $(() => {
   const frag = util.fragpath(window.location.pathname.replace(/\.[^\/]*$/, ''));
   store.dispatch(setCurrentPath(frag, true));
   store.dispatch(addComponents(components));
+  window.urb.dependencyHandlers["data"] = (dep)=> { // XX in persistence?
+    for(dat in window.urb.dependencies){
+      let type = window.urb.dependencies[dat]
+      if(type == "data"){
+        window.urb.delDependency(dat)
+      }
+    }
+    store.dispatch(clearData())
+  }
 
   ReactDOM.render(
     <Provider store={store}>

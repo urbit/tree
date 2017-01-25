@@ -3,7 +3,7 @@ import util from '../utils/util';
 let dedup = {}; // XX wrong layer
 
 const pending = {};
-let waspWait = [];
+let waitingDepends = [];
 
 export default {
   refresh() {
@@ -18,14 +18,11 @@ export default {
     pending[url] = true;
     $.get(url, {}, (data, status, xhr) => { // XX on error
       delete pending[url];
-      if (urb.wasp != null) {
-        const dep = urb.getXHRWasp(xhr);
-        urb.sources[dep] = url; // debugging info
-        waspWait.push(dep);
-        if (_.isEmpty(pending)) {
-          waspWait.map(urb.waspData);
-          waspWait = [];
-        }
+      const dep = urb.readDependencyHeader(xhr);
+      waitingDepends.push(dep);
+      if (_.isEmpty(pending)) {
+        waitingDepends.map((dep)=> urb.addDependency(dep,"data"));
+        waitingDepends = [];
       }
       if (cb) {
         return cb(null, data);
@@ -43,11 +40,7 @@ export default {
     }, cb));
   },
 
-  waspElem(a) {
-    if (urb.wasp != null) {
-      return urb.waspElem(a);
-    } return null;
-  },
+  dependOnElem(a) {urb.dependOnElem(a)},
 
   encode(_list) {
     let list;
