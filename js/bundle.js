@@ -669,17 +669,13 @@ var Virtual = name('Virtual', function (_ref) {
     }
     if (components[gn]) {
       props.basePath = basePath;
-      props.dispatch = dispatch;
     }
     return rele(components[gn] != null ? components[gn] : gn, _.extend(props, ga), c.length ? c : undefined);
   });
 });
 
-function mapStateToProps(state, props) {
-  return {
-    components: state.components,
-    dispatch: props.dispatch
-  };
+function mapStateToProps(state) {
+  return { components: state.components };
 }
 var DynamicVirtual = (0, _reactRedux.connect)(mapStateToProps)(Virtual);
 
@@ -6095,6 +6091,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _reactRedux = __webpack_require__(17);
+
 var _TreeActions = __webpack_require__(10);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -6146,7 +6144,7 @@ var Module = function (_React$Component) {
   return Module;
 }(React.Component);
 
-exports.default = Module;
+exports.default = (0, _reactRedux.connect)()(Module);
 
 /***/ }),
 /* 61 */

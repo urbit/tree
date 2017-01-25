@@ -1,3 +1,5 @@
+import { connect } from 'react-redux';
+
 import { setNav, clearNav } from '../TreeActions';
 
 class Module extends React.Component {
@@ -25,4 +27,4 @@ class Module extends React.Component {
   }
 }
 
-export default Module;
+export default connect()(Module);

@@ -54,19 +54,15 @@ const Virtual = name('Virtual', ({ manx, components, basePath, dispatch }) =>
       }
       if (components[gn]) {
         props.basePath = basePath;
-        props.dispatch = dispatch;
-      }
+        }
       return rele((components[gn] != null ? components[gn] : gn),
         (_.extend(props, ga)),
         c.length ? c : undefined);
     }),
 );
 
-function mapStateToProps(state, props) {
-  return {
-    components: state.components,
-    dispatch: props.dispatch,
-  };
+function mapStateToProps(state) {
+  return { components: state.components };
 }
 const DynamicVirtual = connect(mapStateToProps)(Virtual);
 
