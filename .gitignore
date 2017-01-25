@@ -6,6 +6,6 @@ node_modules/
 # compiled files
 main.css
 main.css.map
-bundle.js
+/build
 /desk
 grunt.config.js

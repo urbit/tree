@@ -33,8 +33,8 @@
   "scripts": {
     "build-js": "webpack",
     "watch-js": "webpack -w",
-    "build-css": "node-sass css/main.scss css/main.css",
-    "watch-css": "node-sass -w css/main.scss css/main.css",
+    "build-css": "node-sass css/main.scss build/main.css",
+    "watch-css": "node-sass -w css/main.scss build/main.css",
     "lint": "./node_modules/.bin/eslint"
   },
   "repository": {

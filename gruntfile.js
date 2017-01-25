@@ -5,13 +5,13 @@ module.exports = function (grunt) {
     sync: {
       js: {
         files: [
-          { cwd: './js/',
+          { cwd: './build/',
             src: ['bundle.js'],
             dest: config.arvo + 'web/tree/' },
         ] },
       css: {
         files: [
-          { cwd: './css/',
+          { cwd: './build/',
             src: ['main.css'],
             dest: config.arvo + 'web/tree/' },
         ] },
@@ -26,7 +26,7 @@ module.exports = function (grunt) {
     },
     watch: {
       scripts: {
-        files: ['js/bundle.js', 'css/main.css', config.arvo + '**'],
+        files: ['build/bundle.js', 'build/main.css', config.arvo + '**'],
         tasks: 'sync',
       },
     },
