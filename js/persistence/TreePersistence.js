@@ -12,7 +12,7 @@ export default {
 
   get(path, query, cb) {
     if (query == null) { query = 'no-query'; }
-    const url = `${util.basepath(path)}.tree-json?q=${this.encode(query)}`;
+    const url = `/_tree-json${util.basepath(path)}?${this.encode(query)}`;
     if (dedup[url]) { return; }
     dedup[url] = true;
     pending[url] = true;
@@ -49,31 +49,39 @@ export default {
     } return null;
   },
 
-  encode(object) {
-    const delim = n => Array(n + 1).join('_') || '.';
-    function encoder(obj) {
-      if (typeof obj !== 'object') {
-        return [0, obj];
-      }
-      let dep = 0;
-      const sub = (() => {
-        const result = [];
-        _.map(obj, (v, k) => {
-          let item;
-          const [_dep, res] = encoder(v);
-          if (_dep > dep) {
-            dep = _dep;
-          }
-          if (res != null) {
-            item = k + (delim(_dep)) + res;
-          }
-          result.push(item);
-        });
-        return result;
-      })();
-      dep += 1;
-      return [dep, sub.join(delim(dep))];
+  encode(_list) {
+    let list;
+    if(_list instanceof Array){
+      list = _list
     }
-    return (encoder(object))[1];
+    else {
+      // convert {spur:'t', {kids:{plan:'t', snip:'r'}}} old format
+      //  to ['spur' {kids:['plan' 'snip']}] new format
+      list = [];
+      for (let k in _list) { 
+        let v = _list[k];
+        if (_.isString(v)) {
+          list.push(k);
+        } else {
+          let kids = [];
+          for (let k2 in v) {
+            let v2 = v[k2];
+            kids.push(k2);
+          }
+          list.push({[k]: kids})
+        }
+      }
+    }
+          
+    return list.map( (elem) => {
+      if (_.isString(elem)) {
+        return elem;
+      } else {
+        for (let key in elem) {
+          let v = elem[key];
+          return key+"="+elem[key].join('+');
+        }
+      }
+    }).join('&');
   },
 };
