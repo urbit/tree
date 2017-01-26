@@ -7,16 +7,16 @@ export default recl({
   componentDidMount() { return urb.init(() => this.setState({'loaded': 'loaded'})); },
   render() {
     if ((urb.user == null) || (urb.user !== urb.ship)) {
-      return (nav({className:"navbar panel"}, [
-        (ul({className:"nav navbar-nav"},[
+      return (nav({className:"navbar panel"},
+        (ul({className:"nav navbar-nav"},
           (li({className:'nav-item pull-right'}, 
             (a({href:"/~~"}, "Log in"))))
-        ]))
-      ]));
+        ))
+      ));
 
     } else {
-      return (nav({className:"navbar panel"}, [
-        (ul({className:"nav navbar-nav"},[
+      return (nav({className:"navbar panel"},
+        (ul({className:"nav navbar-nav"},
           (li({className:"nav-item"}, 
             (a({href:"/~~/talk"}, "Talk")))),
           (li({className:"nav-item"}, 
@@ -25,8 +25,8 @@ export default recl({
             (a({href:"/~~/static"}, "Static")))),
           (li({className:'nav-item pull-right'}, 
             (a({href:"/~/away"}, "Log out"))))
-        ]))
-      ]));
+        ))
+      ));
     }
   }
 });
