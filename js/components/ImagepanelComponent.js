@@ -1,10 +1,10 @@
-let recl = React.createClass;
-let name = (displayName,component)=> _.extend(component, {displayName});
-let {div} = React.DOM;
+const name = (displayName, component) =>
+  _.extend(component, { displayName });
 
-export default name("ImagePanel", ({src})=>
-  div({
-    className:"image-container",
-    style:{backgroundImage:`url('${src}')`}
-  })
-);
+export default name('ImagePanel', ({ src }) => {
+  const style = `backgroundImage:url('${src}')`;
+  return (<div
+    className="image-container"
+    style={style}
+  />);
+});
