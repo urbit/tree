@@ -40,7 +40,7 @@ export default {
     }, cb));
   },
 
-  dependOnElem(a) {urb.dependOnElem(a)},
+  addDependencyElem(a) {urb.addDependencyElem(a)},
 
   encode(_list) {
     let list;

@@ -54,7 +54,7 @@ export default {
     });
   },
   registerScriptElement(elem) {
-    return TreePersistence.dependOnElem(elem);
+    return TreePersistence.addDependencyElem(elem);
   },
 
   addVirtual(components) {
