@@ -25,7 +25,7 @@ $(() => {
   store.dispatch(setCurrentPath(frag, true));
   store.dispatch(addComponents(components));
   window.urb.dependencyHandlers["data"] = () => { // XX in persistence?
-    for(dat in window.urb.dependencies){
+    for(let dat in window.urb.dependencies){
       let type = window.urb.dependencies[dat]
       if(type == "data"){
         window.urb.delDependency(dat)
