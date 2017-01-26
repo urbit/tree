@@ -12,17 +12,17 @@ export default query({name:'t', kids: { sect:'j'}
   getInitialState() { return {search: 'wut'}; },
   onKeyUp(e){ return this.setState({search: e.target.value}); },
   wrap(elem,dir,path){
-    let c, ga, gn;
     if (path.slice(-1) === "/") { path = path.slice(0, -1); }
     let href = this.props.name+"/"+dir+path;
-    if (__guard__(__guard__(elem, x1 => x1.ga), x => x.id)) {
-      ({gn,ga,c} = elem);
-      ga = _.clone(ga);
-      href += `#${ga.id}`;
-      delete ga.id;
-      elem = {gn,ga,c};
+    let node = _.keys(elem)[0]
+    var [attrs,...kids] = elem[node]
+    if( attrs.id) {
+      attrs = _.clone(attrs);
+      href += "#"+attrs.id
+      delete attrs.id;
+      elem = {[node]:[attrs,...kids]}
     }
-    return {gn:'div', c:[{gn:'a', ga:{href}, c:[elem]}]};
+    return {'div':[{},{'a':[{href},elem]}]};
   },
     
   render() { return div({},
@@ -53,18 +53,15 @@ export default query({name:'t', kids: { sect:'j'}
       s=> {
         let m = s.split(this.state.search);
         if (m[1] == null) { return [s]; }
-        let lit = {gn:'span',c:[this.state.search],ga: {style: {background: '#ff6'
-      }
-      }};
+        let lit = {'span':[{style: {background: '#ff6'}}, this.state.search]}
         got = true;
         return [m[0], ..._.flatten((() => {
           let result = [];
-          for (s of Array.from(m.slice(1))) {             result.push([lit,s]);
-          }
+          for (s of Array.from(m.slice(1))) {result.push([lit,s])}
           return result;
         })())];
       },
-      ({gn,ga,c})=> ({gn,ga,c:_.flatten(c)}));
+      ({node,attrs,children})=> ({[node]:[attrs,_.flatten(children)]}));
     if (got) { return res; }
   }
 })

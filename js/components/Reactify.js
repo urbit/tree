@@ -14,7 +14,7 @@ const name = (displayName, component) => _.extend(component, {
 });
 
 const walk = (root, _nil, _str, _comp) => {
-  // manx: {fork: ["string", {gn:"string" ga:{dict:"string"} c:{list:"manx"}}]}
+  // manx: fork: ["string", {"$node":[{"$attrs"}, "...children"]}]
   const step = (elem, key) => {
     let left;
     switch (false) {
@@ -22,16 +22,18 @@ const walk = (root, _nil, _str, _comp) => {
         return _nil();
       case typeof elem !== 'string':
         return _str(elem);
-      case (elem.gn == null): {
-        const { gn, ga } = elem;
-        let { c } = elem;
-        c = ((left = __guard__(c, x => x.map(step)))) != null ? left : [];
+      case (_.keys(elem).length != 1): {
+        const gn = _.keys(elem)[0]
+        let [ga, ...c] = elem[gn]
+        c = c.map(step)
         return _comp.call(elem, {
           gn,
           ga,
           c,
         }, key);
       }
+      case !(React.isValidElement(elem)):
+        return elem;
       default:
         throw new Error(`Bad react-json ${JSON.stringify(elem)}`);
     }
@@ -43,8 +45,8 @@ const Virtual = name('Virtual', ({ manx, components, basePath, dispatch }) =>
   walk(manx,
     () => load({}, ''),
     str => str,
-    ({ gn, ga, c }, key) => {
-      const props = { key };
+    ({ gn, ga, c }, key) => { //    ([node,attrs,children...], key) => {
+      const props = { key };  //      const props = _.extend({ key }, attrs);
       if (__guard__(ga, x => x.style)) {
         try {
           ga.style = eval(`(${ga.style})`);

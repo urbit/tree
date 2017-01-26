@@ -114,14 +114,12 @@ class Nav extends React.Component {
     const kids = [];
 
     if (this.props.nav.subnav) {
-      kids.push(reactify({
-        gn: this.props.nav.subnav,
-        ga: {
-          open: this.props.nav.open,
-          toggle: this.toggleNav,
-        },
-        c: [],
-      }, 'subnav'));
+      kids.push(
+        <this.props.nav.subnav
+          open={this.props.nav.open}
+          toggle={this.toggleNav}
+          key='subnav'
+        />)
     }
 
     const { title, dpad, sibs, subnav } = this.props.nav;

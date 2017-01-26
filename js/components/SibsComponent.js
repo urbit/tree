@@ -19,7 +19,7 @@ export default query({
   toText(elem){ return reactify.walk(elem,
                              ()=> '',
                              s=> s,
-                             ({c})=> (c != null ? c : []).join('')); },
+                             ({children})=> (children != null ? children : []).join('')); },
   render() {
     let kids = util.sortKids(this.props.kids, this.props.meta.navsort);
 

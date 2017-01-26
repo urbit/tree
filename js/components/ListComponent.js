@@ -33,42 +33,27 @@ class List extends React.Component {
 
       if (meta.title) {
         if (this.props.dataType === 'post') {
-          title = {
-            gn: 'a',
-            ga: { href },
-            c: [{
-              gn: 'h1',
-              ga: { className: 'title' },
-              c: [meta.title],
-            }],
-          };
+          title =
+            <a href={href}>
+              <h1 className='title'>
+                {meta.title}
+              </h1>
+            </a>
         } else {
-          title = {
-            gn: 'h1',
-            ga: { className: 'title' },
-            c: [meta.title],
-          };
+          title = <h1 className='title'>meta.title</h1>
         }
       }
       if (!title && (elem.head.c.length > 0)) {
         title = elem.head;
       }
       if (!title) {
-        title = {
-          gn: 'h1',
-          ga: { className: 'title' },
-          c: [item],
-        };
+        title = <h1 className='title'>item</h1>
       }
 
       if (!this.props.titlesOnly) {        // date
         let _date = meta.date;
         if (!_date || (_date.length === 0)) { _date = ''; }
-        const date = {
-          gn: 'div',
-          ga: { className: 'date' },
-          c: [_date],
-        };
+        const date = <div className='date'>{_date}</div>
         parts.push(date);
       }
 
@@ -77,14 +62,10 @@ class List extends React.Component {
       if (!this.props.titlesOnly) {         // metadata
         if (this.props.dataType === 'post') {
           if (meta.image) {           // image
-            const image = {
-              gn: 'a',
-              ga: { href },
-              c: [{
-                gn: 'img',
-                ga: { src: meta.image },
-              }],
-            };
+            const image = 
+              <a href={ href }>
+                <img src= { meta.image } />
+              </a>
             parts.push(image);
           }
         }
@@ -93,11 +74,7 @@ class List extends React.Component {
             parts.push(...(elem.snip.c.slice(0, 2)));
           } else {
             if (meta.preview) {
-              preview = {
-                gn: 'p',
-                ga: { className: 'preview' },
-                c: [meta.preview],
-              };
+              preview = <p className='preview'>{meta.preview}</p>
             } else {
               preview = elem.snip;
             }
@@ -106,24 +83,16 @@ class List extends React.Component {
         }
         if (this.props.dataType === 'post') {
           if (meta.author) {          // author
-            const author = {
-              gn: 'h3',
-              ga: { className: 'author' },
-              c: [meta.author],
-            };
+            const author = <h3 className='author'>{meta.author}</h3>
             parts.push(author);
           }
-          const cont = {
-            gn: 'a',
-            ga: { className: 'continue', href },
-            c: ['Read more'],
-          };
+          const cont = <a href={href} className='continue'>'Read more'</a>
           parts.push(cont);
           linked = true;
         }
       }
 
-      let node = reactify({ gn: 'div', c: parts });
+      let node = reactify({'div':[{},...parts]});
       if (linked == null) {
         const _clas = clas({ preview: (this.props.dataPreview != null) });
         node = (<a href={href} className={_clas}>{node}</a>);

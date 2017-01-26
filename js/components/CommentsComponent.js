@@ -65,9 +65,7 @@ class Comments extends React.Component {
       value: '',
       loading: {
         loading: true,
-        body: {
-          gn: 'p',
-          c: [this.state.value] },
+        body: {'p':[{},this.state.value]},
         time: Date.now(),
       },
     });

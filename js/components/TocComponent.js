@@ -74,33 +74,32 @@ export default query({body:'r'}, recl({
     return clearInterval(this.int);
   },
 
-  collectHeader({gn,ga,c}) {
-    let comp;
-    if (this.props.match) { comp = (gn === this.props.match); } else {
-      comp = (gn && (gn[0] === 'h') && (parseInt(gn[1]) !== NaN));
-    }
-    if (comp) {
-      ga = _.clone(ga);
-      ga.onClick = this._click(ga.id);
-      delete ga.id;
-      return {gn,ga,c};
+  collectHeader(elem) {
+    let name = _.keys(elem)[0]
+    if( (this.props.match && (name === this.props.match)) ||
+        (name[0] === 'h' && (parseInt(name[1]) !== NaN)))
+    {
+      var [attrs,...kids] = elem[name]
+      attrs = _.clone(attrs);
+      attrs.onClick = this._click(attrs.id);
+      delete attrs.id;
+      return {[name]:[attrs,...kids]}
     }
   },
 
   parseHeaders() {
-    if (this.props.body.c) {
-      for (let v of Array.from(this.props.body.c)) {
-        if ((v.gn === 'div') && (__guard__(v.ga, x => x.id) === "toc")) {
-          let contents = [
-            {gn:"h1", ga:{className:"t"}, c:["Table of contents"]},
-            ...(_.filter(v.c.map(this.collectHeader)))
-          ];
-          if (this.props.noHeader) { contents.shift(); }
-          return {
-            gn:"div",
-            ga:{className:"toc"},
-            c:contents
-           };
+    if (this.props.body['div']) {
+      for (let v of Array.from(this.props.body['div'].slice(1))) {
+        if (v['div'])
+          var [attrs,...children] = v['div']
+          if(attrs.id === "toc") {
+            let contents = _.filter(children.map(this.collectHeader))
+            return {
+              "div":[
+                {className:"toc"},
+                (this.props.noHeader ? "" : <h1 className='t'>Table of contents</h1>),
+                ...contents
+             ]};
         }
       }
     }
