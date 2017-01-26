@@ -30,13 +30,13 @@ export default {
     });
   },
 
-  put(data, mark, appl, cb) {
-    if (appl == null) {
-      appl = /[a-z]*/.exec(mark)[0];
+  put(data, mark, app, cb) {
+    if (app == null) {
+      app = /[a-z]*/.exec(mark)[0];
     }
     return urb.init(() => urb.send(data, {
       mark,
-      appl,
+      app,
     }, cb));
   },
 
