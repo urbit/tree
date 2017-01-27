@@ -12,7 +12,7 @@ export default {
 
   get(path, query, cb) {
     if (query == null) { query = 'no-query'; }
-    const url = `/_tree-json${util.basepath(path)}?${this.encode(query)}`;
+    const url = `${util.basepath("/_tree-json"+path)}?${this.encode(query)}`;
     if (dedup[url]) { return; }
     dedup[url] = true;
     pending[url] = true;

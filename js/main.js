@@ -21,7 +21,9 @@ $(() => {
     actions,
   };
 
+  util.init()
   const frag = util.fragpath(window.location.pathname.replace(/\.[^\/]*$/, ''));
+
   store.dispatch(setCurrentPath(frag, true));
   store.dispatch(addComponents(components));
   window.urb.dependencyHandlers["data"] = () => { // XX in persistence?
