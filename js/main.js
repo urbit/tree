@@ -22,7 +22,7 @@ $(() => {
   };
 
   util.init()
-  const frag = util.fragpath(window.location.pathname.replace(/\.[^\/]*$/, ''));
+  const frag = util.fragpath(window.location.pathname.replace(/\.[^\/]*$/, '').replace(/\/_[^\/]*/, ''));
 
   store.dispatch(setCurrentPath(frag, true));
   store.dispatch(addComponents(components));
