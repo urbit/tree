@@ -39,6 +39,15 @@
 
   img { border: 12px solid #000; }
 
+  img.full-width {
+    width: 100%;
+    border: 0;
+  }
+
+  img.inline {
+    margin-bottom: 0;
+  }
+
   p.preview {
     margin-bottom: .6rem;
     max-width: 32rem;
@@ -54,6 +63,7 @@
   .urbit .post img {
     max-width: 100%;
   }
+}
 
 .urbit.post .person {
   margin-bottom: 2rem;
