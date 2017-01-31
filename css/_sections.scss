@@ -6,9 +6,9 @@
     color: $blue;
   }
 
-  h1:first-of-type {
-    padding-bottom: 1rem;
-  }
+  h1:first-of-type { padding-bottom: 1rem; }
+
+  .list h1 { padding-bottom: 0; }
 
   li h1 { font-size: 1.2rem; }
 
