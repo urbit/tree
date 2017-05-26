@@ -43,24 +43,27 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
     onChange: (e) -> @setState {value:e.target.value}
 
     render: ->
-      _attr = {}
-      if @state.loading is true then _attr.disabled = "true"
-      titleInput = input _.create _attr, {
-                           type: "text"
-                           name: "title"
-                           placeholder: "Title"
-                         }
-      bodyTextArea = textarea _.create _attr, {
-                              type:"text"
-                              name:"comment"
-                              value:@state.value
-                              @onChange
-                            }
-      postButton = input _.create _attr, {
-                            type:"submit"
-                            value:"Post"
-                            className:"btn btn-primary"
-                          }
+      titleInput = input {
+          disabled: if @state.loading then "true"
+          type: "text"
+          name: "title"
+          placeholder: "Title"
+        }
+
+      bodyTextArea = textarea {
+          disabled: if @state.loading then "true"
+          type:"text"
+          name:"comment"
+          value:@state.value
+          @onChange
+        }
+      
+      postButton = input {
+          disabled: if @state.loading then "true"
+          type:"submit"
+          value:"Post"
+          className:"btn btn-primary"
+        }
 
       (div {},
         (div {className:"add-post"},
