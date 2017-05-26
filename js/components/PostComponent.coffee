@@ -34,6 +34,7 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
         @setState loading:null
 
     onSubmit: (e) ->
+      @setState loading:true
       title = @refs.in.title.value
       comment = @refs.in.comment.value
       path = @props.path or "/" # XX deal with root path
