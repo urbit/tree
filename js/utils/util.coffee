@@ -39,6 +39,7 @@ module.exports =
       d.setHours hor
       d.setMinutes min
       d.setSeconds sec
+    return d
 
   getKeys: (kids,sortBy) -> _.map (@sortKids kids,sortBy), 'name'
   sortKids: (kids,sortBy=null)-> # kids: {name:'t', bump:'t', meta:'j'}

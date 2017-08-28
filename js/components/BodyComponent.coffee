@@ -84,7 +84,7 @@ extras =
           "This page was made by Urbit. Feedback: "
           (a {href:"mailto:urbit@urbit.org"}, "urbit@urbit.org")
           " "
-          (a {href:"https://twitter.com/urbit_"}, "@urbit_")
+          (a {href:"https://twitter.com/urbit"}, "@urbit")
         ])
       ])
 
