@@ -36,7 +36,13 @@
   margin-right: .6rem;
 }
 
+.list.p.code {
+  background-color: transparent;
+}
+
+
 .body[data-path*='/docs'] .list,
+.body[data-path*='/developer'] .list,
 .body[data-path^='/work'] .list {
   list-style-type: none;
   padding-left: 0;
@@ -64,7 +70,8 @@
   h1 { border-width: 4px; }
 }
 
-.body[data-path*='/docs'] .list.runes {
+.body[data-path*='/docs'] .list.runes,
+.body[data-path*='/developer'] .list.runes {
   a h1,
   a div,
   a p {

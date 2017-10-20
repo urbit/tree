@@ -75,8 +75,8 @@ ol > li:before {
 }
 
 .body[data-path*='/docs'],
+.body[data-path*='/developer'],
 .body[data-path^='/work'] {
-  h1 { color: $brand-primary; }
   h1 code {
     background-color: transparent;
     color: $brand-primary;
@@ -106,16 +106,17 @@ ol > li:before {
   h2 { color: $brand-primary; }
 }
 
-.body[data-path^='/docs/system/hoon/runes/'] { h1 { color: $gray-light; } }
-.body[data-path^='/docs/system/hoon/runes/basic'] { h1 { color: $brand-primary; } }
+// .body[data-path^='/docs/hoon/twig/'],
+// .body[data-path^='/developer/docs/hoon/twig/'] { h1 { color: $gray-light; } }
 
-.body[data-path^='/docs/system/hoon/library/'] {
-  h3 { font-size: 1.5rem; }
-  h2 { font-size: 1rem; }
-  .toc {
-    h3 {
-      padding-top: 0;
-      margin-bottom: 0;
-    }
-  }
-}
+// .body[data-path^='/docs/hoon/library/'],
+// .body[data-path^='/developer/docs/hoon/library/'] {
+//   h3 { font-size: 1.5rem; }
+//   h2 { font-size: 1rem; }
+//   .toc {
+//     h3 {
+//       padding-top: 0;
+//       margin-bottom: 0;
+//     }
+//   }
+// }

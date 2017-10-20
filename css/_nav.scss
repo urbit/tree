@@ -247,18 +247,22 @@
 // XX should go somewhere else?
 
 [data-path*='/docs'] .selected .nav-link,
+[data-path*='/developer'] .selected .nav-link,
 [data-path^='/work'] .selected .nav-link { color: $gray; }
 
 [data-path*='/docs'] .nav-link,
+[data-path*='/developer'] .nav-link,
 [data-path^='/work'] .nav-link { font-weight: 500; }
 
 [data-path*='/docs'] .home,
+[data-path*='/developer'] .home,
 [data-path^='/work'] .home {
   background-color: $gray;
   border-color: $gray;
 }
 
 [data-path*='/docs'] .home:hover,
+[data-path*='/developer'] .home:hover,
 [data-path^='/work'] .home:hover {
   background-color: $gray-light;
   border-color: $gray-light;
@@ -266,6 +270,7 @@
 }
 
 [data-path*='/docs'] .home:before,
+[data-path*='/developer'] .home:before,
 [data-path^='/work'] .home:before {
   content: "~";
   color: #fff;
@@ -275,6 +280,7 @@
 
 @include media-breakpoint-down(md) {
   [data-path*='/docs'] .home:before,
+  [data-path*='/developer'] .home:before,
   [data-path^='/work'] .home:before {
     line-height: 0.7rem;
     font-size: 1rem;
@@ -284,6 +290,7 @@
 
 @include media-breakpoint-down(sm) {
   [data-path*='/docs'] .home:before,
+  [data-path*='/developer'] .home:before,
   [data-path^='/work'] .home:before {
     line-height: .7rem;
     margin-left: .05rem;
@@ -291,11 +298,17 @@
   }
 }
 
-[data-path^='/docs/system/hoon/runes'] .nav-link { font-family: 'scp'; }
-[data-path^='/docs/system/hoon/runes'] .nav-link,
-[data-path^='/docs/system/hoon/runes'] .ctrl .selected a.nav-link {
-  font-weight: 600;
-}
+// [data-path^='/docs/hoon/twig'] .nav-link { font-family: 'scp'; }
+// [data-path^='/docs/hoon/twig'] .nav-link,
+// [data-path^='/docs/hoon/twig'] .ctrl .selected a.nav-link {
+//   font-weight: 600;
+// }
+// 
+// [data-path^='/developer/docs/hoon/twig'] .nav-link { font-family: 'scp'; }
+// [data-path^='/developer/docs/hoon/twig'] .nav-link,
+// [data-path^='/developer/docs/hoon/twig'] .ctrl .selected a.nav-link {
+//   font-weight: 600;
+// }
 
 // menu
 
