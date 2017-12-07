@@ -36,12 +36,12 @@ module.exports =
     TreeDispatcher.handleViewAction {type:"addVirtual", components}
 
   addComment: (pax,sup,txt)->
-    TreePersistence.put {pax,sup,txt}, "talk-comment", "talk", (err,res)=>
+    TreePersistence.put {pax,sup,txt}, "fora-comment", "fora", (err,res)=>
       if !err?
         @clearData()
 
   addPost: (pax,sup,hed,txt)->
-    TreePersistence.put {pax,sup,hed,txt}, "talk-fora-post", "talk", (err,res)=>
+    TreePersistence.put {pax,sup,hed,txt}, "fora-post", "fora", (err,res)=>
       if !err?
         @clearData()
         history.pushState {},"",".."
