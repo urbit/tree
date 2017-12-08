@@ -100,6 +100,10 @@ ol > li:before {
 
     hr { margin-bottom: 3rem; }
   }
+
+  img {
+    max-width: 100%;
+  }
 }
 
 .body[data-path^='/work'] {
