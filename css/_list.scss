@@ -13,6 +13,10 @@
   }
 }
 
+.list.spaced li {
+  margin-bottom: 2rem;
+}
+
 .list.children {
   h1 {
     font-weight: 500;
@@ -36,6 +40,11 @@
   margin-right: .6rem;
 }
 
+.list.p.code {
+  background-color: transparent;
+}
+
+
 .body[data-path*='/docs'] .list,
 .body[data-path^='/work'] .list {
   list-style-type: none;
@@ -43,11 +52,16 @@
 
   a,
   h1 {
-    color: $gray;
+    color: $black;
     font-weight: 500;
     height: 2rem;
     display: inline;
     text-decoration: none;
+  }
+
+  p a {
+    font-weight: 400;
+    text-decoration: underline;
   }
 
   h1 { border-bottom: 2px solid #000; }

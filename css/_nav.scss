@@ -291,11 +291,12 @@
   }
 }
 
-[data-path^='/docs/system/hoon/runes'] .nav-link { font-family: 'scp'; }
-[data-path^='/docs/system/hoon/runes'] .nav-link,
-[data-path^='/docs/system/hoon/runes'] .ctrl .selected a.nav-link {
-  font-weight: 600;
-}
+// [data-path^='/docs/hoon/twig'] .nav-link { font-family: 'scp'; }
+// [data-path^='/docs/hoon/twig'] .nav-link,
+// [data-path^='/docs/hoon/twig'] .ctrl .selected a.nav-link {
+//   font-weight: 600;
+// }
+// 
 
 // menu
 

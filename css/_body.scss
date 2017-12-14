@@ -76,16 +76,37 @@ ol > li:before {
 
 .body[data-path*='/docs'],
 .body[data-path^='/work'] {
-  h1 { color: $brand-primary; }
   h1 code {
     background-color: transparent;
     color: $brand-primary;
     padding: 0;
+    font-size: 100%;
+    font-weight: 500;
   }
 
   .head {
     margin-bottom: 4rem;
     padding-left: 0;
+  }
+
+  p.label {
+    font-size: .8rem;
+    padding: 0;
+    display: block;
+    text-align: left;
+    margin-bottom: .6rem;
+
+    .type {
+      background-color: $gray-light;
+      color: #fff;
+      padding: .4rem;
+      margin-right: .3rem;
+    }
+    code {
+      background-color: transparent;
+      font-size: 100%;
+      font-weight: 400;
+    }
   }
 
   .book {
@@ -99,10 +120,10 @@ ol > li:before {
     h2 a { color: $brand-primary; }
 
     hr { margin-bottom: 3rem; }
-  }
 
-  img {
-    max-width: 100%;
+    img {
+      max-width: 100%;
+    }
   }
 }
 
@@ -110,16 +131,26 @@ ol > li:before {
   h2 { color: $brand-primary; }
 }
 
-.body[data-path^='/docs/system/hoon/runes/'] { h1 { color: $gray-light; } }
-.body[data-path^='/docs/system/hoon/runes/basic'] { h1 { color: $brand-primary; } }
-
-.body[data-path^='/docs/system/hoon/library/'] {
-  h3 { font-size: 1.5rem; }
-  h2 { font-size: 1rem; }
-  .toc {
-    h3 {
-      padding-top: 0;
-      margin-bottom: 0;
-    }
-  }
+.more {
+  border-bottom: .1rem solid $brand-primary;
 }
+
+.more::after {
+  content: "→";
+  font-family: "scp";
+  font-weight: 600;
+  padding-left: .3rem;
+}
+
+// .body[data-path^='/docs/hoon/twig/'] { h1 { color: $gray-light; } }
+
+// .body[data-path^='/docs/hoon/library/'] {
+//   h3 { font-size: 1.5rem; }
+//   h2 { font-size: 1rem; }
+//   .toc {
+//     h3 {
+//       padding-top: 0;
+//       margin-bottom: 0;
+//     }
+//   }
+// }
