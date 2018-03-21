@@ -40,8 +40,8 @@ module.exports =
       if !err?
         @clearData()
 
-  addPost: (pax,sup,hed,txt)->
-    TreePersistence.put {pax,sup,hed,txt}, "fora-post", "fora", (err,res)=>
+  addPost: (pax,sup,hed,txt,cod)->
+    TreePersistence.put {pax,sup,hed,txt,cod}, "fora-post-code", "fora", (err,res)=>
       if !err?
         @clearData()
         history.pushState {},"",".."
