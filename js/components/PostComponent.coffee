@@ -12,7 +12,7 @@ Ship        = require './ShipComponent.coffee'
 
 recl   = React.createClass
 rele   = React.createElement
-{div,p,h2,img,a,form,textarea,input,code}  = React.DOM
+{div,p,h2,img,a,form,textarea,input}  = React.DOM
 
 DEFER_USER = no
 
@@ -71,6 +71,7 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
             disabled: if @state.loading then "true"
             type:"text"
             name:"code"
+            style: fontFamily: "monospace" # FIXME just add a className, this is the css' problem
             value:@state.codeValue
             onChange: @onCodeChange
           }
