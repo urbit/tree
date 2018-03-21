@@ -21,7 +21,7 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
     getInitialState: ->
       loading:null
       value:""
-      codeValue: "::PLACEHOLDER insert code here"
+      codeValue: if @props.type is "code" then "::PLACEHOLDER insert code here"
       user: urb.user ? ""
 
     componentDidMount: ->
@@ -38,9 +38,12 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
       @setState loading:true
       title = @refs.in.title.value
       comment = @refs.in.comment.value
-      code = @refs.in.code.value
+      code = @refs.in.code?.value
       path = @props.path or "/" # XX deal with root path
-      TreeActions.addPost path,@props.spur,title,comment,code
+      if code
+        TreeActions.addPostCode path,@props.spur,title,comment,code
+      else
+        TreeActions.addPost path,@props.spur,title,comment
       e.preventDefault()
 
     onChange: (e) -> @setState {value:e.target.value}
@@ -62,13 +65,15 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
           @onChange
         }
 
-      codeTextArea = textarea {
-          disabled: if @state.loading then "true"
-          type:"text"
-          name:"code"
-          value:@state.codeValue
-          onChange: @onCodeChange
-        }
+      codeTextArea =
+        if @props.type is "code"
+          textarea {
+            disabled: if @state.loading then "true"
+            type:"text"
+            name:"code"
+            value:@state.codeValue
+            onChange: @onCodeChange
+          }
       
       postButton = input {
           disabled: if @state.loading then "true"
