@@ -20,8 +20,9 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
     displayName: "Post"
     getInitialState: ->
       loading:null
-      value:""
-      codeValue: if @props.type is "code" then "::PLACEHOLDER insert code here"
+      title: false
+      body:""
+      codeBox:""
       user: urb.user ? ""
 
     componentDidMount: ->
@@ -46,8 +47,9 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
         TreeActions.addPost path,@props.spur,title,comment
       e.preventDefault()
 
-    onChange: (e) -> @setState {value:e.target.value}
-    onCodeChange: (e) -> @setState {codeValue:e.target.value}
+    onTitleChange: (e) -> @setState {title:e.target.value}
+    onChange: (e) -> @setState {body:e.target.value}
+    onCodeChange: (e) -> @setState {codeBox:e.target.value}
 
     render: ->
       titleInput = input {
@@ -55,13 +57,14 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
           type: "text"
           name: "title"
           placeholder: "Title"
+          onChange: @onTitleChange
         }
 
       bodyTextArea = textarea {
           disabled: if @state.loading then "true"
           type:"text"
           name:"comment"
-          value:@state.value
+          value:@state.body
           @onChange
         }
 
@@ -72,12 +75,18 @@ module.exports = query {comt:'j', path:'t', spur:'t'}, recl
             type:"text"
             name:"code"
             style: fontFamily: "monospace" # FIXME just add a className, this is the css' problem
-            value:@state.codeValue
+            value:@state.codeBox
+            placeholder: ":: insert code here"
             onChange: @onCodeChange
           }
       
+      postDisabled =
+        if @state.loading then "Processing post"
+        else unless @state.title and @state.body and (@state.codeBox or @props.type isnt "code")  #REVIEW clean me
+          "Please fill out all inputs"
       postButton = input {
-          disabled: if @state.loading then "true"
+          disabled: if postDisabled then "true"
+          title: postDisabled
           type:"submit"
           value:"Post"
           className:"btn btn-primary"
